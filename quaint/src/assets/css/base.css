@@ -1,0 +1,194 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 主要字体 */
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('../font/Ubuntu.ttf');
+}
+
+/* 代码字体 */
+@font-face {
+  font-family: 'Firacode';
+  src: url('../font/FiraCode.ttf');
+}
+
+@media (min-width: 1920px) {
+  .layout {
+    width: 1572px;
+  }
+}
+
+@media (max-width: 1920px) {
+  .layout {
+    width: 1440px;
+  }
+}
+
+@media (max-width: 1440px) {
+  .layout {
+    width: 1308px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .layout {
+    width: 1176px;
+  }
+}
+
+@media (max-width: 1164px) {
+  .layout {
+    width: 1044px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    width: 912px;
+  }
+
+  .layout .side:first-of-type {
+    display: none;
+  }
+}
+
+@media (max-width: 853px) {
+  .layout {
+    width: 780px;
+  }
+}
+
+@media (max-width: 768px) {
+  .layout {
+    width: 100%;
+  }
+
+  .login .login-wallpaper {
+    display: none;
+  }
+
+  .layout .side {
+    display: none;
+  }
+
+  .article {
+    width: 100%;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  user-select: none;
+}
+
+body {
+  color: #4a4a4a;
+  font-size: 14px;
+  font-family: Ubuntu;
+  line-height: 1.6em;
+  /* background-color: #f5f5f5; */
+  background-color: var(--backColor);
+  /* background-color: rgba(255,255,255,0.6); */
+}
+
+body::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: var(--color);
+}
+
+a {
+  color: #4a4a4a;
+  text-decoration: none;
+}
+
+img {
+  width: 100%;
+  height: auto;
+}
+
+iframe {
+  display: block;
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #eee;
+}
+
+.blur {
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+}
+
+.blur-night {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+}
+
+.noblur {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.layout {
+  margin: 0 auto;
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.side {
+  flex-shrink: 0;
+  width: 252px;
+}
+
+.iconfont {
+  font-family: iconfont;
+}
+
+.words {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  text-align: center;
+  font-size: 50px;
+  line-height: 60px;
+  color: #fff;
+}
+
+.sticky {
+  position: sticky;
+  transition: 0.4s;
+}
+
+.sticky > ol,
+.sticky > div:last-child {
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.sticky > ol::-webkit-scrollbar,
+.sticky > div:last-child::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scroll-bar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: #eee;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color);
+}

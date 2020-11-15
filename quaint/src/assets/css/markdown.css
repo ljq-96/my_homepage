@@ -1,0 +1,32 @@
+.md-editor-md .hlmd-key {
+  color: #b0bec5;
+}
+
+.md-editor-md .hlmd-headline {
+  color: #b94047;
+  font-weight: bold;
+}
+
+.md-editor-md .hlmd-code {
+  color: #007bbb;
+  border: 1px solid #b0bec5;
+  border-radius: 4px;
+  margin: 0 -1px;
+}
+
+.md-editor-md .hlmd-mark {
+  background-color: #eee;
+}
+
+.md-editor-md .hlmd-quote {
+  color: #82ae46;
+}
+
+.md-editor-md .hlmd-alt {
+  color: #f08300;
+}
+
+.md-editor-md .hlmd-href {
+  color: #7058a3;
+  text-decoration: underline;
+}
