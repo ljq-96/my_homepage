@@ -46,7 +46,7 @@ export default {
     },
     suggestion: debounce(vm => {
       const onScript = document.createElement('script')
-      onScript.src = `https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=${vm[0].words}&cb=setSug`
+      onScript.src = `https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=${vm.words}&cb=setSug`
       document.querySelector('body').appendChild(onScript)
     }, 500),
     setSug(list) {

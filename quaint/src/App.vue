@@ -29,4 +29,6 @@ export default {
 @import './assets/css/logofont.css';
 @import './assets/css/iconfont.css';
 @import './assets/css/weatherfont.css';
+@import './assets/css/code.css';
+@import './assets/css/blog.css';
 </style>

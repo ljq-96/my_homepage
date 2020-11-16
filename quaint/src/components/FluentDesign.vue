@@ -1,5 +1,5 @@
 <template>
-  <div class="fd" @mousemove="mousemove" @mouseleave="mouseleave" @mouseenter="mouseenter">
+  <div class="fd" @mousemove="mousemove(vm, $event)" @mouseleave="mouseleave" @mouseenter="mouseenter">
     <slot
       :borderColor="borderColor"
       :backColor="backColor"
@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { throttle } from '@/common/utils'
 export default {
   props: {
     width: {
@@ -47,17 +48,18 @@ export default {
       x: 0,
       y: 0,
       target: null,
-      state: 0
+      state: 0,
+      vm: this
     }
   },
   methods: {
     mouseenter() {
       this.state = 1
     },
-    mousemove(e) {
-      this.x = e.clientX
-      this.y = e.clientY
-    },
+    mousemove: throttle((vm, e) => {
+      vm.x = e.clientX
+      vm.y = e.clientY
+    }, 50),
     mouseleave() {
       this.state = 0
     }
@@ -65,5 +67,4 @@ export default {
 }
 </script>
 
-<style>
-</style>
+<style></style>

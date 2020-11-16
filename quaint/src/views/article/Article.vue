@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import { debounce } from '@/common/utils'
 import HeadVue from '@/components/header/HeadVue.vue'
 import Typing from '@/components/header/Typing'
 import Calendar from '@/components/Calendar'
@@ -97,35 +98,31 @@ export default {
         obj.parent.children.push(obj)
         current = obj
       })
-      console.log(root)
       this.articleCatalog = root.children
       this.$nextTick(this.onScroll)
     },
     onScroll() {
       const height = window.innerHeight
       const els = Array.from(document.querySelectorAll('[data-id]'))
-      window.onscroll = e => {
+      window.onscroll = debounce(e => {
         t(
           this.articleCatalog,
-          els.reduce((a, b) => (Math.abs(a.offsetTop - pageYOffset) < Math.abs(b.offsetTop - pageYOffset) ? a : b))
+          els
+            .reduce((a, b) => (Math.abs(a.offsetTop - pageYOffset) < Math.abs(b.offsetTop - pageYOffset) ? a : b))
             .getAttribute('data-id')
         )
-        let time
-        clearTimeout(time)
-        time = setTimeout(() => {
-          this.$nextTick(function() {
-            const el = document.querySelector('.inview')
-            if (el) {
-              const elParent = el.offsetParent
-              const height = elParent.clientHeight / 2
-              const elScroll = elParent.children[1]
-              if (el.offsetTop - elScroll.scrollTop !== height) {
-                elScroll.scrollTo(0, el.offsetTop - height)
-              }
+        this.$nextTick(function() {
+          const el = document.querySelector('.inview')
+          if (el) {
+            const elParent = el.offsetParent
+            const height = elParent.clientHeight / 2
+            const elScroll = elParent.children[1]
+            if (el.offsetTop - elScroll.scrollTop !== height) {
+              elScroll.scrollTo(0, el.offsetTop - height)
             }
-          })
-        }, 500)
-      }
+          }
+        })
+      }, 500)
       const t = (arr, id) => {
         arr.forEach(item => {
           if (item.id === id) {
@@ -170,8 +167,6 @@ export default {
 </script>
 
 <style scoped>
-@import '../../assets/css/code.css';
-@import '../../assets/css/blog.css';
 .article {
   flex-grow: 1;
   margin: 0 8px;
@@ -180,7 +175,6 @@ export default {
 
 .blog-catalog {
   position: relative;
-  /* transition: 0.4s; */
 }
 
 .blog-catalog-btn {
@@ -262,7 +256,6 @@ export default {
 
 .article-catalog {
   padding: 10px 12px;
-  /* line-height: 26px; */
   font-family: Firacode;
 }
 </style>

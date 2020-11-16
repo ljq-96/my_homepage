@@ -18,7 +18,9 @@
           &#xe802;
           <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
             <fluent-design-item v-for="(item, index) in color" :key="index" :param="paramt">
-              <div :style="[{ background: item.value[0] }, {color: item.value[1]}]" @click="blockColor(item.name)">{{ item.name }}</div>
+              <div :style="[{ background: item.value[0] }, { color: item.value[1] }]" @click="blockColor(item.name)">
+                {{ item.name }}
+              </div>
             </fluent-design-item>
           </fluent-design>
         </fluent-design-item>
@@ -133,29 +135,27 @@
     </fluent-design>
     <div class="md-editor-body">
       <div class="md-editor-md-wrap">
-        <pre ref="mdHighlight" class="md-editor-md md-highlight" v-html="groupSum(mdHighlightGroup)"></pre>
+        <!-- <pre ref="mdHighlight" class="md-editor-md md-highlight" v-html="groupSum(mdHighlightGroup)"></pre> -->
         <textarea
           ref="textarea"
           class="md-editor-md"
           :value="value"
           @scroll="scroll"
-          @input="onInput"
+          @input="onInput(vm, $event)"
           spellcheck="false"
           placeholder="请输入..."
           autofocus
         ></textarea>
       </div>
-      <div ref="html" v-show="isPreview" class="md-editor-html article-content">
-        <div v-for="(item, index) in htmlHighlightGroup" :key="index" v-html="item"></div>
-      </div>
+      <div ref="html" v-show="isPreview" class="md-editor-html article-content" v-html="html"></div>
     </div>
   </div>
 </template>
 
 <script>
+import { debounce } from '@/common/utils'
 import request from '@/network/request'
 import markdown from '@/common/markdown'
-import ml from '@/common/ml'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
 export default {
@@ -171,9 +171,6 @@ export default {
   },
   data() {
     return {
-      mdGroup: [],
-      mdHighlightGroup: [],
-      htmlHighlightGroup: [],
       isPreview: true,
       isCatalog: false,
       isFullScreen: false,
@@ -195,7 +192,8 @@ export default {
           value: ['#fff2f1', '#fd4e4f']
         }
       ],
-      newTable: [0, 0]
+      newTable: [0, 0],
+      vm: this
     }
   },
   computed: {
@@ -210,17 +208,18 @@ export default {
           return ''
         }
       }
+    },
+    html() {
+      return markdown.render(this.value)
     }
   },
   methods: {
-    onInput(e) {
-      this.$emit('input', e.target.value)
-    },
+    onInput: debounce((vm, e) => {
+      vm.$emit('input', e.target.value)
+    }, 1000),
     scroll(e) {
       const textarea = this.$refs.textarea
-      const mdHighlight = this.$refs.mdHighlight
       const html = this.$refs.html
-      mdHighlight.scrollTop = textarea.scrollTop
       html.scrollTop = (textarea.scrollTop * html.scrollHeight) / textarea.scrollHeight
     },
     insert(fn, pos) {
@@ -348,34 +347,6 @@ export default {
     },
     headLine6() {
       this.insert(text => `\n###### ${text ? text : '六级标题'}\n`, [8, 4, 0])
-    }
-  },
-  watch: {
-    value(newValue, oldValue) {
-      let oldMdGroup = oldValue.split(/(^\`{3}.*?[\r,\n,\r\n][\w\W]*?[\r,\n,\r\n]\`{3}$)/gm)
-      this.mdGroup = newValue.split(/(^\`{3}.*?[\r,\n,\r\n][\w\W]*?[\r,\n,\r\n]\`{3}$)/gm)
-      if (!oldValue) {
-        this.mdHighlightGroup = this.mdGroup.map(item => ml(item))
-        this.htmlHighlightGroup = this.mdGroup.map(item => markdown.render(item))
-        return
-      }
-      const diff = []
-      this.mdGroup.forEach((item, index) => {
-        if (item !== oldMdGroup[index]) {
-          diff.push(index)
-        }
-      })
-      for (let i = this.mdGroup.length; i < oldMdGroup.length; i++) {
-        diff.push(i)
-      }
-      diff.forEach(item => {
-        const n = this.mdGroup[item] ? this.mdGroup[item] : ''
-        this.$set(this.mdHighlightGroup, item, ml(n))
-
-        if (this.isPreview) {
-          this.$set(this.htmlHighlightGroup, item, markdown.render(n))
-        }
-      })
     }
   }
 }
@@ -511,7 +482,7 @@ export default {
 .md-editor .table-size {
   text-align: center;
   margin-top: 8px;
-  font-family: FiraCode;
+  font-family: 'Operator Mono';
 }
 
 .md-editor .file input {
@@ -552,7 +523,7 @@ export default {
   word-break: break-all;
   white-space: pre-wrap;
   font-size: 14px;
-  font-family: FiraCode;
+  font-family: 'Operator Mono';
   outline: none;
   /* border: 1px solid #eee; */
   border: none;
@@ -560,7 +531,7 @@ export default {
 }
 
 textarea.md-editor-md {
-  color: transparent;
+  /* color: transparent; */
   background-color: transparent;
   caret-color: #455a64;
   resize: none;
