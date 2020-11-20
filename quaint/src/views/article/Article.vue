@@ -22,7 +22,7 @@
           <div class="subtitle">
             <span>{{ $dateFormatter(time, '-', 3) }}</span>
             <router-link v-for="(item, index) in tags" :to="{ path: '/blog', query: { tag: item } }" :key="index">
-              <span>#{{ item }}</span>
+              #{{ item }}
             </router-link>
           </div>
         </div>
@@ -247,6 +247,11 @@ export default {
   font-size: 12px;
   color: #bdbdbd;
   margin-right: 6px;
+}
+
+.article-title .subtitle a:hover {
+  color:var(--color);
+  text-decoration: underline;
 }
 
 .article-content {

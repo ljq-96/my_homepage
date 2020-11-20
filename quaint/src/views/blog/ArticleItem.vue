@@ -1,17 +1,17 @@
 <template>
   <div class="item article-content">
-    <span class="time">{{ $dateFormatter(time, '-', 3) }}</span>
-    <router-link
-      class="title"
-      :to="{ path: '/article', query: { title: title } }"
-      >{{ title }}</router-link
-    >
+    <div class="aiticle-item-head">
+      <span>{{ $dateFormatter(time, '-', 3) }}</span>
+      <span @click="send(item)" v-for="item in tags" :key="item">#{{ item }}</span>
+    </div>
+
+    <router-link class="title" :to="{ path: '/article', query: { title: title } }">{{ title }}</router-link>
     <div class="desc" v-html="truncate"></div>
-    <div class="tags">
+    <!-- <div class="tags">
       <div @click="send(item)" v-for="item in tags" :key="item">
         {{ item }}
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -40,11 +40,21 @@ export default {
   background-color: #fff;
 }
 
-.time {
+.aiticle-item-head {
   height: 20px;
   line-height: 20px;
   font-size: 12px;
   color: #bdbdbd;
+}
+
+.aiticle-item-head > span:not(:first-child) {
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+.aiticle-item-head > span:not(:first-child):hover {
+  color: var(--color);
+  text-decoration: underline;
 }
 
 .title {
