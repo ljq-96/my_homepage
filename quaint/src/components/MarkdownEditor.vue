@@ -116,8 +116,16 @@
         <fluent-design-item :isRotate="false" class="file" :param="param">
           <div class="iconfont">&#xe637;<input @change="selectFile" type="file" accept=".md" /></div>
         </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="download">&#xe7f1;</div>
+        <fluent-design-item class="iconfont submenu"  :isRotate="false" :param="param">
+          &#xe7f1;
+          <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
+            <fluent-design-item :param="paramt">
+              <div @click="downloadHTML">html</div>
+            </fluent-design-item>
+            <fluent-design-item :param="paramt">
+              <div @click="downloadMD">markdown</div>
+            </fluent-design-item>
+          </fluent-design>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <div
@@ -135,7 +143,6 @@
     </fluent-design>
     <div class="md-editor-body">
       <div class="md-editor-md-wrap">
-        <!-- <pre ref="mdHighlight" class="md-editor-md md-highlight" v-html="groupSum(mdHighlightGroup)"></pre> -->
         <textarea
           ref="textarea"
           class="md-editor-md"
@@ -241,8 +248,11 @@ export default {
         }
       })
     },
-    download() {
-      this.$emit('download')
+    downloadMD() {
+      this.$emit('downloadMD')
+    },
+    downloadHTML() {
+      this.$emit('downloadHTML')
     },
     selectFile(e) {
       const file = e.target.files[0]

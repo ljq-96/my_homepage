@@ -15,7 +15,13 @@
       </q-form>
     </div>
 
-    <markdown-editor v-model="markdown" @download="download" @readFile="readFile"></markdown-editor>
+    <markdown-editor
+      ref="markdownEditor"
+      v-model="markdown"
+      @downloadMD="downloadMD"
+      @downloadHTML="downloadHTML"
+      @readFile="readFile"
+    ></markdown-editor>
   </div>
 </template>
 
@@ -124,13 +130,40 @@ export default {
     cancel() {
       this.$router.go(-1)
     },
-    download() {
+    downloadMD() {
       const a = document.createElement('a')
       const blob = new Blob([this.markdown])
-      a.download = this.title + '.md'
+      a.download = this.articleInfo.title + '.md'
       a.href = URL.createObjectURL(blob)
       a.click()
       URL.revokeObjectURL(blob)
+    },
+    downloadHTML() {
+      const contentHtml = this.$refs.markdownEditor.html
+      this.$request({
+        url: '/style'
+      }).then(res => {
+        if (res.code === 200) {
+          const a = document.createElement('a')
+          const blob = new Blob([
+            `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <title>${this.articleInfo.title}</title>
+                <style>${res.style}</style>
+              </head>
+              <body>
+                <div class="article-content">${contentHtml}</div>
+              </body>
+              </html>`
+          ])
+          a.download = this.articleInfo.title + '.html'
+          a.href = URL.createObjectURL(blob)
+          a.click()
+          URL.revokeObjectURL(blob)
+        }
+      })
     },
     readFile(data) {
       this.$request({

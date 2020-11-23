@@ -483,6 +483,14 @@ router.post('/readfile', (req, res) => {
   })
 })
 
+router.get('/style', async (req, res) => {
+  const style = await pReadFile('./common/blog-style.css')
+  res.status(200).json({
+    code: 200,
+    style: style.toString()
+  })
+})
+
 function pReadFile(filePath) {
   return new Promise((resolve, reject) => {
     fs.readFile(filePath, (err, data) => {
