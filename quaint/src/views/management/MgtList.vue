@@ -12,7 +12,7 @@
     </tr>
     <tr :class="{ onedit: delIndex === index }" v-for="(item, index) in list" :key="item._id" class="mgt-item">
       <td class="mgt-item-index">
-        <router-link :to="{ path: '/article', query: { title: item.title } }">
+        <router-link :to="{ path: '/quaint/article', query: { title: item.title } }">
           {{ increase + index + 1 }}
         </router-link>
       </td>
@@ -22,7 +22,7 @@
       <td v-if="isTag" class="mgt-item-tags">
         <p>{{ item.tags }}</p>
       </td>
-      <td v-if="isTime" class="mgt-item-time">{{ $dateFormatter(item.time, '-', 3) }}</td>
+      <td v-if="isTime" class="mgt-item-time">{{ item.time | formatDate('YYYY-MM-DD') }}</td>
       <td
         v-if="isSticky"
         @click="toggleSticky({ index: increase + index, info: { sticky: !item.sticky } })"

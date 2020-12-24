@@ -4,14 +4,16 @@ import router from './router'
 import store from './store'
 import echarts from 'echarts'
 import notice from './common/notice'
-import request from '@/network/request.js'
-import dateFormatter from '@/common/dateFormatter'
+import request from '@/network/request'
+import day from 'dayjs'
 
 Vue.use(notice)
 Vue.prototype.$echarts = echarts
 Vue.prototype.$request = request
-Vue.prototype.$dateFormatter = dateFormatter
 Vue.prototype.$bus = new Vue()
+Vue.filter('formatDate', function(data, format) {
+  return day(data).format(format)
+})
 Vue.config.productionTip = false
 
 let meta = document.createElement('meta')

@@ -492,7 +492,7 @@ export default {
 .md-editor .table-size {
   text-align: center;
   margin-top: 8px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
 }
 
 .md-editor .file input {
@@ -533,7 +533,7 @@ export default {
   word-break: break-all;
   white-space: pre-wrap;
   font-size: 14px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
   outline: none;
   /* border: 1px solid #eee; */
   border: none;

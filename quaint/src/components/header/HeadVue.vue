@@ -1,23 +1,29 @@
 <template>
   <div class="header">
+    <nav-vue></nav-vue>
     <canvas-wallpaper ref="canvas"></canvas-wallpaper>
     <slot name="center"></slot>
     <div @click="scrollDown" class="arrow"></div>
-    <color-select @initCanvas="initCanvas" :style="{ right: $store.state.onSetting ? 0 : -500 + 'px' }"></color-select>
+    <color-select
+      @initCanvas="initCanvas"
+      :style="{ right: $store.state.onSetting ? 0 : -500 + 'px' }"
+    ></color-select>
   </div>
 </template>
 
 <script>
+import NavVue from './NavVue'
 import CanvasWallpaper from '../CanvasWallpaper'
 import ColorSelect from './ColorSelect'
 export default {
   components: {
     CanvasWallpaper,
-    ColorSelect
+    ColorSelect,
+    NavVue
   },
   data() {
     return {
-      top: 0,
+      top: 0
     }
   },
   methods: {

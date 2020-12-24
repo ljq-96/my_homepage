@@ -7,8 +7,8 @@
       </router-link>
       <div>
         <div class="nav-items">
-          <router-link to="/home">Home</router-link>
-          <router-link to="/blog">Blog</router-link>
+          <router-link to="/quaint/home">Home</router-link>
+          <router-link to="/quaint/blog">Blog</router-link>
           <router-link to="/login" v-if="!$store.state.token">Login</router-link>
           <router-link to="/management/chart" v-if="$store.state.token">Admin</router-link>
         </div>

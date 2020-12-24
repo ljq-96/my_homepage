@@ -11,12 +11,12 @@
     >
       <div>
         <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/home">
+          <router-link class="mgt-side-item" to="/quaint/home">
             <span><span class="iconfont icon-home"></span> Home</span><span class="iconfont icon-rollback"></span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/blog">
+          <router-link class="mgt-side-item" to="/quaint/blog">
             <span><span class="iconfont icon-book1"></span> Blog</span><span class="iconfont icon-rollback"></span>
           </router-link>
         </fluent-design-item>

@@ -1,17 +1,21 @@
 <template>
   <div class="item article-content">
     <div class="aiticle-item-head">
-      <span>{{ $dateFormatter(time, '-', 3) }}</span>
-      <span @click="send(item)" v-for="item in tags" :key="item">#{{ item }}</span>
+      <span>{{ time | formatDate('YYYY-MM-DD, HH:mm:ss') }}</span>
     </div>
-
-    <router-link class="title" :to="{ path: '/article', query: { title: title } }">{{ title }}</router-link>
+    <router-link
+      class="title"
+      :to="{ path: '/quaint/article', query: { title: title } }"
+      >{{ title }}</router-link
+    >
     <div class="desc" v-html="truncate"></div>
-    <!-- <div class="tags">
-      <div @click="send(item)" v-for="item in tags" :key="item">
-        {{ item }}
-      </div>
-    </div> -->
+    <div class="aiticle-item-head">
+      <span 
+        @click="send(item)" 
+        v-for="item in tags" 
+        :key="item"
+      >#{{ item }}</span>
+    </div>
   </div>
 </template>
 

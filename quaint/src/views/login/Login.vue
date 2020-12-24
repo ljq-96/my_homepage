@@ -70,7 +70,7 @@ export default {
           }).then(res => {
             if (res.code === 200) {
               if (res.message === 'success') {
-                this.$router.push('/home')
+                this.$router.push('/quaint/home')
                 this.$store.commit('setToken', res.token)
                 this.$notice({
                   type: 'success',
@@ -102,7 +102,7 @@ export default {
           }).then(res => {
             if (res.code === 200) {
               if (res.message === 'success') {
-                this.$router.push('/home')
+                this.$router.push('/quaint/home')
                 this.$store.commit('setToken', res.token)
               } else {
                 this.$notice({

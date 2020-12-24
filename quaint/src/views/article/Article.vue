@@ -20,7 +20,7 @@
             </router-link>
           </div>
           <div class="subtitle">
-            <span>{{ $dateFormatter(time, '-', 3) }}</span>
+            <span>{{ time | formatDate('YYYY-MM-DD, HH:mm:ss') }}</span>
             <router-link v-for="(item, index) in tags" :to="{ path: '/blog', query: { tag: item } }" :key="index">
               #{{ item }}
             </router-link>

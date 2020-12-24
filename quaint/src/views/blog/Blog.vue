@@ -1,7 +1,11 @@
 <template>
   <div>
     <head-vue>
-      <div class="words" slot="center" style="letter-spacing: 1.8em; font-family: Trivia;">
+      <div
+        class="words"
+        slot="center"
+        style="letter-spacing: 1.8em; font-family: Trivia;"
+      >
         QUAINT
       </div>
     </head-vue>
@@ -20,7 +24,10 @@
         <div class="catalog-container">
           <p>Catalog</p>
           <catalog></catalog>
-          <catalog-image class="catalog-image" :color="$store.state.color.c1"></catalog-image>
+          <catalog-image
+            class="catalog-image"
+            :color="$store.state.color.c1"
+          ></catalog-image>
         </div>
         <article-item
           v-for="item in articles"
@@ -31,7 +38,11 @@
           :truncate="item.truncate"
           @send="setTag"
         ></article-item>
-        <fluent-design v-slot="param" :backSize="100" class="load-more-container">
+        <fluent-design
+          v-slot="param"
+          :backSize="100"
+          class="load-more-container"
+        >
           <fluent-design-item class="load-more" :param="param">
             <div @click="loadMore">加载更多</div>
           </fluent-design-item>
@@ -88,7 +99,7 @@ export default {
       this.getArticles()
     },
     setTag(tag) {
-      this.$router.push({ path: '/blog', query: { tag: tag } })
+      this.$router.push({ path: '/quaint/blog', query: { tag: tag } })
       this.tag = this.$route.query.tag
       this.articles.length = 0
       this.getArticles()
@@ -112,7 +123,7 @@ export default {
       })
     },
     toSticky(title) {
-      this.$router.push({ path: '/article', query: { title: title } })
+      this.$router.push({ path: '/quaint/article', query: { title: title } })
     }
   },
   created() {

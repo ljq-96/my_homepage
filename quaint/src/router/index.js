@@ -1,39 +1,43 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/home/Home.vue'
+import Home from '../views/home/Home'
+import Main from '../views/Main'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/quaint/home'
   },
   {
-    path: '/home',
-    component: Home,
-    meta: {
-      title: 'Quaint',
-      keepAlive: true
-    }
-  },
-  {
-    path: '/blog',
-    component: () => import('@/views/blog/Blog.vue'),
-    meta: {
-      title: 'Blog',
-      keepAlive: true,
-      requireLogin: true
-    }
-  },
-  {
-    path: '/article',
-    component: () => import('@/views/article/Article'),
-    meta: {
-      title: '文章详情',
-      keepAlive: true,
-      requireLogin: true
-    }
+    path: '/quaint',
+    component: Main,
+    children: [
+      {
+        path: 'home',
+        component: Home,
+        meta: {
+          title: 'Quaint'
+        }
+      },
+      {
+        path: 'blog',
+        component: () => import('@/views/blog/Blog'),
+        meta: {
+          title: 'Blog',
+          requireLogin: true
+        }
+      },
+      {
+        path: 'article',
+        component: () => import('@/views/article/Article'),
+        meta: {
+          title: '文章详情',
+          requireLogin: true
+        }
+      }
+    ]
   },
   {
     path: '/login',
