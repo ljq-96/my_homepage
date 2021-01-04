@@ -6,7 +6,7 @@ const DocSort = require('../common/doc-sort')
 const catalog = require('../common/catalog')
 const Blog = require('../model/blog')
 const BookMark = require('../model/bookmark')
-const User = require('../model/user')
+const userModel = require('../model/user')
 const { news, getNews, getTranslate } = require('../common/news')
 const router = express.Router()
 
@@ -33,14 +33,14 @@ router.get('/', (req, res) => {
 
 router.post('/user/register', (req, res) => {
   const data = req.body
-  User.findOne({ userName: data.userName }).then(value => {
+  userModel.findOne({ userName: data.userName }).then(value => {
     if (value) {
       res.status(200).json({
         code: 200,
         message: '用户名已存在'
       })
     } else {
-      new User(data).save().then(doc => {
+      new userModel(data).save().then(doc => {
         res.status(200).json({
           code: 200,
           message: 'success',
@@ -61,7 +61,7 @@ router.post('/user/register', (req, res) => {
 router.post('/user/login', (req, res) => {
   const data = req.body
   if (Object.keys(data).length === 2) {
-    User.findOne(data).then(value => {
+    userModel.findOne(data).then(value => {
       if (value) {
         res.status(200).json({
           code: 200,
@@ -88,86 +88,6 @@ router.post('/user/login', (req, res) => {
       message: '用户名或密码不能为空'
     })
   }
-})
-
-// async function a() {
-//   const token =
-//     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVmMzI0M2QwN2M2MDgwNGE1YzFkYzE0YSIsInVzZXJOYW1lIjoiTGlqaWFxaSIsInBhc3N3b3JkIjoibHlwODJubGYiLCJpYXQiOjE2MDAzMDU3Mjd9.AF-6HUoIbFJcFmO0mJ23VSpjcU8djLHRTLkfzx5Gv5M'
-//   const user = jwt.verify(token, 'quaint')
-//   const book = await BookMark.find({ user_id: user.id })
-//   book.forEach(async (item, index, arr) => {
-//     if (index === 0) {
-//       await BookMark.updateOne(
-//         { _id: item._id },
-//         {
-//           prev_id: null,
-//           next_id: arr[index + 1]._id
-//         }
-//       )
-//     } else if (index === arr.length - 1) {
-//       await BookMark.updateOne(
-//         { _id: item._id },
-//         {
-//           prev_id: arr[index - 1]._id,
-//           next_id: null
-//         }
-//       )
-//     } else {
-//       await BookMark.updateOne(
-//         { _id: item._id },
-//         {
-//           prev_id: arr[index - 1]._id,
-//           next_id: arr[index + 1]._id
-//         }
-//       )
-//     }
-//   })
-// }
-
-// a()
-
-router.get('/bookmark', async (req, res) => {
-  const token = req.headers.authorization
-  const user = jwt.verify(token, 'quaint')
-  const result = await getBookMarks(user)
-  res.status(200).json({
-    code: 200,
-    bookmarks: result
-  })
-})
-
-router.post('/bookmark/update', async (req, res) => {
-  const { id, info } = req.body
-  const token = req.headers.authorization
-  const user = jwt.verify(token, 'quaint')
-  if (id) {
-    BookMark.updateOne({ _id: id }, info, err => {
-      if (!err) {
-        res.status(200).send({ code: 200 })
-      }
-    })
-  } else {
-    const doc = await BookMark.findOne({ user_id: user.id, next_id: null })
-    const newDoc = new BookMark({
-      user_id: user.id,
-      ...info,
-      prev_id: doc ? doc._id : null
-    })
-    await newDoc.save()
-    if (doc) await BookMark.updateOne({ _id: doc._id }, { next_id: newDoc._id })
-    res.status(200).send({ code: 200, newDoc })
-  }
-})
-
-router.post('/bookmark/sort', async (req, res) => {
-  const { action, _id, target_id } = req.body
-  const docSort = new DocSort(BookMark)
-  if (action === 'moveAfter') {
-    await docSort.moveAfter(_id, target_id)
-  } else {
-    await docSort.moveBefore(_id, target_id)
-  }
-  res.status(200).send({ code: 200 })
 })
 
 router.post('/bookmark/del', async (req, res) => {
@@ -238,15 +158,18 @@ router.get('/article/:name', function (req, res) {
   if (token) {
     const user = jwt.verify(token, 'quaint')
     let title = req.params.name
-    Blog.findOne({ user_id: user.id, title: title, type: 'DOC' }, (err, doc) => {
-      if (doc) {
-        const { tags, content, time, _id } = doc
-        res.status(200).json({
-          code: 200,
-          article: { content, tags, time, _id }
-        })
+    Blog.findOne(
+      { user_id: user.id, title: title, type: 'DOC' },
+      (err, doc) => {
+        if (doc) {
+          const { tags, content, time, _id } = doc
+          res.status(200).json({
+            code: 200,
+            article: { content, tags, time, _id }
+          })
+        }
       }
-    })
+    )
   }
 })
 
@@ -421,10 +344,14 @@ router.post('/blog/update', (req, res) => {
     }
     info.update_time = new Date()
     if (info.content) {
-      info.truncate = truncateReg.exec(info.content) ? truncateReg.exec(info.content)[1] : ''
+      info.truncate = truncateReg.exec(info.content)
+        ? truncateReg.exec(info.content)[1]
+        : ''
     }
     if (_id) {
-      Blog.updateOne({ _id }, info).then(() => res.status(200).json({ code: 200 }))
+      Blog.updateOne({ _id }, info).then(() =>
+        res.status(200).json({ code: 200 })
+      )
     } else {
       info.user_id = user.id
       new Blog(info).save(err => {
@@ -438,7 +365,7 @@ router.post('/blog/update', (req, res) => {
 
 router.post('/blog/test', (req, res) => {
   const { title } = req.body
-  Blog.findOne({title}, (err, doc) => {
+  Blog.findOne({ title }, (err, doc) => {
     if (doc) {
       res.status(200).json({
         code: 200,

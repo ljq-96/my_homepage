@@ -1,11 +1,19 @@
 <template>
   <div class="markdown-edit">
     <div class="markdown-edit-head">
-      <div class="markdown-btn">
-        <button @click="cancelConfirm" style="background: #d84315;">取消</button>
-        <button @click="saveConfirm('保存并离开吗?')" style="background: #1565c0;">保存</button>
-      </div>
-      <q-form class="edit-form" :model="articleInfo" :rules="articleRules" labelWidth="30px" ref="form">
+      <q-button-group>
+        <q-button @click="cancelConfirm" type="danger">离开</q-button>
+        <q-button @click="saveConfirm('保存并离开吗?')" type="success"
+          >保存</q-button
+        >
+      </q-button-group>
+      <q-form
+        class="edit-form"
+        :model="articleInfo"
+        :rules="articleRules"
+        labelWidth="30px"
+        ref="form"
+      >
         <q-form-item class="edit-form-item" label="title" prop="title">
           <q-input v-model="articleInfo.title"></q-input>
         </q-form-item>
@@ -29,6 +37,8 @@
 import QForm from '@/components/form/QForm'
 import QFormItem from '@/components/form/QFormItem'
 import QInput from '@/components/form/QInput'
+import QButton from '../../components/button/QButton'
+import QButtonGroup from '../../components/button/QButtonGroup'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import markdown from '@/common/markdown'
 import request from '@/network/request'
@@ -37,7 +47,9 @@ export default {
     MarkdownEditor,
     QForm,
     QFormItem,
-    QInput
+    QInput,
+    QButton,
+    QButtonGroup
   },
   data() {
     var tagsReg = (rule, value, callback) => {
@@ -79,7 +91,10 @@ export default {
           { required: true, message: '标题不能为空' },
           { validator: testTitle, message: '标题重复请更换一个' }
         ],
-        tags: [{ validator: tagsReg, message: '标签使用英文逗号分隔' }]
+        tags: [
+          { required: true, message: '标签不能为空' },
+          { validator: tagsReg, message: '标签使用英文逗号分隔' }
+        ]
       }
     }
   },
@@ -209,15 +224,6 @@ export default {
   margin-bottom: 20px;
 }
 
-.markdown-edit button {
-  width: 50px;
-  height: 30px;
-  margin-right: 10px;
-  color: #fff;
-  border: none;
-  outline: none;
-}
-
 .markdown-edit .edit-form-item {
   margin-left: 50px;
 }
@@ -235,14 +241,6 @@ export default {
 
 .markdown-edit input[type='text']:focus {
   color: #4a4a4a;
-}
-
-.markdown-edit .markdown-btn button:hover {
-  filter: brightness(90%);
-}
-
-.markdown-edit .markdown-btn button:active {
-  filter: brightness(70%);
 }
 
 .edit-form {

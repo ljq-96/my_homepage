@@ -7,7 +7,9 @@
 
 <script>
 import { Particle, Space, Desert } from '../common/canvas'
+import { mapState } from 'vuex'
 import ColorCalc from '../common/color'
+import chroma from 'chroma-js'
 let timer
 export default {
   data() {
@@ -23,15 +25,19 @@ export default {
       this.initCanvas()
     }
   },
+  computed: {
+    ...mapState(['color'])
+  },
   methods: {
     changeIndex() {
       if (this.$store.state.wallpaper >= 2) {
         this.$store.commit('setWallpaper', 0)
       } else {
-        this.$store.commit('setWallpaper', parseInt(this.$store.state.wallpaper) + 1)
+        this.$store.commit(
+          'setWallpaper',
+          parseInt(this.$store.state.wallpaper) + 1
+        )
       }
-      // console.log(this.index)
-      // this.$store.commit('setWallpaper', this.index)
       this.setWallpaper(this.$store.state.wallpaper)()
     },
     setWallpaper(index) {
@@ -39,8 +45,6 @@ export default {
       return [this.drawParticle, this.drawSpace, this.drawDesert][index]
     },
     initCanvas() {
-      // this.W = window.innerWidth * 1.5
-      // this.H = window.innerHeight * 1.5
       this.W = this.$refs.static.parentNode.offsetWidth * 1.5
       this.H = this.$refs.static.parentNode.offsetHeight * 1.5
       this.$refs.static.width = this.W
@@ -53,14 +57,15 @@ export default {
     },
     drawParticle() {
       this.$refs.dynamic.style.zIndex = 0
-      const color = new ColorCalc(this.$store.state.color.c1)
-      const loh = color.loh(50)
       this.dCtx.clearRect(0, 0, this.W, this.H)
       const particle = new Particle({
         count: 60,
         W: this.W,
         H: this.H,
-        color: [this.$store.state.color.c1, loh]
+        color: [
+          this.color.luminance(0.1).css(),
+          this.color.luminance(0.4).css()
+        ]
       })
       particle.sRender(this.sCtx)
       let move = () => {
@@ -87,18 +92,23 @@ export default {
     drawSpace() {
       this.$refs.dynamic.style.zIndex = 0
       this.sCtx.clearRect(0, 0, this.W, this.H)
-      const color = new ColorCalc(this.$store.state.color.c1)
-      const diff1 = color.diff()
-      const diff2 = color.diff()
-      const diff3 = color.diff()
-      const loh = color.loh(50)
-      const sun = new ColorCalc(this.$store.state.color.c1).separate().bright > 50 ? 'rgb(0,35,113)' : 'rgb(255,187,57)'
+      const diff1 = chroma(chroma.random())
+        .luminance(0.6)
+        .css()
+      const diff2 = chroma(chroma.random())
+        .luminance(0.6)
+        .css()
+      const diff3 = chroma(chroma.random())
+        .luminance(0.6)
+        .css()
+      const loh = this.color.luminance(0.35)
+      const sun = 'rgb(255,187,57)'
       let space = new Space({
         x: this.W * 0.8,
         y: this.H * 0.2,
         W: this.W,
         H: this.H,
-        color: this.$store.state.color.c1,
+        color: this.color.luminance(0.2),
         difColor: loh,
         sun: sun,
         astronaut: {
@@ -251,9 +261,7 @@ export default {
       space.init(this.sCtx)
       let move = () => {
         this.dCtx.clearRect(0, 0, this.W, this.H)
-
         space.renderBalls.forEach(star => {
-          // console.log(star)
           star.x = star.X + star.R * Math.cos(star.angle)
           star.y = star.Y + star.R * Math.sin(star.angle)
           star.angle += star.speed
@@ -272,15 +280,14 @@ export default {
     drawDesert() {
       this.$refs.dynamic.style.zIndex = -1
       this.sCtx.clearRect(0, 0, this.W, this.H)
-      const color = new ColorCalc(this.$store.state.color.c1)
-      const heaviest = color.heavy(80)
-      const heavy = color.heavy(30)
-      const lighter = color.lighter(20)
-      const lightest = color.lighter(80)
+      const heaviest = this.color.luminance(0.1).css()
+      const heavy = this.color.luminance(0.2).css()
+      const lighter = this.color.luminance(0.5).css()
+      const lightest = this.color.luminance(0.7).css()
       const desert = new Desert({
         W: this.W,
         H: this.H,
-        fillStyle: [heavy, this.$store.state.color.c1, lightest],
+        fillStyle: [heavy, this.color.luminance(0.3).css(), lightest],
         moon: {
           x: this.W * 0.8,
           y: this.H * 0.2,
@@ -322,7 +329,7 @@ export default {
               [this.W * 0.75, this.H * 0.85]
             ],
             H: this.H,
-            fillStyle: [this.$store.state.color.c1]
+            fillStyle: [this.color.luminance(0.3).css()]
           },
           {
             start: [0, this.H * 0.82],

@@ -23,10 +23,10 @@
       <div class="articles">
         <div class="catalog-container">
           <p>Catalog</p>
-          <catalog></catalog>
+          <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
           <catalog-image
             class="catalog-image"
-            :color="$store.state.color.c1"
+            :color="$store.state.color"
           ></catalog-image>
         </div>
         <article-item
@@ -71,8 +71,9 @@ import Calendar from '@/components/Calendar'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
 import markdown from '@/common/markdown'
-import Catalog from '@/views/management/BlogCatalog/Catalog'
 import CatalogImage from '@/components/svgimage/1'
+import CatalogItem from '../management/BlogCatalog/CatalogItem'
+import { getCatalogIn } from '../../network/catalog'
 export default {
   components: {
     HeadVue,
@@ -81,8 +82,8 @@ export default {
     List,
     FluentDesign,
     FluentDesignItem,
-    Catalog,
-    CatalogImage
+    CatalogImage,
+    CatalogItem
   },
   data() {
     return {
@@ -90,7 +91,8 @@ export default {
       tag: '',
       articles: [],
       sticky: [],
-      tags: []
+      tags: [],
+      inCatalog: []
     }
   },
   methods: {
@@ -141,6 +143,11 @@ export default {
     }).then(res => {
       if (res.code === 200) {
         this.tags = res.tags
+      }
+    })
+    getCatalogIn().then(res => {
+      if (res.ok) {
+        this.inCatalog = res.data
       }
     })
   }

@@ -157,7 +157,7 @@ export default {
 
 .chart-item {
   padding: 10px;
-  /* border: 1px solid var(--_backColor); */
+  /* border: 1px solid var(--colorOpc2); */
   background-color: #fff;
 }
 

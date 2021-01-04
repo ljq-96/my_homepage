@@ -9,15 +9,31 @@
     ></mgt-list>
     <fluent-design class="page" v-slot="param" :borderSize="50">
       <fluent-design-item :isDisabled="currentPage === 1" :param="param">
-        <button class="iconfont" @click="prev" :class="{ disabled: currentPage === 1 }">&#xe7ec;</button>
+        <button
+          class="iconfont"
+          @click="prev"
+          :class="{ disabled: currentPage === 1 }"
+        >
+          &#xe7ec;
+        </button>
       </fluent-design-item>
       <fluent-design-item :param="param" v-for="item in pageArr" :key="item">
-        <div class="page-item" @click="currentPage = item" :class="{ pagecurrent: item === currentPage }">
+        <div
+          class="page-item"
+          @click="currentPage = item"
+          :class="{ pagecurrent: item === currentPage }"
+        >
           {{ item }}
         </div>
       </fluent-design-item>
       <fluent-design-item :isDisabled="currentPage === page" :param="param">
-        <button class="iconfont" @click="next" :class="{ disabled: currentPage === page }">&#xe7eb;</button>
+        <button
+          class="iconfont"
+          @click="next"
+          :class="{ disabled: currentPage === page }"
+        >
+          &#xe7eb;
+        </button>
       </fluent-design-item>
     </fluent-design>
   </div>
@@ -27,6 +43,7 @@
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
 import MgtList from './MgtList'
+import { deleteBlog } from '../../network/blog'
 export default {
   components: {
     MgtList,
@@ -43,10 +60,21 @@ export default {
   },
   computed: {
     listDisplay() {
-      return this.list.slice(this.size * (this.currentPage - 1), this.size * this.currentPage)
+      return this.list.slice(
+        this.size * (this.currentPage - 1),
+        this.size * this.currentPage
+      )
     },
     pageArr() {
-      return Array.from(new Set([1, this.page, this.currentPage - 1, this.currentPage, this.currentPage + 1]))
+      return Array.from(
+        new Set([
+          1,
+          this.page,
+          this.currentPage - 1,
+          this.currentPage,
+          this.currentPage + 1
+        ])
+      )
         .filter(item => item > 0 && item <= this.page)
         .sort((a, b) => a - b)
     }
@@ -76,27 +104,32 @@ export default {
           this.$notice({
             type: 'success',
             title: 'Success',
-            message: `“${this.list[index].title}” ${info.sticky ? '置顶' : '取消置顶'}`
+            message: `“${this.list[index].title}” ${
+              info.sticky ? '置顶' : '取消置顶'
+            }`
           })
         }
       })
     },
     del(index) {
-      this.$request({
-        url: '/blog/del',
-        method: 'post',
-        data: {
-          _id: this.list[index]._id
-        }
-      }).then(res => {
-        if (res.code === 200) {
-          this.$notice({
-            type: 'success',
-            title: 'Success',
-            message: `文章 “${this.list[index].title}” 删除成功`
-          })
-          this.list.splice(index, 1)
-        }
+      // this.$request({
+      //   url: '/blog/del',
+      //   method: 'post',
+      //   data: {
+      //     _id: this.list[index]._id
+      //   }
+      // }).then(res => {
+      //   if (res.code === 200) {
+      //     this.$notice({
+      //       type: 'success',
+      //       title: 'Success',
+      //       message: `文章 “${this.list[index].title}” 删除成功`
+      //     })
+      //     this.list.splice(index, 1)
+      //   }
+      // })
+      deleteBlog({ id: this.list[index]._id }).then(res => {
+        console.log(res)
       })
     },
     prev() {
@@ -157,6 +190,6 @@ export default {
 }
 
 .page div.pagecurrent {
-  background-color: var(--backColor);
+  background-color: var(--colorOpc1);
 }
 </style>

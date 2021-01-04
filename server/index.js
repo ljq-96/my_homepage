@@ -1,35 +1,49 @@
 const express = require('express')
-const history = require('connect-history-api-fallback')
+const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const router = require('./router/router')
+const bookmarkRouter = require('./router/bookmark')
+const blogRouter = require('./router/blog')
+const catalogRouter = require('./router/catalog')
+const token = require('./common/token')
 const app = express()
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-// app.use(
-//   history({
-//     index: '/'
-//   })
-// )
 
 // 允许跨域
 app.all('*', function (req, res, next) {
-  //设置允许跨域的域名，*代表允许任意域名跨域
   res.header('Access-Control-Allow-Origin', '*')
-  //允许的header类型
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Accept,X-Requested-With,Authorization')
-  //跨域允许的请求方式
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Content-Type,Accept,X-Requested-With,Authorization'
+  )
   res.header('Access-Control-Allow-Methods', 'DELETE,PUT,POST,GET,OPTIONS')
   if (req.method.toLowerCase() == 'options') {
-    res.send(200)
+    res.sendStatus(200)
   } else {
     next()
   }
 })
 
-// app.engine('html', require('express-art-template'))
 app.use('/', express.static('./quaint/'))
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(token)
 app.use(router)
+app.use('/api/bookmark', bookmarkRouter)
+app.use('/api/catalog', catalogRouter)
+app.use('/api/blog', blogRouter)
 
-app.listen(4000, function () {
-  console.log('running 4000...')
-})
+mongoose.set('useFindAndModify', false)
+mongoose
+  .connect('mongodb://localhost:27017/my', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(
+    () => {
+      console.log('MongoDB连接成功')
+      app.listen(4000, function () {
+        console.log('running 4000...')
+      })
+    },
+    reason => console.log(reason)
+  )

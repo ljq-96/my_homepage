@@ -1,4 +1,4 @@
-const mongoose = require('./db.js')
+const mongoose = require('mongoose')
 
 const UserSchema = mongoose.Schema({
   userName: {
@@ -19,10 +19,24 @@ const UserSchema = mongoose.Schema({
   },
   status: {
     type: Number,
-    // [不能登录, 默认, 管理员]
-    enum: [0, 1, 2],
-    default: 1
-  }
+    // [-1不能登录, 0默认, 1管理员]
+    default: 0
+  },
+  bookmarks: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'BookMark'
+    }
+  ],
+  catalog: [
+    {
+      blog: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Blog'
+      },
+      children: []
+    }
+  ]
 })
 
 module.exports = mongoose.model('User', UserSchema)

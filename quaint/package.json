@@ -9,6 +9,7 @@
   "dependencies": {
     "async-validator": "^3.4.0",
     "axios": "^0.19.2",
+    "chroma-js": "^2.1.0",
     "core-js": "^3.6.4",
     "dayjs": "^1.9.7",
     "echarts": "^4.9.0",

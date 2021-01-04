@@ -1,4 +1,4 @@
-const mongoose = require('./db.js')
+const mongoose = require('mongoose')
 
 const BlogSchema = mongoose.Schema({
   user_id: {
@@ -18,7 +18,7 @@ const BlogSchema = mongoose.Schema({
   content: {
     type: String
   },
-  time: {
+  create_time: {
     type: Date,
     default: Date.now
   },
@@ -35,21 +35,9 @@ const BlogSchema = mongoose.Schema({
     enum: ['DOC', 'TITLE'],
     default: 'DOC'
   },
-  level: {
-    type: Number,
-    default: 0
-  },
-  parent_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null
-  },
-  prev_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null
-  },
-  next_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null
+  in_catalog: {
+    type: Boolean,
+    default: false
   }
 })
 

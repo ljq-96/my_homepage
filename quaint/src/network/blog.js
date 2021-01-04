@@ -1,25 +1,17 @@
-import request from './request.js'
+import request from './request'
 
-export function getArticles() {
+export function createBlog(data) {
   return request({
-    url: '/articles'
+    url: '/api/blog/create',
+    method: 'post',
+    data
   })
 }
 
-export function getSticky() {
+export function deleteBlog(data) {
   return request({
-    url: '/sticky'
-  })
-}
-
-export function getDemo() {
-  return request({
-    url: '/demo'
-  })
-}
-
-export function getTags() {
-  return request({
-    url: '/tag'
+    url: '/api/blog/delete',
+    method: 'post',
+    data
   })
 }

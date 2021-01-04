@@ -207,7 +207,7 @@ export default {
     }
   },
   created() {
-    this.currentColor = this.toArr(this.$store.state.color.c1)
+    this.currentColor = this.$store.state.color.rgb()
     this.setHex()
   },
   mounted() {

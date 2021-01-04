@@ -5,10 +5,18 @@
     </head-vue>
     <div class="layout">
       <div class="blog-catalog side" :class="{ close: !isBlogCatalog }">
-        <div class="sticky" :style="{ top: $store.state.isPageDown ? '0' : '50px' }">
+        <div
+          class="sticky"
+          :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+        >
           <div class="side-title">目录</div>
-          <div class="blog-catalog-btn iconfont" @click="isBlogCatalog = !isBlogCatalog">&#xe7ec;</div>
-          <catalog :current="title"></catalog>
+          <div
+            class="blog-catalog-btn iconfont"
+            @click="isBlogCatalog = !isBlogCatalog"
+          >
+            &#xe7ec;
+          </div>
+          <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
         </div>
       </div>
       <div ref="article" class="article">
@@ -21,7 +29,11 @@
           </div>
           <div class="subtitle">
             <span>{{ time | formatDate('YYYY-MM-DD, HH:mm:ss') }}</span>
-            <router-link v-for="(item, index) in tags" :to="{ path: '/blog', query: { tag: item } }" :key="index">
+            <router-link
+              v-for="(item, index) in tags"
+              :to="{ path: '/quaint/blog', query: { tag: item } }"
+              :key="index"
+            >
               #{{ item }}
             </router-link>
           </div>
@@ -46,14 +58,15 @@ import HeadVue from '@/components/header/HeadVue.vue'
 import Typing from '@/components/header/Typing'
 import Calendar from '@/components/Calendar'
 import ArticleCatalog from '@/views/article/ArticleCatalog'
-import Catalog from '@/views/management/BlogCatalog/Catalog'
+import CatalogItem from '../management/BlogCatalog/CatalogItem'
+import { getCatalogIn } from '../../network/catalog'
 import markdown from '@/common/markdown'
 
 export default {
   components: {
     HeadVue,
     Calendar,
-    Catalog,
+    CatalogItem,
     ArticleCatalog,
     Typing
   },
@@ -61,6 +74,7 @@ export default {
     return {
       content: '',
       tags: [],
+      inCatalog: [],
       time: '',
       articleCatalog: {},
       isBlogCatalog: true
@@ -82,7 +96,10 @@ export default {
           .toString()
           .replace('.', '')
         const name = item.match(/>(.*?)</)[1]
-        this.content = this.content.replace(item, `<h${level} data-id="${id}">${name}</h${level}>`)
+        this.content = this.content.replace(
+          item,
+          `<h${level} data-id="${id}">${name}</h${level}>`
+        )
         const obj = {
           name: name,
           id: id,
@@ -108,7 +125,12 @@ export default {
         t(
           this.articleCatalog,
           els
-            .reduce((a, b) => (Math.abs(a.offsetTop - pageYOffset) < Math.abs(b.offsetTop - pageYOffset) ? a : b))
+            .reduce((a, b) =>
+              Math.abs(a.offsetTop - pageYOffset) <
+              Math.abs(b.offsetTop - pageYOffset)
+                ? a
+                : b
+            )
             .getAttribute('data-id')
         )
         this.$nextTick(function() {
@@ -160,6 +182,11 @@ export default {
         this.tags = res.article.tags
         this.time = res.article.time
         this.setCatalog()
+      }
+    })
+    getCatalogIn().then(res => {
+      if (res.ok) {
+        this.inCatalog = res.data
       }
     })
   }
@@ -250,7 +277,7 @@ export default {
 }
 
 .article-title .subtitle a:hover {
-  color:var(--color);
+  color: var(--color);
   text-decoration: underline;
 }
 

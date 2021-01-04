@@ -1,5 +1,10 @@
 <template>
-  <a class="item" @contextmenu.prevent="openMenu" :href="icon.url" draggable="true" target="_blank">
+  <a
+    class="item"
+    @contextmenu.prevent="openMenu"
+    :href="icon.url"
+    target="_blank"
+  >
     <div class="logofont" :class="icon.icon"></div>
     <div class="title">{{ icon.title }}</div>
   </a>

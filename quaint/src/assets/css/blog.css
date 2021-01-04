@@ -8,7 +8,7 @@
 .article-content .green {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
   border: 1px solid #e1eed5;
   border-radius: 5px;
   color: #52c41a;
@@ -18,7 +18,7 @@
 .article-content .blue {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
   border: 1px solid #d0e4ee;
   border-radius: 5px;
   color: #178fff;
@@ -28,7 +28,7 @@
 .article-content .yellow {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
   border: 1px solid #f6efd3;
   border-radius: 5px;
   color: #fbad15;
@@ -38,7 +38,7 @@
 .article-content .red {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
   border: 1px solid #f6e0de;
   border-radius: 5px;
   color: #fd4e4f;
@@ -90,7 +90,7 @@ input[type='checkbox']:checked::before {
 .article-content a {
   color: #4078f2;
   word-break: break-all;
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
 }
 
 .article-content a:hover {
@@ -98,7 +98,7 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content code {
-  font-family: 'Operator Mono';
+  font-family: 'FiraCode';
 }
 
 .article-content h1 {

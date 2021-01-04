@@ -107,14 +107,14 @@ export default {
 
 .mgt tr {
   height: 36px;
-  border: 1px solid var(--backColor);
+  border: 1px solid var(--colorOpc1);
   background-color: #fff;
   transition-duration: 0.4s;
   transition-property: padding;
 }
 
 .mgt tr:hover {
-  background-color: var(--backColor);
+  background-color: var(--colorOpc1);
 }
 
 .mgt tr:first-child {
@@ -139,7 +139,7 @@ export default {
 }
 
 .mgt .can-click:hover {
-  background-color: var(--backColor);
+  background-color: var(--colorOpc1);
   cursor: pointer;
 }
 
@@ -164,7 +164,7 @@ export default {
 .mgt-item-index {
   width: 50px;
   text-align: center;
-  border-right: 1px solid var(--backColor);
+  border-right: 1px solid var(--colorOpc1);
 }
 
 .mgt-item-index a {

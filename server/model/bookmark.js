@@ -1,4 +1,4 @@
-const mongoose = require('./db.js')
+const mongoose = require('mongoose')
 
 const BookMarkSchema = mongoose.Schema({
   user_id: {
@@ -11,14 +11,6 @@ const BookMarkSchema = mongoose.Schema({
   size: {
     type: String,
     enum: ['small', 'middle', 'wide', 'large']
-  },
-  prev_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null
-  },
-  next_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: null
   }
 })
 

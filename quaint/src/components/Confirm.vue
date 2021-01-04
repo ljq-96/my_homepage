@@ -87,7 +87,7 @@ export default {
   font-size: 20px;
   color: #4a4a4a;
   /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
-  background-color: var(--_backColor);
+  background-color: var(--colorOpc2);
 }
 
 .confirm p {
@@ -119,7 +119,7 @@ export default {
 }
 
 .confirm button.confirm-btn {
-  background-color: var(--backColor);
+  background-color: var(--colorOpc1);
 }
 
 .confirm-enter {

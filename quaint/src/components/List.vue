@@ -1,7 +1,7 @@
 <template>
   <div ref="i" class="list">
     <div class="list-title">{{ title }}</div>
-    <fluent-design v-slot="param" :width="1" :borderSize="60" :borderColor="'var(--color)'" :backColor="'var(--_backColor)'" :backSize="200">
+    <fluent-design v-slot="param" :width="1" :borderSize="60" :borderColor="'var(--color)'" :backColor="'var(--colorOpc2)'" :backSize="200">
       <fluent-design-item :param="param" v-for="item in data" :key="item.index">
         <a target="_blank" :href="item.link" @click="send(item.title)" class="item" :style="{ padding: `${gap}px 12px` }">
           <span v-if="item.index" class="list-index">{{ item.index + '.' }}</span>
@@ -87,6 +87,6 @@ export default {
   padding: 0 5px;
   font-size: 12px;
   border-radius: 2px;
-  background-color: var(--backColor);
+  background-color: var(--colorOpc1);
 }
 </style>

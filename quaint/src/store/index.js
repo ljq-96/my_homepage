@@ -1,7 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import request from '../network/request'
-import Color from '@/common/color'
+import chroma from 'chroma-js'
+
+console.log(chroma('white').luminance(0.5))
 
 Vue.use(Vuex)
 
@@ -23,13 +25,16 @@ export default new Vuex.Store({
       state.user = data
     },
     setColor(state, color) {
-      const themeColor = new Color(color)
-      state.color.c1 = color
-      state.color.c2 = themeColor.opacity(0.2)
-      state.color.c3 = themeColor.opacity(0.06)
+      state.color = chroma(color)
+      state.color.c2 = chroma(color).alpha(0.2)
+      state.color.c3 = chroma(color).alpha(0.06)
       document.body.style.setProperty('--color', color)
-      document.body.style.setProperty('--_backColor', state.color.c2)
-      document.body.style.setProperty('--backColor', state.color.c3)
+      document.body.style.setProperty('--colorOpc1', state.color.alpha(0.06))
+      document.body.style.setProperty('--colorOpc2', state.color.alpha(0.2))
+      document.body.style.setProperty('--colorLum1', state.color.luminance(0.85))
+      document.body.style.setProperty('--colorLum2', state.color.luminance(0.7))
+      document.body.style.setProperty('--colorLum3', state.color.luminance(0.6))
+      document.body.style.setProperty('--colorLum4', state.color.luminance(0.2))
       window.localStorage.setItem('color', color)
     },
     setWallpaper(state, index) {

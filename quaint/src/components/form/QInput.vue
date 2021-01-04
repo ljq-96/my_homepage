@@ -1,13 +1,22 @@
 <template>
   <div class="q-input">
-    <input :class="$parent.error ? 'error' : ''" :type="type" :value="value" @input="onInput" @blur="onBlur" v-bind="$attrs" />
+    <slot name="left"></slot>
+    <input
+      :class="$parent.error ? 'error' : ''"
+      :type="type"
+      :value="value"
+      @input="onInput"
+      @blur="onBlur"
+      v-bind="$attrs"
+    />
+    <slot name="right"></slot>
   </div>
 </template>
 
 <script>
 export default {
   inheritAttrs: false,
-  inject: ['form'],
+  // inject: ['form'],
   props: {
     value: {
       type: String,
@@ -31,32 +40,49 @@ export default {
 </script>
 
 <style scoped>
-.q-input,
-input {
-  width: 100%;
+.q-input {
+  display: flex;
 }
 
-input {
+.q-input input {
   height: 36px;
   padding: 0 10px;
   font-family: FiraCode;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  border-radius: 4px;
+  border: 1px solid var(--colorLum2);
+  border-radius: 2px;
   background: transparent;
   outline: none;
   transition: 0.4s;
 }
 
-input:focus {
-  border-color:rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+.q-input input:focus {
+  border-color: var(--colorLum2);
+  box-shadow: 0 0 0 2px var(--colorLum1);
 }
 
-input.error {
+.q-input input.error {
   border-color: #ff7043;
 }
 
-input.error:focus {
+.q-input input.error:focus {
   box-shadow: 0 0 6px #ff7043;
+}
+
+.q-input :last-child:not(input) {
+  height: 36px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  margin-left: -1px;
+  cursor: pointer;
+}
+
+.q-input :first-child:not(input) {
+  position: relative;
+  height: 36px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-right: -1px;
+  z-index: 10;
+  cursor: pointer;
 }
 </style>

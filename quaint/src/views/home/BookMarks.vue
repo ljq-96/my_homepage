@@ -22,8 +22,11 @@
         <translate></translate>
       </fluent-design-item>
     </div>
-    <div class="caption" v-if="$store.state.token">Bookmarks <span class="iconfont"></span></div>
+    <div class="caption" v-if="$store.state.token">
+      Bookmarks <span class="iconfont"></span>
+    </div>
     <draggable
+      v-model="bookMarks"
       animation="400"
       :filter="'.add'"
       class="bookmarks"
@@ -56,16 +59,22 @@
 </template>
 
 <script>
-import Icon from '../../components/icon'
+import Icon from './icon'
 import AddBtn from './tools/AddBtn'
 import FluentDesign from '../../components/FluentDesign'
 import FluentDesignItem from '../../components/FluentDesignItem'
-import IconMenu from '../../components/IconMenu'
+import IconMenu from './IconMenu'
 import ToDo from './tools/ToDo'
 import Weather from './tools/Weather'
 import Translate from './tools/Translate'
 import RegExp from '@/views/home/tools/RegExp'
 import draggable from 'vuedraggable'
+import {
+  sortBookmark,
+  getBookmark,
+  updateBookmark,
+  deleteBookmark
+} from '../../network/bookmark'
 export default {
   components: {
     Icon,
@@ -93,18 +102,6 @@ export default {
     }
   },
   methods: {
-    // 获取书签
-    getBookmarks() {
-      if (this.$store.state.token) {
-        this.$request({
-          url: '/bookmark'
-        }).then(res => {
-          if (res.code === 200) {
-            this.bookMarks = res.bookmarks
-          }
-        })
-      }
-    },
     // 打开菜单
     openMenu(idx, e) {
       this.menuDisplay = true
@@ -119,16 +116,12 @@ export default {
       this.menuDisplay = false
       if (this.currentIndex !== -1) {
         const { _id, size, url, title, icon } = this.currentIcon
-        this.$request({
-          url: '/bookmark/update',
-          method: 'post',
-          data: {
-            id: _id,
-            info: { size, url, title, icon }
-          }
+        updateBookmark({
+          id: _id,
+          info: { size, url, title, icon }
         }).then(res => {
-          if (res.code === 200) {
-            this.$set(this.bookMarks, this.currentIndex, this.currentIcon)
+          if (res.ok === 1) {
+            this.$set(this.bookMarks, this.currentIndex, res.data)
             this.$notice({
               type: 'success',
               title: ` 图标 “${title}” 修改成功`,
@@ -146,19 +139,16 @@ export default {
     },
     // 添加书签
     addBookMark() {
-      this.$request({
-        url: '/bookmark/update',
-        method: 'post',
-        data: {
-          info: {
-            title: '',
-            icon: '',
-            size: 'middle'
-          }
+      updateBookmark({
+        info: {
+          title: '右击修改此书签',
+          icon: '',
+          url: '',
+          size: 'middle'
         }
       }).then(res => {
-        if (res.code === 200) {
-          this.bookMarks.push(res.newDoc)
+        if (res.ok === 1) {
+          this.bookMarks.push(res.data)
           this.$notice({
             type: 'success',
             title: 'Success',
@@ -169,14 +159,8 @@ export default {
     },
     // 删除书签
     delItem() {
-      this.$request({
-        url: '/bookmark/del',
-        method: 'post',
-        data: {
-          id: this.currentIcon._id
-        }
-      }).then(res => {
-        if (res.code === 200) {
+      deleteBookmark({ id: this.currentIcon._id }).then(res => {
+        if (res.ok === 1) {
           this.bookMarks.splice(this.currentIndex, 1)
           this.currentIndex = -1
           this.currentIcon = {}
@@ -189,35 +173,30 @@ export default {
         }
       })
     },
-    onStart(e) {
+    onStart() {
       this.isDrag = true
     },
     onEnd(data) {
       this.isDrag = false
       const { oldIndex, newIndex } = data
-      let action = 'moveAfter'
-      if (oldIndex !== newIndex) {
-        if (oldIndex > newIndex) {
-          action = 'moveBefore'
+      const bookmarks = this.bookMarks.map(item => item._id)
+      sortBookmark({ bookmarks }).then(res => {
+        if (res.ok === 1) {
+          this.$notice({
+            type: 'success',
+            title: 'Success',
+            message: res.message
+          })
         }
-        this.$request({
-          url: '/bookmark/sort',
-          method: 'post',
-          data: {
-            action,
-            _id: this.bookMarks[oldIndex]._id,
-            target_id: this.bookMarks[newIndex]._id
-          }
-        }).then(res => {
-          if (res.code === 200) {
-            this.getBookmarks()
-          }
-        })
-      }
+      })
     }
   },
   created() {
-    this.getBookmarks()
+    getBookmark().then(res => {
+      if (res.ok === 1) {
+        this.bookMarks = res.data
+      }
+    })
   }
 }
 </script>
