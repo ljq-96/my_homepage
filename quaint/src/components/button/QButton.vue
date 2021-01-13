@@ -41,24 +41,26 @@ export default {
 
 .q-button-primary {
   color: #fff;
-  border-color: var(--colorLum4);
+  border-color: var(--colorLum5);
   background-color: var(--colorLum4);
 }
 
 .q-button-primary.is-plain {
   color: #7a7a7a;
+  border-color: var(--colorLum2);
   background-color: #fff;
 }
 
 .q-button-primary:focus {
   color: #fff;
-  background-color: var(--colorLum1);
-  border-color: var(--colorLum2);
-  box-shadow: 0 0 0 2px var(--colorLum1);
+  background-color: var(--colorLum4);
+  border-color: var(--colorLum4);
+  box-shadow: 0 0 0 2px var(--colorLum3);
 }
 
 .q-button-primary:hover {
-  background-color: var(--colorLum1);
+  color: #fff;
+  background-color: var(--colorLum4);
 }
 
 .q-button-success {

@@ -21,9 +21,8 @@
       <div class="new-group-wrap">
         <div class="new-group-btn">
           <q-button-group>
-            <q-button type="success" plain>全部展开</q-button>
-            <q-button type="danger" plain>全部闭合</q-button>
-            <q-button>aaaa</q-button>
+            <q-button type="primary" plain>全部展开</q-button>
+            <q-button type="primary" plain>全部闭合</q-button>
           </q-button-group>
           <q-button-group>
             <q-button
@@ -202,8 +201,6 @@ export default {
 .in-catalog-wrap {
   height: 100%;
   padding: 10px;
-  /* border: 1px solid var(--colorOpc2); */
-  /* box-shadow: 0 0 5px var(--colorOpc1); */
   background-color: #fff;
   overflow-y: auto;
   overflow-x: hidden;

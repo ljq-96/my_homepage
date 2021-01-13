@@ -26,7 +26,7 @@
           <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
           <catalog-image
             class="catalog-image"
-            :color="$store.state.color"
+            :color="$store.state.color.css()"
           ></catalog-image>
         </div>
         <article-item
@@ -74,6 +74,7 @@ import markdown from '@/common/markdown'
 import CatalogImage from '@/components/svgimage/1'
 import CatalogItem from '../management/BlogCatalog/CatalogItem'
 import { getCatalogIn } from '../../network/catalog'
+import { getBlogList,getBlogTags } from '../../network/blog'
 export default {
   components: {
     HeadVue,
@@ -87,8 +88,9 @@ export default {
   },
   data() {
     return {
-      page: 1,
-      tag: '',
+      pagenumber: 1,
+      pagesize: 10,
+      tag: this.$route.query.tag,
       articles: [],
       sticky: [],
       tags: [],
@@ -97,30 +99,24 @@ export default {
   },
   methods: {
     loadMore() {
-      this.page++
+      this.pagenumber++
       this.getArticles()
     },
     setTag(tag) {
       this.$router.push({ path: '/quaint/blog', query: { tag: tag } })
-      this.tag = this.$route.query.tag
-      this.articles.length = 0
-      this.getArticles()
-      window.scrollTo(0, window.innerHeight)
     },
     getArticles() {
-      this.$request({
-        url: '/articles',
-        params: {
-          page: this.page,
-          tag: this.tag
-        }
+      getBlogList({
+        pagenumber: this.pagenumber,
+        pagesize: this.pagesize,
+        tag: this.tag
       }).then(res => {
-        if (res.code === 200) {
-          res.articles.forEach(item => {
-            const { _id, tags, title, time } = item
-            const truncate = markdown.render(item.truncate)
-            this.articles.push({ _id, tags, title, time, truncate })
+        if (res.ok) {
+          const blogs = res.data.map(item => {
+            item.truncate = markdown.render(item.truncate)
+            return item
           })
+          this.articles.push(...blogs)
         }
       })
     },
@@ -129,20 +125,22 @@ export default {
     }
   },
   created() {
-    this.tag = this.$route.query.tag
     this.getArticles()
-    this.$request({
-      url: '/sticky'
-    }).then(res => {
-      if (res.code === 200) {
-        this.sticky = res.articles
+    getBlogList({sticky: true}).then(res => {
+      if (res.ok) {
+        this.sticky = res.data
       }
     })
-    this.$request({
-      url: '/tag'
-    }).then(res => {
-      if (res.code === 200) {
-        this.tags = res.tags
+    // this.$request({
+    //   url: '/tag'
+    // }).then(res => {
+    //   if (res.code === 200) {
+    //     this.tags = res.tags
+    //   }
+    // })
+    getBlogTags().then(res => {
+      if (res.ok) {
+        
       }
     })
     getCatalogIn().then(res => {
@@ -150,6 +148,13 @@ export default {
         this.inCatalog = res.data
       }
     })
+  },
+  watch: {
+    $route() {
+      this.tag = this.$route.query.tag
+      this.articles.length = 0
+      this.getArticles()
+    }
   }
 }
 </script>

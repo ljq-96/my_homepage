@@ -34,7 +34,8 @@ export default new Vuex.Store({
       document.body.style.setProperty('--colorLum1', state.color.luminance(0.85))
       document.body.style.setProperty('--colorLum2', state.color.luminance(0.7))
       document.body.style.setProperty('--colorLum3', state.color.luminance(0.6))
-      document.body.style.setProperty('--colorLum4', state.color.luminance(0.2))
+      document.body.style.setProperty('--colorLum4', state.color.luminance(0.3))
+      document.body.style.setProperty('--colorLum5', state.color.luminance(0.2))
       window.localStorage.setItem('color', color)
     },
     setWallpaper(state, index) {

@@ -115,43 +115,43 @@ router.get('/translate', async (req, res) => {
   })
 })
 
-router.get('/articles', function (req, res) {
-  const pageSize = req.query.page ? req.query.page : 1
-  const limit = 8
-  const filter = req.query.tag ? { tags: req.query.tag } : {}
-  const token = req.headers.authorization
-  const user = jwt.verify(token, 'quaint')
-  filter.type = 'DOC'
-  filter.user_id = user.id
-  Blog.find(filter)
-    .sort({ time: -1 })
-    .limit(limit)
-    .skip((pageSize - 1) * limit)
-    .then(value => {
-      const articles = []
-      value.forEach(item => {
-        const { title, tags, time, truncate, _id } = item
-        articles.push({ title, tags, time, truncate, time, _id })
-      })
-      res.status(200).send({
-        code: 200,
-        articles
-      })
-    })
-})
+// router.get('/articles', function (req, res) {
+//   const pageSize = req.query.page ? req.query.page : 1
+//   const limit = 8
+//   const filter = req.query.tag ? { tags: req.query.tag } : {}
+//   const token = req.headers.authorization
+//   const user = jwt.verify(token, 'quaint')
+//   filter.type = 'DOC'
+//   filter.user_id = user.id
+//   Blog.find(filter)
+//     .sort({ time: -1 })
+//     .limit(limit)
+//     .skip((pageSize - 1) * limit)
+//     .then(value => {
+//       const articles = []
+//       value.forEach(item => {
+//         const { title, tags, time, truncate, _id } = item
+//         articles.push({ title, tags, time, truncate, time, _id })
+//       })
+//       res.status(200).send({
+//         code: 200,
+//         articles
+//       })
+//     })
+// })
 
-router.get('/sticky', (req, res) => {
-  const token = req.headers.authorization
-  if (token) {
-    const user = jwt.verify(token, 'quaint')
-    Blog.find({ sticky: true, user_id: user.id, type: 'DOC' }).then(value =>
-      res.status(200).send({
-        code: 200,
-        articles: value
-      })
-    )
-  }
-})
+// router.get('/sticky', (req, res) => {
+//   const token = req.headers.authorization
+//   if (token) {
+//     const user = jwt.verify(token, 'quaint')
+//     Blog.find({ sticky: true, user_id: user.id, type: 'DOC' }).then(value =>
+//       res.status(200).send({
+//         code: 200,
+//         articles: value
+//       })
+//     )
+//   }
+// })
 
 router.get('/article/:name', function (req, res) {
   const token = req.headers.authorization
