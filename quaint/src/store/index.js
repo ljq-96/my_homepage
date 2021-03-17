@@ -11,7 +11,7 @@ export default new Vuex.Store({
   state: {
     token: window.localStorage.getItem('token') || '',
     user: '',
-    color: {},
+    color: chroma('red'),
     wallpaper: window.localStorage.getItem('wallpaper') || 0,
     onSetting: false,
     isPageDown: false
@@ -25,6 +25,7 @@ export default new Vuex.Store({
       state.user = data
     },
     setColor(state, color) {
+      console.log(color);
       state.color = chroma(color)
       state.color.c2 = chroma(color).alpha(0.2)
       state.color.c3 = chroma(color).alpha(0.06)

@@ -1,4 +1,6 @@
 const express = require('express')
+const fs = require('fs')
+const formidable = require('formidable')
 const userModel = require('../model/user')
 const blogModel = require('../model/blog')
 const router = express.Router()
@@ -6,29 +8,29 @@ const router = express.Router()
 // 查询列表
 router.get('/', async (req, res) => {
   const { token, query } = req
-  const { pagesize, pagenumber, tag } = query
-  delete query.pagenumber
-  delete query.pagesize
-  delete query.tag
+  const { pageSize, currentPage, tag, ...queryFilter } = query
   const filters = {
     user_id: token.id,
     type: 'DOC',
-    ...query
+    ...queryFilter
   }
   if (tag) {
     filters.tags = { $elemMatch: { $eq: tag } }
   }
   const blogs = await blogModel
-    .find(filters, { content: 0, in_catalog: 0 })
+    .find(filters, { in_catalog: 0 })
     .sort({ create_time: -1 })
-    .skip((pagenumber - 1) * pagesize)
-    .limit(Number(pagesize))
+    .skip((currentPage - 1) * pageSize)
+    .limit(Number(pageSize))
+  const total = await blogModel.find(filters).countDocuments()
   res.status(200).json({
     ok: 1,
-    data: blogs
+    data: blogs,
+    total
   })
 })
 
+// 获取所有标签
 router.get('/tags', async (req, res) => {
   const { token } = req
   const result = []
@@ -38,23 +40,26 @@ router.get('/tags', async (req, res) => {
   )
   all.forEach(i => {
     i.tags.forEach(j => {
-      
-      result.j = result.j
+      const c = result.find(t => t.name === j)
+      if (c) {
+        c.value++
+      } else {
+        result.push({ name: j, value: 1 })
+      }
     })
+  })
+  result.sort((a, b) => b.value - a.value)
+  res.status(200).json({
+    ok: 1,
+    data: result
   })
 })
 
 // 新增
 router.post('/create', async (req, res) => {
   const { token } = req
-  const { title, tags, content, truncate, type, in_catalog } = req.body
   const blog = await blogModel.create({
-    title,
-    tags,
-    content,
-    truncate,
-    type,
-    in_catalog,
+    ...req.body,
     user_id: token.id
   })
   res.status(200).json({
@@ -66,10 +71,10 @@ router.post('/create', async (req, res) => {
 // 删除
 router.post('/delete', async (req, res) => {
   const { token } = req
-  const { id } = req.body
+  const { _id } = req.body
   const catalog = (await userModel.findById(token.id)).catalog
   await tree(catalog)
-  await blogModel.deleteOne({ _id: id, user_id: token.id })
+  await blogModel.deleteOne({ _id: _id, user_id: token.id })
   res.status(200).json({
     ok: 1,
     message: '删除成功'
@@ -78,7 +83,7 @@ router.post('/delete', async (req, res) => {
   // 将目录中的子级移出目录
   async function tree(arr) {
     for (let i = 0; i < arr.length; i++) {
-      if (String(arr[i].blog) === id) {
+      if (String(arr[i].blog) === _id) {
         const current = JSON.stringify(arr[i].children)
         const reg = /"blog":"(.*?)"/g
         let temp
@@ -93,6 +98,67 @@ router.post('/delete', async (req, res) => {
       }
     }
   }
+})
+
+// 更新
+router.post('/update', async (req, res) => {
+  const { _id, info } = req.body
+  const data = await blogModel.updateOne({ _id }, info, { new: true })
+  res.status(200).json({
+    ok: 1,
+    msg: '更新成功',
+    data
+  })
+})
+
+// 读文件
+router.post('/read', async (req, res) => {
+  const form = new formidable.IncomingForm()
+  form.uploadDir = './temp'
+  form.keepExtensions = true
+  form.parse(req)
+  form.on('file', (name, file) => {
+    fs.readFile(file.path, (err, data) => {
+      if (!err) {
+        res.status(200).json({
+          ok: 1,
+          data: data.toString()
+        })
+        fs.unlink(file.path, function (err) {
+          if (err) throw err
+        })
+      }
+    })
+  })
+})
+
+// 判断标题是否重复
+router.post('/test', (req, res) => {
+  const { token } = req
+  const { title } = req.body
+  blogModel.findOne({ user_id: token.id, title }, (err, doc) => {
+    if (doc) {
+      res.status(200).json({
+        ok: 0,
+        message: '标题重复'
+      })
+    } else {
+      res.status(200).json({
+        ok: 1,
+        message: '标题可用'
+      })
+    }
+  })
+})
+
+// 获取样式
+router.get('/style', async (req, res) => {
+  const { token } = req
+  const style = fs.readFileSync('./common/blog-style.css')
+  res.status(200).json({
+    ok: 1,
+    data: style.toString()
+  })
 })
 
 module.exports = router

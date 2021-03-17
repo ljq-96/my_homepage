@@ -8,7 +8,6 @@
 <script>
 import { Particle, Space, Desert } from '../common/canvas'
 import { mapState } from 'vuex'
-import ColorCalc from '../common/color'
 import chroma from 'chroma-js'
 let timer
 export default {

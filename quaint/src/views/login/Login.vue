@@ -1,25 +1,32 @@
 <template>
-  <div class="login">
-    <q-form class="login-form" :model="userInfo" :rules="rules" labelWidth="50px" ref="form">
-      <div class="wellcome">
-        Wellcome
-      </div>
-      <q-form-item class="form-item" label="用户名" prop="username">
-        <q-input v-model="userInfo.username" type="text" placeholder="username" />
-      </q-form-item>
-      <q-form-item class="form-item" label="密码" prop="password">
-        <q-input v-model="userInfo.password" type="password" placeholder="password" />
-      </q-form-item>
-      <q-form-item class="form-item">
-        <button @click="login" v-if="isLogin">登录</button>
-        <button @click="register" v-if="!isLogin">注册</button>
-      </q-form-item>
-      <div class="form-bottom">
-        <div class="toggle" @click="isLogin = !isLogin">{{ tips }}</div>
-      </div>
-    </q-form>
-    <canvas-wallpaper class="login-wallpaper"></canvas-wallpaper>
-  </div>
+  <q-form
+    class="login-form"
+    :model="userInfo"
+    :rules="rules"
+    labelWidth="50px"
+    ref="form"
+  >
+    <div class="wellcome">
+      Wellcome
+    </div>
+    <q-form-item class="form-item" label="用户名" prop="username">
+      <q-input v-model="userInfo.username" type="text" placeholder="username" />
+    </q-form-item>
+    <q-form-item class="form-item" label="密码" prop="password">
+      <q-input
+        v-model="userInfo.password"
+        type="password"
+        placeholder="password"
+      />
+    </q-form-item>
+    <q-form-item class="form-item" label=" ">
+      <QButton type="success" @click="login" v-if="isLogin">登录</QButton>
+      <QButton type="warning" @click="register" v-if="!isLogin">注册</QButton>
+    </q-form-item>
+    <q-form-item class="form-item" label=" ">
+      <div class="toggle" @click="isLogin = !isLogin">{{ tips }}</div>
+    </q-form-item>
+  </q-form>
 </template>
 
 <script>
@@ -29,6 +36,7 @@ import QInput from '@/components/form/QInput'
 import CanvasWallpaper from '@/components/CanvasWallpaper'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
+import QButton from '../../components/button/QButton'
 export default {
   components: {
     FluentDesign,
@@ -36,7 +44,8 @@ export default {
     CanvasWallpaper,
     QForm,
     QFormItem,
-    QInput
+    QInput,
+    QButton
   },
   data() {
     return {
@@ -121,13 +130,6 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  position: relative;
-  height: calc(100vh - 80px);
-  margin: 40px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
 .wellcome {
   font-size: 24px;
   text-align: center;
@@ -136,19 +138,14 @@ export default {
 
 .login-form {
   position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   padding: 20px 40px;
-  width: 400px;
-  right: 0;
-  top: 0;
-  bottom: -1px;
+  width: 350px;
+  background-color: #fff;
+  border-radius: 5px;
   z-index: 10;
-  backdrop-filter: blur(5px);
-  background-color: rgba(240, 240, 240, 0.8);
-  box-shadow: -5px 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.login .login-form input {
-  border-color: rgba(0, 0, 0, 0.4);
 }
 
 .login-wallpaper {
@@ -157,7 +154,7 @@ export default {
 }
 
 .form-item {
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .form-item > div {
@@ -168,36 +165,7 @@ export default {
   margin-top: 40px;
 }
 
-.login input,
-.login button {
-  width: 100%;
-  height: 40px;
-  background-color: transparent;
-  padding: 0 10px;
-  /* border: 2px solid rgba(0, 0, 0, 0.1); */
-  border: none;
-  border-radius: 0;
-  background-color: #f5f5f5;
-  outline: none;
-  font-family: FiraCode;
-}
-
-.login input {
-  border-left: 2px solid var(--color);
-}
-
-.login button {
-  color: #fff;
-  background-color: var(--color);
-}
-
-.login .form-bottom {
-  display: flex;
-  justify-content: space-between;
-  color: #d84315;
-}
-
-.login .toggle {
+.login-form .toggle {
   color: #3e62ad;
   cursor: pointer;
 }

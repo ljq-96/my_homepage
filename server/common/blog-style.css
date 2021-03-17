@@ -5,23 +5,13 @@
 }
 
 .article-content {
-  width: 1180px;
+  width: 900px;
   margin: 20px auto;
+  line-height: 1.5em;
+  color: #4a4a4a;
 }
 
-@media (max-width: 1180px) {
-  .article-content {
-    width: 900px;
-  }
-}
-
-@media (max-width: 970px) {
-  .article-content {
-    width: 800px;
-  }
-}
-
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .article-content {
     width: calc(100vw - 20px);
   }
@@ -31,13 +21,13 @@
   display: block;
   font-size: 0;
   max-width: 100%;
-  margin: 10px 0;
+  margin: 10px auto;
 }
 
 .article-content .green {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
   border: 1px solid #e1eed5;
   border-radius: 5px;
   color: #52c41a;
@@ -47,7 +37,7 @@
 .article-content .blue {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
   border: 1px solid #d0e4ee;
   border-radius: 5px;
   color: #178fff;
@@ -57,7 +47,7 @@
 .article-content .yellow {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
   border: 1px solid #f6efd3;
   border-radius: 5px;
   color: #fbad15;
@@ -67,7 +57,7 @@
 .article-content .red {
   margin: 10px 0;
   padding: 10px;
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
   border: 1px solid #f6e0de;
   border-radius: 5px;
   color: #fd4e4f;
@@ -119,7 +109,7 @@ input[type='checkbox']:checked::before {
 .article-content a {
   color: #4078f2;
   word-break: break-all;
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
 }
 
 .article-content a:hover {
@@ -127,7 +117,7 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content code {
-  font-family: 'Operator Mono';
+  font-family: 'Fira Code';
 }
 
 .article-content h1 {

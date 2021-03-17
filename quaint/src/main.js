@@ -33,12 +33,8 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title
     next()
   }
-  if (to.meta.requireLogin) {
-    if (store.state.token) {
-      next()
-    } else {
-      next({ path: '/login' })
-    }
+  if (to.meta.needLogin && !store.state.token) {
+    next({ path: '/login' })
   } else {
     next()
   }

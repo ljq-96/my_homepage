@@ -25,6 +25,9 @@ export default {}
 .q-button-group > .q-button:first-child {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+}
+
+.q-button-group > .q-button:not(.is-plain):first-child {
   border-right-color: rgba(255, 255, 255, 0.4);
 }
 
@@ -34,8 +37,15 @@ export default {}
   border-left-color: rgba(255, 255, 255, 0.4);
 }
 
+.q-button-group > .q-button:not(.is-plain):last-child {
+  border-right-color: rgba(255, 255, 255, 0.4);
+}
+
 .q-button-group > .q-button:not(:first-child):not(:last-child) {
   border-radius: 0;
+}
+
+.q-button-group > .q-button:not(.is-plain):not(:first-child):not(:last-child) {
   border-right-color: rgba(255, 255, 255, 0.4);
   border-left-color: rgba(255, 255, 255, 0.4);
 }

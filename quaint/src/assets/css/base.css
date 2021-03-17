@@ -16,7 +16,7 @@
   src: url('../font/FiraCode.ttf');
 }
 
-@media (min-width: 1920px) {
+/* @media (min-width: 1920px) {
   .layout {
     width: 1572px;
   }
@@ -32,9 +32,9 @@
   .layout {
     width: 1308px;
   }
-}
+} */
 
-@media (max-width: 1280px) {
+@media (min-width: 1280px) {
   .layout {
     width: 1176px;
   }
@@ -90,8 +90,8 @@ body {
   font-size: 14px;
   font-family: Ubuntu;
   line-height: 1.6em;
-  /* background-color: #f5f5f5; */
-  background-color: var(--colorOpc1);
+  background-color: #f5f5f5;
+  /* background-color: var(--colorOpc1); */
   /* background-color: rgba(255,255,255,0.6); */
 }
 

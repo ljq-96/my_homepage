@@ -1,49 +1,59 @@
 <template>
-  <div @click.stop @mousewheel.prevent class="confirm-wrap">
+  <div>
+    <transition name="confirm-wrap">
+      <div
+        v-show="visible"
+        @click.stop="cancel"
+        @mousewheel.prevent
+        class="confirm-wrap"
+      ></div>
+    </transition>
     <transition name="confirm">
-      <fluent-design v-show="visible" v-slot="param" :borderColor="'rgba(0,0,0,0.4)'" :borderSize="50" class="confirm">
-        <fluent-design-item :param="param" :isRotate="false">
-          <div class="confirm-content">
-            <p>{{ title }}</p>
-            <div class="btn-group">
-              <fluent-design-item :param="param"
-                ><button class="confirm-btn" @click="confirm">确定</button></fluent-design-item
-              >
-              <fluent-design-item :param="param"><button @click="cancel">取消</button></fluent-design-item>
-            </div>
-          </div>
-        </fluent-design-item>
-      </fluent-design>
+      <div v-show="visible" class="confirm">
+        <div class="confirm-title">{{ title }}</div>
+        <div class="confirm-content" v-show="message">{{ message }}</div>
+        <div class="btn-group">
+          <q-button plain @click="cancel">取消</q-button>
+          <q-button class="confirm-btn" @click="confirm">
+            确定
+          </q-button>
+        </div>
+      </div>
     </transition>
   </div>
 </template>
 
 <script>
-import FluentDesign from './FluentDesign'
-import FluentDesignItem from './FluentDesignItem'
+import QButton from './button/QButton'
+import QButtonGroup from './button/QButtonGroup'
 export default {
   components: {
-    FluentDesign,
-    FluentDesignItem
+    QButton,
+    QButtonGroup
   },
   props: {
     title: {
       type: String,
-      default: 'alert'
+      default: '警告'
+    },
+    message: {
+      type: String
     }
   },
   data() {
     return {
-      visible: false
+      visible: false,
+      tFn: null,
+      fFn: null
     }
   },
   methods: {
     confirm() {
-      this.$emit('confirm')
+      this.tFn && this.tFn()
       this.remove()
     },
     cancel() {
-      this.$emit('cancel')
+      this.fFn && this.fFn()
       this.remove()
     },
     remove() {
@@ -54,7 +64,14 @@ export default {
       this.$el.parentNode.removeChild(this.$el)
       this.$destroy()
       this.$el.removeEventListener('transitionend', this.removeEl)
-
+    },
+    then(fn) {
+      this.tFn = fn
+      return this
+    },
+    catch(fn) {
+      this.fFn = fn
+      return this
     }
   },
   mounted() {
@@ -63,78 +80,83 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .confirm-wrap {
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.4);
+  /* backdrop-filter: blur(5px); */
   z-index: 999;
-}
-
-.confirm {
-  width: 300px;
-  margin: 50px auto;
-  /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); */
   transition: 0.4s;
 }
 
-.confirm .confirm-content {
-  padding: 20px;
-  font-size: 20px;
-  color: #4a4a4a;
-  /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); */
-  background-color: var(--colorOpc2);
+.confirm {
+  position: absolute;
+  width: 300px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -100%);
+  background-color: #fff;
+  border-radius: 4px;
+  transition: 0.4s;
+  z-index: 1000;
 }
 
-.confirm p {
-  margin-bottom: 20px;
+.confirm .confirm-title {
+  font-weight: bold;
+  padding: 10px;
+  border-bottom: 1px solid #e8eaec;
+}
+
+.confirm .confirm-content {
+  padding: 10px;
+}
+
+.confirm .q-button {
+  margin-left: 10px;
 }
 
 .confirm .btn-group {
-  display: flex;
-}
-
-.confirm .btn-group > div {
-  margin-right: 10px;
-}
-
-.confirm button {
-  width: 50px;
-  height: 25px;
-  border: none;
-  outline: none;
-  border-radius: 0;
-  color: #fff;
-  font-size: 12px;
-  color: #4a4a4a;
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.confirm button:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.confirm button.confirm-btn {
-  background-color: var(--colorOpc1);
+  padding: 10px;
+  text-align: right;
 }
 
 .confirm-enter {
-  transform: rotateX(90deg);
+  opacity: 0;
+  transform: translate(-50%, -150%);
 }
 
 .confirm-enter-to {
-  transform: rotateX(0);
+  opacity: 1;
+  transform: translate(-50%, -100%);
 }
 
 .confirm-leave {
-  transform: rotateX(0);
+  opacity: 1;
+  transform: translate(-50%, -100%);
 }
 
 .confirm-leave-to {
-  transform: rotateX(90deg);
+  opacity: 0;
+  transform: translate(-50%, -150%);
+}
+
+.confirm-wrap-enter {
+  opacity: 0;
+}
+
+.confirm-wrap-enter-to {
+  opacity: 1;
+}
+
+.confirm-wrap-leave {
+  opacity: 1;
+}
+
+.confirm-wrap-leave-to {
+  opacity: 0;
 }
 </style>

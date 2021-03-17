@@ -1,68 +1,186 @@
 <template>
   <div class="chart">
-    <tag-chart class="chart-item" :list="tags" @addFilters="addFilters"></tag-chart>
+    <tag-chart
+      class="chart-item"
+      :list="tags"
+      @addFilters="addFilters"
+    ></tag-chart>
     <div class="chart-group">
+      <words-chart
+        class="chart-item chart-words"
+        :list="words"
+        @addFilters="addFilters"
+      ></words-chart>
       <div class="chart-item chart-filters">
         <div class="chart-title">Filters</div>
         <div class="chart-filters-container scroll-bar">
-          <div class="chart-filters-item" v-for="(item, index) in articleFilters" :key="index">
-            <span>{{ item.key }}: {{ item.name }}</span>
-            <span class="iconfont" @click="removeFilter(index)">&#xe7ff;</span>
-          </div>
-          <div v-show="articleFilters.length === 0" class="chart-filters-item">
-            <span>filter: None</span>
-            <span class="iconfont">&#xe7fd;</span>
-          </div>
+          <q-tag
+            closable
+            @close="removeFilter(index)"
+            v-for="(item, index) in articleFilters"
+            :key="index"
+          >
+            {{ item.label }}: {{ item.name }}
+          </q-tag>
+          <q-tag v-show="articleFilters.length === 0">
+            filter: None
+          </q-tag>
         </div>
         <span>{{ articlesDisplay.length }}</span>
       </div>
-      <words-chart class="chart-item chart-words" :list="articles" @addFilters="addFilters"></words-chart>
     </div>
-    <time-chart class="chart-item" :list="articles" @addFilters="addFilters"></time-chart>
-    <div class="chart-item chart-article-list scroll-bar">
-      <mgt-list
-        :list="articlesDisplay"
-        :increase="0"
-        :isTime="false"
-        :isSticky="false"
-        :isTag="false"
-        @sort="sort"
-        @del="del"
-      ></mgt-list>
+    <time-chart
+      class="chart-item"
+      :list="time"
+      @addFilters="addFilters"
+    ></time-chart>
+    <div class="chart-item chart-article-list">
+      <q-table height="calc(50vh - 80px)" :dataSource="articlesDisplay" :columns="columns">
+        <template #action="{row}">
+          <q-button-group>
+            <q-button
+              plain
+              @click="
+                $router.push({
+                  path: '/quaint/article',
+                  query: { title: row.title }
+                })
+              "
+            >
+              <i class="iconfont icon-eye"></i>
+            </q-button>
+            <q-button plain @click="delArticle(row)">
+              <i class="iconfont icon-delete"></i>
+            </q-button>
+          </q-button-group>
+        </template>
+      </q-table>
     </div>
   </div>
 </template>
 
 <script>
-import request from '@/network/request.js'
+import QButton from '../../components/button/QButton'
+import QButtonGroup from '../../components/button/QButtonGroup'
+import QTable from '../../components/table/QTable'
+import QTag from '../../components/other/QTag'
 import TagChart from '@/views/management/charts/TagChart'
 import TimeChart from '@/views/management/charts/TimeChart'
 import WordsChart from '@/views/management/charts/WordsChart'
-import MgtList from '@/views/management/MgtList'
+import { getBlogTags, getBlogList, deleteBlog } from '../../network/blog'
 export default {
   components: {
+    QButtonGroup,
+    QButton,
+    QTable,
+    QTag,
     TagChart,
     TimeChart,
-    WordsChart,
-    MgtList
+    WordsChart
   },
   data() {
     return {
       tags: [],
       articles: [],
       articlesDisplay: [],
-      articleFilters: []
+      articleFilters: [],
+      columns: [
+        {
+          title: '#',
+          filter: ({ index }) => {
+            return index + 1
+          }
+        },
+        {
+          title: '标题',
+          key: 'title'
+        },
+        {
+          title: '操作',
+          key: 'action'
+        }
+      ]
     }
   },
   computed: {
     words() {
-      let n = 0
-      this.articles.forEach(item => (n += item.words))
-      return Math.ceil(n / 10000)
+      const arr = [
+        {
+          name: '0~2',
+          value: 0
+        },
+        {
+          name: '2~4',
+          value: 0
+        },
+        {
+          name: '4~6',
+          value: 0
+        },
+        {
+          name: '6~8',
+          value: 0
+        },
+        {
+          name: '8~10',
+          value: 0
+        },
+        {
+          name: '10~12',
+          value: 0
+        },
+        {
+          name: '12+',
+          value: 0
+        }
+      ]
+      this.articles.forEach(item => {
+        const i = Math.floor(item.content.length / 2000)
+        arr[i > 6 ? 6 : i].value++
+      })
+      return arr
+    },
+    time() {
+      const arr = []
+      if (this.articles.length) {
+        const first = new Date(this.articles[0].create_time)
+        const last = new Date(
+          this.articles[this.articles.length - 1].create_time
+        )
+        let year = last.getFullYear()
+        let month = last.getMonth() + 1
+        const m =
+          (first.getFullYear() - last.getFullYear()) * 12 +
+          (first.getMonth() - last.getMonth())
+
+        for (let i = 0; i <= m; i++) {
+          const name = [year, month].join('-')
+          arr.push({
+            name: name,
+            value: 0
+          })
+          if (month === 12) {
+            year++
+            month = 1
+          } else {
+            month++
+          }
+        }
+
+        this.articles.forEach(item => {
+          const time = new Date(item.create_time)
+          const month = [time.getFullYear(), time.getMonth() + 1].join('-')
+          const current = arr.find(i => i.name === month)
+
+          current.value++
+        })
+      }
+      return arr
     }
   },
   methods: {
     addFilters(data) {
+      console.log(data)
       if (data.key !== 'tags') {
         const i = this.articleFilters.findIndex(item => item.key === data.key)
         if (i !== -1) {
@@ -103,24 +221,50 @@ export default {
           this.articlesDisplay.splice(index, 1)
         }
       })
+    },
+    getData() {
+      getBlogList({ type: 'DOC' }).then(res => {
+        if (res.ok) {
+          this.articles = res.data.map(item => {
+            return {
+              ...item,
+              words: item.content.length
+            }
+          })
+          this.articlesDisplay = this.articles.slice(0)
+        }
+      })
+      getBlogTags().then(res => {
+        if (res.ok) {
+          this.tags = res.data
+        }
+      })
+    },
+    delArticle(row) {
+      this.$confirm({
+        message: `确定删除${row.title}吗?`
+      })
+        .then(() => {
+          deleteBlog({
+            _id: row._id
+          }).then(res => {
+            this.getData()
+            this.$notice({
+              type: 'success',
+              title: '删除成功'
+            })
+          })
+        })
+        .catch(() => {
+          this.$notice({
+            type: 'info',
+            title: '取消删除'
+          })
+        })
     }
   },
   created() {
-    request({
-      url: '/tag'
-    }).then(res => {
-      if (res.code === 200) {
-        this.tags = res.tags
-      }
-    })
-    request({
-      url: '/blog/management'
-    }).then(res => {
-      if (res.code === 200) {
-        this.articles = res.articles
-        this.articlesDisplay = this.articles.slice(0)
-      }
-    })
+    this.getData()
   },
   watch: {
     articleFilters() {
@@ -129,7 +273,9 @@ export default {
       while (i >= 0) {
         const filterObj = this.articleFilters[i]
         if (filterObj.key !== 'words') {
-          this.articlesDisplay = this.articlesDisplay.filter(item => item[filterObj.key].indexOf(filterObj.name) !== -1)
+          this.articlesDisplay = this.articlesDisplay.filter(
+            item => item[filterObj.key].indexOf(filterObj.name) !== -1
+          )
         } else {
           const arr = filterObj.name.replace(/\+?千字/, '').split('~')
           const min = arr[0]
@@ -183,15 +329,14 @@ export default {
 }
 
 .chart-group .chart-words {
-  /* width: calc(60% - 5px); */
   width: 100%;
-  height: calc(70% - 5px);
+  height: calc(100% - 85px);
 }
 
 .chart-group .chart-filters {
   position: relative;
   width: 100%;
-  height: calc(30% - 5px);
+  height: calc(75px);
 }
 
 .chart-filters-container {
@@ -214,30 +359,6 @@ export default {
   background-color: #fff;
 }
 
-.chart-filters-item {
-  display: inline-block;
-  height: 24px;
-  line-height: 24px;
-  padding-left: 12px;
-  margin-right: 10px;
-  font-size: 12px;
-  color: #fff;
-  border-radius: 13px;
-  background-color: var(--color);
-}
-
-.chart-filters-item:hover {
-  filter: brightness(130%);
-}
-
-.chart-filters-item span:last-child {
-  display: inline-block;
-  height: 26px;
-  width: 30px;
-  text-align: center;
-  cursor: pointer;
-}
-
 .chart-title {
   font-size: 18px;
 }
@@ -249,7 +370,6 @@ export default {
 }
 
 .chart-article-list {
-  overflow: auto;
   padding: 0;
 }
 </style>

@@ -1,88 +1,76 @@
 <template>
-  <div>
-    <head-vue>
-      <typing class="words" :text="title" slot="center"></typing>
-    </head-vue>
-    <div class="layout">
-      <div class="blog-catalog side" :class="{ close: !isBlogCatalog }">
+  <div class="layout">
+    <div class="blog-catalog side" :class="{ close: !isBlogCatalog }">
+      <div
+        class="sticky"
+        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+      >
+        <div class="side-title">目录</div>
         <div
-          class="sticky"
-          :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+          class="blog-catalog-btn iconfont"
+          @click="isBlogCatalog = !isBlogCatalog"
         >
-          <div class="side-title">目录</div>
-          <div
-            class="blog-catalog-btn iconfont"
-            @click="isBlogCatalog = !isBlogCatalog"
+          &#xe7ec;
+        </div>
+        <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
+      </div>
+    </div>
+    <div ref="article" class="article">
+      <div class="article-title">
+        <div class="suptitle">
+          <h1>{{ $route.query.title }}</h1>
+          <router-link :to="{ path: '/edit', query: { title: title } }">
+            <span class="iconfont">&#xe792;</span>
+          </router-link>
+        </div>
+        <div class="subtitle">
+          <span>{{ time | formatDate('YYYY-MM-DD') }}</span>
+          <router-link
+            v-for="(item, index) in tags"
+            :to="{ path: '/quaint/blog', query: { tag: item } }"
+            :key="index"
           >
-            &#xe7ec;
-          </div>
-          <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
+            #{{ item }}
+          </router-link>
         </div>
       </div>
-      <div ref="article" class="article">
-        <div class="article-title">
-          <div class="suptitle">
-            <h1>{{ title }}</h1>
-            <router-link :to="{ path: '/edit', query: { title: title } }">
-              <span class="iconfont">&#xe792;</span>
-            </router-link>
-          </div>
-          <div class="subtitle">
-            <span>{{ time | formatDate('YYYY-MM-DD, HH:mm:ss') }}</span>
-            <router-link
-              v-for="(item, index) in tags"
-              :to="{ path: '/quaint/blog', query: { tag: item } }"
-              :key="index"
-            >
-              #{{ item }}
-            </router-link>
-          </div>
-        </div>
-        <div class="article-content" v-html="content"></div>
-      </div>
-      <div class="side">
-        <calendar></calendar>
-        <article-catalog
-          class="article-catalog sticky"
-          :catalog="articleCatalog"
-          :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-        ></article-catalog>
-      </div>
+      <div class="article-content" v-html="content"></div>
+    </div>
+    <div class="side">
+      <calendar></calendar>
+      <article-catalog
+        class="article-catalog sticky"
+        :catalog="articleCatalog"
+        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+      ></article-catalog>
     </div>
   </div>
 </template>
 
 <script>
 import { debounce } from '@/common/utils'
-import HeadVue from '@/components/header/HeadVue.vue'
-import Typing from '@/components/header/Typing'
 import Calendar from '@/components/Calendar'
 import ArticleCatalog from '@/views/article/ArticleCatalog'
 import CatalogItem from '../management/BlogCatalog/CatalogItem'
 import { getCatalogIn } from '../../network/catalog'
+import { getBlogList } from '../../network/blog'
 import markdown from '@/common/markdown'
 
 export default {
   components: {
-    HeadVue,
     Calendar,
     CatalogItem,
     ArticleCatalog,
-    Typing
   },
   data() {
     return {
       content: '',
       tags: [],
+      title: this.$route.query.title,
       inCatalog: [],
       time: '',
       articleCatalog: {},
       isBlogCatalog: true
-    }
-  },
-  computed: {
-    title() {
-      return this.$route.query.title
     }
   },
   methods: {
@@ -119,7 +107,6 @@ export default {
       this.$nextTick(this.onScroll)
     },
     onScroll() {
-      const height = window.innerHeight
       const els = Array.from(document.querySelectorAll('[data-id]'))
       window.onscroll = debounce(e => {
         t(
@@ -133,7 +120,7 @@ export default {
             )
             .getAttribute('data-id')
         )
-        this.$nextTick(function() {
+        this.$nextTick(() => {
           const el = document.querySelector('.inview')
           if (el) {
             const elParent = el.offsetParent
@@ -144,7 +131,7 @@ export default {
             }
           }
         })
-      }, 500)
+      }, 200)
       const t = (arr, id) => {
         arr.forEach(item => {
           if (item.id === id) {
@@ -160,30 +147,24 @@ export default {
     }
   },
   watch: {
-    title() {
-      this.$request({
-        url: '/article/' + this.title
-      }).then(res => {
-        if (res.code === 200) {
-          this.content = markdown.render(res.article.content)
-          this.tags = res.article.tags
-          this.time = res.article.time
-          this.setCatalog()
-        }
-      })
+    $route: {
+      handler: function(to, from) {
+        getBlogList({
+          title: to.query.title
+        }).then(res => {
+          if (res.ok) {
+            const article = res.data[0]
+            this.content = markdown.render(article.content)
+            this.tags = article.tags
+            this.time = article.time
+            this.setCatalog()
+          }
+        })
+      },
+      immediate: true
     }
   },
   created() {
-    this.$request({
-      url: '/article/' + this.title
-    }).then(res => {
-      if (res.code === 200) {
-        this.content = markdown.render(res.article.content)
-        this.tags = res.article.tags
-        this.time = res.article.time
-        this.setCatalog()
-      }
-    })
     getCatalogIn().then(res => {
       if (res.ok) {
         this.inCatalog = res.data

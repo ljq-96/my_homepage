@@ -2,13 +2,22 @@
   <div class="footer">
     <div class="layout">
       <div class="logo">
-        <logo-svg :color1="color1" :color2="color2"></logo-svg>
+        <logo-svg
+          :color1="this.$store.state.color.css()"
+          :color2="this.$store.state.color.brighten(1).css()"
+        ></logo-svg>
         <p>Quaint</p>
       </div>
       <div class="list" v-for="(group, index) in collection" :key="index">
         <div class="list-title">{{ group.title }}</div>
         <div class="list-content">
-          <a v-for="item in group.data" :key="item.name" :href="item.url" traget="_blank">{{ item.name }}</a>
+          <a
+            v-for="item in group.data"
+            :key="item.name"
+            :href="item.url"
+            traget="_blank"
+            >{{ item.name }}</a
+          >
         </div>
       </div>
       <div class="saying">
@@ -27,7 +36,6 @@
 </template>
 
 <script>
-import Color from '@/common/color'
 import LogoSvg from '@/components/LogoSvg'
 export default {
   components: {
@@ -104,14 +112,6 @@ export default {
       bottom: -48
     }
   },
-  computed: {
-    color1() {
-      return new Color(this.$store.state.color.c1).heavy(20)
-    },
-    color2() {
-      return new Color(this.$store.state.color.c1).lighter(20)
-    }
-  },
   methods: {
     top() {
       window.scrollTo(0, 0)
@@ -119,7 +119,10 @@ export default {
   },
   mounted() {
     window.addEventListener('scroll', e => {
-      if (document.documentElement.clientHeight + window.pageYOffset >= document.body.scrollHeight - 150) {
+      if (
+        document.documentElement.clientHeight + window.pageYOffset >=
+        document.body.scrollHeight - 150
+      ) {
         this.isBottom = true
       } else if (window.pageYOffset < 56) {
         this.bottom = window.pageYOffset - 48

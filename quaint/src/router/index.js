@@ -26,7 +26,7 @@ const routes = [
         component: () => import('@/views/blog/Blog'),
         meta: {
           title: 'Blog',
-          requireLogin: true
+          needLogin: true
         }
       },
       {
@@ -34,7 +34,7 @@ const routes = [
         component: () => import('@/views/article/Article'),
         meta: {
           title: '文章详情',
-          requireLogin: true
+          needLogin: true
         }
       }
     ]
@@ -51,7 +51,7 @@ const routes = [
     component: () => import('@/views/management/Management'),
     meta: {
       title: '管理系统',
-      requireLogin: true
+      needLogin: true
     },
     children: [
       {
@@ -59,7 +59,7 @@ const routes = [
         component: () => import('@/views/management/MgtUser'),
         meta: {
           title: '用户信息',
-          requireLogin: true,
+          needLogin: true,
           idx: 1
         }
       },
@@ -68,7 +68,7 @@ const routes = [
         component: () => import('@/views/management/MgtChart'),
         meta: {
           title: '数据分析',
-          requireLogin: true,
+          needLogin: true,
           idx: 2
         }
       },
@@ -77,7 +77,7 @@ const routes = [
         component: () => import('@/views/management/ArticlesList'),
         meta: {
           title: '文章管理',
-          requireLogin: true,
+          needLogin: true,
           idx: 3
         }
       },
@@ -86,7 +86,7 @@ const routes = [
         component: () => import('@/views/management/BlogCatalog/BlogCatalog'),
         meta: {
           title: '编排目录',
-          requireLogin: true,
+          needLogin: true,
           idx: 4
         }
       },
@@ -96,7 +96,7 @@ const routes = [
         component: () => import('@/views/edit/Edit'),
         meta: {
           title: '新增文章',
-          requireLogin: true,
+          needLogin: true,
           idx: 5
         }
       }
@@ -107,7 +107,7 @@ const routes = [
     component: () => import('@/views/edit/Edit'),
     meta: {
       title: '编辑',
-      requireLogin: true
+      needLogin: true
     }
   }
 ]

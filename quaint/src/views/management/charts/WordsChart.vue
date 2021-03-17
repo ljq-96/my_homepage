@@ -20,7 +20,7 @@ export default {
   computed: {
     option() {
       return {
-        color: [this.$store.state.color.c1],
+        color: [this.$store.state.color.css()],
         title: {
           text: 'Words',
           left: 'left',
@@ -45,7 +45,7 @@ export default {
             name: '千字',
             nameGap: 6,
             type: 'category',
-            data: this.words.map(item => item.name),
+            data: this.list.map(item => item.name),
             axisTick: {
               alignWithLabel: true
             }
@@ -61,47 +61,10 @@ export default {
             name: '直接访问',
             type: 'bar',
             barWidth: '60%',
-            data: this.words.map(item => item.value)
+            data: this.list.map(item => item.value)
           }
         ]
       }
-    },
-    words() {
-      const arr = [
-        {
-          name: '0~2',
-          value: 0
-        },
-        {
-          name: '2~4',
-          value: 0
-        },
-        {
-          name: '4~6',
-          value: 0
-        },
-        {
-          name: '6~8',
-          value: 0
-        },
-        {
-          name: '8~10',
-          value: 0
-        },
-        {
-          name: '10~12',
-          value: 0
-        },
-        {
-          name: '12+',
-          value: 0
-        }
-      ]
-      this.list.forEach(item => {
-        const i = Math.floor(item.words / 2000)
-        arr[i > 6 ? 6 : i].value++
-      })
-      return arr
     }
   },
   mounted() {
@@ -109,6 +72,7 @@ export default {
     this.chart.on('click', params => {
       this.$emit('addFilters', {
         key: 'words',
+        label: '字数',
         name: params.name + '千字'
       })
     })

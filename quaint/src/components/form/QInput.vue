@@ -48,24 +48,16 @@ export default {
   height: 36px;
   padding: 0 10px;
   font-family: FiraCode;
-  border: 1px solid var(--colorLum2);
-  border-radius: 2px;
+  border: 1px solid var(--colorLum3);
+  border-radius: 4px;
   background: transparent;
   outline: none;
   transition: 0.4s;
 }
 
 .q-input input:focus {
-  border-color: var(--colorLum2);
-  box-shadow: 0 0 0 2px var(--colorLum1);
-}
-
-.q-input input.error {
-  border-color: #ff7043;
-}
-
-.q-input input.error:focus {
-  box-shadow: 0 0 6px #ff7043;
+  border-color: var(--colorLum4);
+  box-shadow: 0 0 0 3px var(--colorLum2);
 }
 
 .q-input :last-child:not(input) {

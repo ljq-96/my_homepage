@@ -9,19 +9,10 @@ export default {
   },
   data() {
     return {
-      chart: null,
-      uncommonTag: []
+      chart: null
     }
   },
   computed: {
-    tags() {
-      return this.list.map(item => {
-        return {
-          name: item.title,
-          value: item.info
-        }
-      })
-    },
     option() {
       return {
         title: {
@@ -41,9 +32,9 @@ export default {
           right: 'right',
           bottom: '10px',
           min: 0,
-          max: this.tags[0].value * 1.5,
+          max: this.list[0].value * 1.5,
           inRange: {
-            color: this.$store.state.color.c1,
+            color: this.$store.state.color.css(),
             colorLightness: [0.2, 0.6]
           }
         },
@@ -53,7 +44,7 @@ export default {
             type: 'pie',
             radius: ['20%', '70%'],
             center: ['50%', '50%'],
-            data: this.tags,
+            data: this.list,
             roseType: 'radius',
             // selectedMode: 'single',
             label: {
@@ -82,6 +73,7 @@ export default {
     this.chart.on('click', params => {
       this.$emit('addFilters', {
         key: 'tags',
+        label: '标签',
         name: params.name
       })
     })

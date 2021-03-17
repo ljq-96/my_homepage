@@ -12,12 +12,14 @@
       <div>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/quaint/home">
-            <span><span class="iconfont icon-home"></span> Home</span><span class="iconfont icon-rollback"></span>
+            <span><span class="iconfont icon-home"></span> Home</span
+            ><span class="iconfont icon-rollback"></span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/quaint/blog">
-            <span><span class="iconfont icon-book1"></span> Blog</span><span class="iconfont icon-rollback"></span>
+            <span><span class="iconfont icon-book1"></span> Blog</span
+            ><span class="iconfont icon-rollback"></span>
           </router-link>
         </fluent-design-item>
         <div class="line-w"></div>
@@ -43,7 +45,9 @@
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/write">
-            <span><span class="iconfont icon-edit-square"></span> 新增文章</span>
+            <span
+              ><span class="iconfont icon-edit-square"></span> 新增文章</span
+            >
           </router-link>
         </fluent-design-item>
       </div>

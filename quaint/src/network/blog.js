@@ -18,6 +18,15 @@ export function createBlog(data) {
   })
 }
 
+// 更新文章
+export function updateBlog(data) {
+  return request({
+    url: '/api/blog/update',
+    method: 'post',
+    data
+  })
+}
+
 // 删除文章
 export function deleteBlog(data) {
   return request({
@@ -32,5 +41,32 @@ export function getBlogTags() {
   return request({
     url: '/api/blog/tags',
     method: 'get'
+  })
+}
+
+// 读文件
+export function readBlog(data) {
+  return request({
+    url: '/api/blog/read',
+    method: 'post',
+    data
+  })
+}
+
+// 测试标题可用
+export function testBlog(data) {
+  return request({
+    url: '/api/blog/test',
+    method: 'post',
+    data
+  })
+}
+
+// 获取样式
+export function blogStyle(params) {
+  return request({
+    url: '/api/blog/style',
+    method: 'get',
+    params
   })
 }

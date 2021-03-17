@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
     .populate(['bookmarks', 'bookmark'])
   res.status(200).json({
     ok: 1,
-    data: result.bookmarks
+    data: result ? result.bookmarks : []
   })
 })
 

@@ -19,8 +19,9 @@ export default {
   },
   computed: {
     option() {
+      console.log(this.list)
       return {
-        color: [this.$store.state.color.c1],
+        color: [this.$store.state.color.css()],
         title: {
           text: 'Time',
           left: 'left',
@@ -44,7 +45,7 @@ export default {
           {
             type: 'category',
             boundaryGap: false,
-            data: this.time.map(item => item.name),
+            data: this.list.map(item => item.name),
             nameTextStyle: this.textStyle
           }
         ],
@@ -56,24 +57,18 @@ export default {
         axisLabel: {
           fontFamily: 'Ubuntu',
           fontWeight: 'normal',
-          color: '#4a4a4a',
-          // formatter: (value, index) => {
-          //   if (value > 100) {
-          //     return this.$dateFormatter(value, '-', 2)
-          //   }
-          //   return value
-          // }
+          color: '#4a4a4a'
         },
         series: [
           {
             type: 'line',
             smooth: true,
-            data: this.time,
+            data: this.list,
             areaStyle: {
               color: new this.$echarts.graphic.LinearGradient(0, 0, 0, 1, [
                 {
                   offset: 0,
-                  color: this.$store.state.color.c1
+                  color: this.$store.state.color.css()
                 },
                 {
                   offset: 1,
@@ -84,36 +79,6 @@ export default {
           }
         ]
       }
-    },
-    time() {
-      const arr = []
-      const first = new Date(this.list[0].time)
-      const last = new Date(this.list[this.list.length - 1].time)
-      let year = last.getFullYear()
-      let month = last.getMonth() + 1
-      const m = (first.getFullYear() - last.getFullYear()) * 12 + (first.getMonth() - last.getMonth())
-
-      for (let i = 0; i <= m; i++) {
-        const name = [year, month].join('-')
-        arr.push({
-          name: name,
-          value: 0
-        })
-        if (month === 12) {
-          year++
-          month = 1
-        } else {
-          month++
-        }
-      }
-
-      this.list.forEach(item => {
-        const time = new Date(item.time)
-        const month = [time.getFullYear(), time.getMonth() + 1].join('-')
-        let i = arr.findIndex(i => i.name === month)
-        arr[i].value++
-      })
-      return arr
     }
   },
   mounted() {
@@ -121,14 +86,14 @@ export default {
     this.chart.on('click', params => {
       const time = params.name.split('-')
       this.$emit('addFilters', {
-        key: 'time',
+        key: 'create_time',
+        label: '日期',
         name: [time[0], time[1] < 10 ? '0' + time[1] : time[1]].join('-')
       })
     })
   },
   watch: {
     list() {
-      console.log(this.time)
       this.chart.setOption(this.option)
     }
   }

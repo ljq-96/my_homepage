@@ -5,6 +5,7 @@ const router = require('./router/router')
 const bookmarkRouter = require('./router/bookmark')
 const blogRouter = require('./router/blog')
 const catalogRouter = require('./router/catalog')
+const otherRouter = require('./router/other')
 const token = require('./common/token')
 const app = express()
 
@@ -31,6 +32,7 @@ app.use(router)
 app.use('/api/bookmark', bookmarkRouter)
 app.use('/api/catalog', catalogRouter)
 app.use('/api/blog', blogRouter)
+app.use('/api', otherRouter)
 
 mongoose.set('useFindAndModify', false)
 mongoose

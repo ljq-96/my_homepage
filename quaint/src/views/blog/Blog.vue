@@ -1,70 +1,54 @@
 <template>
-  <div>
-    <head-vue>
-      <div
-        class="words"
-        slot="center"
-        style="letter-spacing: 1.8em; font-family: Trivia;"
-      >
-        QUAINT
+  <div class="layout">
+    <div class="side">
+      <list
+        class="sticky"
+        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+        :click="true"
+        @send="toSticky"
+        :title="'Sticky'"
+        :data="sticky"
+      ></list>
+    </div>
+    <div class="articles">
+      <div class="catalog-container">
+        <p>Catalog</p>
+        <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
+        <catalog-image
+          class="catalog-image"
+          :color="$store.state.color.css()"
+        ></catalog-image>
       </div>
-    </head-vue>
-    <div class="layout">
-      <div class="side">
-        <list
-          class="sticky"
-          :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-          :click="true"
-          @send="toSticky"
-          :title="'Sticky'"
-          :data="sticky"
-        ></list>
-      </div>
-      <div class="articles">
-        <div class="catalog-container">
-          <p>Catalog</p>
-          <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
-          <catalog-image
-            class="catalog-image"
-            :color="$store.state.color.css()"
-          ></catalog-image>
-        </div>
-        <article-item
-          v-for="item in articles"
-          :key="item._id"
-          :tags="item.tags"
-          :title="item.title"
-          :time="item.time"
-          :truncate="item.truncate"
-          @send="setTag"
-        ></article-item>
-        <fluent-design
-          v-slot="param"
-          :backSize="100"
-          class="load-more-container"
-        >
-          <fluent-design-item class="load-more" :param="param">
-            <div @click="loadMore">加载更多</div>
-          </fluent-design-item>
-        </fluent-design>
-      </div>
-      <div class="side">
-        <calendar></calendar>
-        <list
-          class="sticky"
-          :title="'Tags'"
-          :click="true"
-          @send="setTag"
-          :data="tags"
-          :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-        ></list>
-      </div>
+      <article-item
+        v-for="item in articles"
+        :key="item._id"
+        :tags="item.tags"
+        :title="item.title"
+        :time="item.time"
+        :truncate="item.truncate"
+        @send="setTag"
+      ></article-item>
+      <fluent-design v-slot="param" :backSize="100" class="load-more-container">
+        <fluent-design-item class="load-more" :param="param">
+          <div @click="loadMore">加载更多</div>
+        </fluent-design-item>
+      </fluent-design>
+    </div>
+    <div class="side">
+      <calendar></calendar>
+      <list
+        class="sticky"
+        :title="'Tags'"
+        :click="true"
+        @send="setTag"
+        :data="tags"
+        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
+      ></list>
     </div>
   </div>
 </template>
 
 <script>
-import HeadVue from '@/components/header/HeadVue.vue'
 import ArticleItem from './ArticleItem'
 import List from '@/components/List'
 import Calendar from '@/components/Calendar'
@@ -74,10 +58,9 @@ import markdown from '@/common/markdown'
 import CatalogImage from '@/components/svgimage/1'
 import CatalogItem from '../management/BlogCatalog/CatalogItem'
 import { getCatalogIn } from '../../network/catalog'
-import { getBlogList,getBlogTags } from '../../network/blog'
+import { getBlogList, getBlogTags } from '../../network/blog'
 export default {
   components: {
-    HeadVue,
     ArticleItem,
     Calendar,
     List,
@@ -88,8 +71,8 @@ export default {
   },
   data() {
     return {
-      pagenumber: 1,
-      pagesize: 10,
+      currentPage: 1,
+      pageSize: 10,
       tag: this.$route.query.tag,
       articles: [],
       sticky: [],
@@ -99,7 +82,7 @@ export default {
   },
   methods: {
     loadMore() {
-      this.pagenumber++
+      this.currentPage++
       this.getArticles()
     },
     setTag(tag) {
@@ -107,8 +90,8 @@ export default {
     },
     getArticles() {
       getBlogList({
-        pagenumber: this.pagenumber,
-        pagesize: this.pagesize,
+        currentPage: this.currentPage,
+        pageSize: this.pageSize,
         tag: this.tag
       }).then(res => {
         if (res.ok) {
@@ -126,21 +109,19 @@ export default {
   },
   created() {
     this.getArticles()
-    getBlogList({sticky: true}).then(res => {
+    getBlogList({ sticky: true }).then(res => {
       if (res.ok) {
         this.sticky = res.data
       }
     })
-    // this.$request({
-    //   url: '/tag'
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     this.tags = res.tags
-    //   }
-    // })
     getBlogTags().then(res => {
       if (res.ok) {
-        
+        this.tags = res.data.map(item => {
+          return {
+            title: item.name,
+            info: item.value
+          }
+        })
       }
     })
     getCatalogIn().then(res => {

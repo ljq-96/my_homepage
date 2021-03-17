@@ -2,10 +2,8 @@
   <div class="markdown-edit">
     <div class="markdown-edit-head">
       <q-button-group>
-        <q-button @click="cancelConfirm" type="danger">离开</q-button>
-        <q-button @click="saveConfirm('保存并离开吗?')" type="success"
-          >保存</q-button
-        >
+        <q-button @click="cancelConfirm" plain>离开</q-button>
+        <q-button @click="saveConfirm('保存并离开吗?')" plain>保存</q-button>
       </q-button-group>
       <q-form
         class="edit-form"
@@ -40,8 +38,14 @@ import QInput from '@/components/form/QInput'
 import QButton from '../../components/button/QButton'
 import QButtonGroup from '../../components/button/QButtonGroup'
 import MarkdownEditor from '@/components/MarkdownEditor'
-import markdown from '@/common/markdown'
-import request from '@/network/request'
+import {
+  getBlogList,
+  readBlog,
+  testBlog,
+  blogStyle,
+  createBlog,
+  updateBlog
+} from '../../network/blog'
 export default {
   components: {
     MarkdownEditor,
@@ -60,19 +64,14 @@ export default {
       }
     }
     var testTitle = (rule, value, callback) => {
-      console.log(this.id)
       if (!this.id) {
-        this.$request({
-          url: '/blog/test',
-          method: 'post',
-          data: {
-            title: value
-          }
+        testBlog({
+          title: value
         }).then(res => {
-          if (res.code === 200 && res.message === '标题重复') {
-            callback(new Error())
-          } else {
+          if (res.ok) {
             callback()
+          } else {
+            callback(new Error())
           }
         })
       } else {
@@ -101,38 +100,51 @@ export default {
   methods: {
     cancelConfirm() {
       this.$confirm({
-        title: '确定要离开吗? 您还没有保存'
-      }).$on('confirm', this.cancel)
+        message: '您还没有保存，确定要离开吗?'
+      }).then(this.cancel)
     },
     saveConfirm() {
       this.$confirm({
-        title: '确定要保存吗?'
-      }).$on('confirm', this.save)
+        message: '确定要保存吗?'
+      }).then(this.save)
     },
     save() {
       this.$refs.form.validate(flag => {
         if (flag) {
-          this.$request({
-            url: '/blog/update',
-            method: 'post',
-            data: {
+          if (this.id) {
+            updateBlog({
               _id: this.id,
               info: {
                 content: this.markdown,
-                tags: this.articleInfo.tags,
+                tags: this.articleInfo.tags.split(','),
                 title: this.articleInfo.title
               }
-            }
-          }).then(res => {
-            if (res.code === 200) {
-              this.$notice({
-                type: 'success',
-                title: 'Success',
-                message: `文章 “${this.articleInfo.title}” 保存成功`
-              })
-              this.$router.go(-1)
-            }
-          })
+            }).then(res => {
+              if (res.ok) {
+                this.$notice({
+                  type: 'success',
+                  title: 'Success',
+                  message: `文章 “${this.articleInfo.title}” 保存成功`
+                })
+                this.$router.go(-1)
+              }
+            })
+          } else {
+            createBlog({
+              content: this.markdown,
+              tags: this.articleInfo.tags.split(','),
+              title: this.articleInfo.title
+            }).then(res => {
+              if (res.ok) {
+                this.$notice({
+                  type: 'success',
+                  title: 'Success',
+                  message: `文章 “${this.articleInfo.title}” 保存成功`
+                })
+                this.$router.go(-1)
+              }
+            })
+          }
         } else {
           this.$notice({
             type: 'warning',
@@ -155,10 +167,8 @@ export default {
     },
     downloadHTML() {
       const contentHtml = this.$refs.markdownEditor.html
-      this.$request({
-        url: '/style'
-      }).then(res => {
-        if (res.code === 200) {
+      blogStyle().then(res => {
+        if (res.ok) {
           const a = document.createElement('a')
           const blob = new Blob([
             `<!DOCTYPE html>
@@ -166,7 +176,7 @@ export default {
               <head>
                 <meta charset="UTF-8">
                 <title>${this.articleInfo.title}</title>
-                <style>${res.style}</style>
+                <style>${res.data}</style>
               </head>
               <body>
                 <div class="article-content">${contentHtml}</div>
@@ -181,14 +191,10 @@ export default {
       })
     },
     readFile(data) {
-      this.$request({
-        method: 'post',
-        url: '/readfile',
-        data: data
-      }).then(res => {
-        if (res.code === 200) {
+      readBlog(data).then(res => {
+        if (res.ok) {
           this.articleInfo.title = data.name
-          this.markdown = res.article
+          this.markdown = res.data
         }
       })
     }
@@ -196,13 +202,14 @@ export default {
   created() {
     this.articleInfo.title = this.$route.query.title
     if (this.articleInfo.title) {
-      this.$request({
-        url: '/article/' + this.articleInfo.title
+      getBlogList({
+        title: this.$route.query.title
       }).then(res => {
-        if (res.code === 200) {
-          this.markdown = res.article.content
-          this.id = res.article._id
-          this.articleInfo.tags = res.article.tags.join(',')
+        console.log(res)
+        if (res.ok) {
+          this.markdown = res.data[0].content
+          this.id = res.data[0]._id
+          this.articleInfo.tags = res.data[0].tags.join(',')
         }
       })
     } else {

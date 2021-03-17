@@ -1,8 +1,5 @@
 <template>
   <div @click.stop="closeMenu">
-    <head-vue>
-      <search ref="search" slot="center"></search>
-    </head-vue>
     <div class="layout">
       <book-marks ref="bookmark"></book-marks>
       <div class="side">
@@ -20,16 +17,13 @@
 </template>
 
 <script>
-import HeadVue from '@/components/header/HeadVue.vue'
-import Search from '@/components/header/Search.vue'
 import Calendar from '@/components/Calendar'
 import List from '@/components/List'
 import BookMarks from './BookMarks'
+import { getWeibo } from '../../network/other'
 
 export default {
   components: {
-    HeadVue,
-    Search,
     Calendar,
     List,
     BookMarks
@@ -48,11 +42,9 @@ export default {
     }
   },
   created() {
-    this.$request({
-      url: '/news/weibo'
-    }).then(res => {
-      if (res.code === 200) {
-        this.weiboHot = res.weibohot
+    getWeibo().then(res => {
+      if (res.ok) {
+        this.weiboHot = res.data
       }
     })
   }

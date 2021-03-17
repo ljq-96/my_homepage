@@ -1,52 +1,71 @@
 <template>
   <div>
-    <mgt-list
-      @sort="sort"
-      @update="update"
-      @del="del"
-      :list="listDisplay"
-      :increase="(currentPage - 1) * size"
-    ></mgt-list>
-    <fluent-design class="page" v-slot="param" :borderSize="50">
-      <fluent-design-item :isDisabled="currentPage === 1" :param="param">
-        <button
-          class="iconfont"
-          @click="prev"
-          :class="{ disabled: currentPage === 1 }"
-        >
-          &#xe7ec;
-        </button>
-      </fluent-design-item>
-      <fluent-design-item :param="param" v-for="item in pageArr" :key="item">
-        <div
-          class="page-item"
-          @click="currentPage = item"
-          :class="{ pagecurrent: item === currentPage }"
-        >
-          {{ item }}
-        </div>
-      </fluent-design-item>
-      <fluent-design-item :isDisabled="currentPage === page" :param="param">
-        <button
-          class="iconfont"
-          @click="next"
-          :class="{ disabled: currentPage === page }"
-        >
-          &#xe7eb;
-        </button>
-      </fluent-design-item>
-    </fluent-design>
+    <div class="article-list">
+      <q-table :dataSource="list" :columns="columns">
+        <template #action="{row, index}">
+          <q-button
+            type="success"
+            @click="
+              $router.push({
+                path: '/quaint/article',
+                query: { title: row.title }
+              })
+            "
+            >查看</q-button
+          >
+          <q-button
+            type="warning"
+            @click="
+              $router.push({
+                path: '/edit',
+                query: { title: row.title }
+              })
+            "
+            >编辑</q-button
+          >
+          <q-button @click="delArticle(row, index)" type="danger"
+            >删除</q-button
+          >
+        </template>
+        <template #sticky="{row, index}">
+          <q-switch
+            @change="changeSticky($event, row)"
+            v-model="row.sticky"
+          ></q-switch>
+        </template>
+        <template #tags="{row, index}">
+          <q-tag v-for="item in row.tags" :key="item">
+            {{ item }}
+          </q-tag>
+        </template>
+      </q-table>
+
+      <q-page
+        :pageSize="pageSize"
+        :currentPage.sync="currentPage"
+        :total="total"
+      ></q-page>
+    </div>
   </div>
 </template>
 
 <script>
+import day from 'dayjs'
+import QTable from '../../components/table/QTable'
+import QButton from '../../components/button/QButton'
+import QSwitch from '../../components/form/QSwitch'
+import QTag from '../../components/other/QTag'
+import QPage from '../../components/other/QPage'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
-import MgtList from './MgtList'
-import { deleteBlog } from '../../network/blog'
+import { deleteBlog, getBlogList, updateBlog } from '../../network/blog'
 export default {
   components: {
-    MgtList,
+    QPage,
+    QTag,
+    QButton,
+    QTable,
+    QSwitch,
     FluentDesign,
     FluentDesignItem
   },
@@ -54,109 +73,120 @@ export default {
     return {
       list: [],
       size: 13,
-      page: 0,
-      currentPage: 1
-    }
-  },
-  computed: {
-    listDisplay() {
-      return this.list.slice(
-        this.size * (this.currentPage - 1),
-        this.size * this.currentPage
-      )
-    },
-    pageArr() {
-      return Array.from(
-        new Set([
-          1,
-          this.page,
-          this.currentPage - 1,
-          this.currentPage,
-          this.currentPage + 1
-        ])
-      )
-        .filter(item => item > 0 && item <= this.page)
-        .sort((a, b) => a - b)
+      pageSize: 9,
+      currentPage: 1,
+      total: 0,
+      columns: [
+        {
+          title: '#',
+          filter: ({ index }) => {
+            return (this.currentPage - 1) * this.pageSize + index + 1
+          }
+        },
+        {
+          title: '标题',
+          key: 'title'
+        },
+        {
+          title: '创建时间',
+          key: 'create_time',
+          filter: ({ value }) => {
+            return day(value).format('YYYY-MM-DD')
+          }
+        },
+        {
+          title: '字数',
+          key: 'content',
+          filter: ({ value }) => {
+            return (value.length / 1000).toFixed(1) + 'k'
+          }
+        },
+        {
+          title: '置顶',
+          key: 'sticky'
+        },
+        {
+          title: '标签',
+          key: 'tags'
+        },
+        {
+          title: '操作',
+          key: 'action'
+        }
+      ]
     }
   },
   methods: {
-    sort(prop) {
-      this.list.sort((a, b) => {
-        if (prop[1]) {
-          return b[prop[0]].toString().localeCompare(a[prop[0]].toString())
-        } else {
-          return a[prop[0]].toString().localeCompare(b[prop[0]].toString())
-        }
-      })
-    },
-    update(data) {
-      const { index, info } = data
-      this.$request({
-        url: '/blog/update',
-        method: 'post',
-        data: {
-          _id: this.list[index]._id,
-          info: info
+    changeSticky(bol, row) {
+      updateBlog({
+        _id: row._id,
+        info: {
+          sticky: bol
         }
       }).then(res => {
-        if (res.code === 200) {
-          Object.assign(this.list[index], info)
+        if (res.ok) {
           this.$notice({
             type: 'success',
             title: 'Success',
-            message: `“${this.list[index].title}” ${
-              info.sticky ? '置顶' : '取消置顶'
-            }`
+            message: `“${row.title}” ${bol ? '置顶' : '取消置顶'}`
           })
         }
       })
     },
-    del(index) {
-      // this.$request({
-      //   url: '/blog/del',
-      //   method: 'post',
-      //   data: {
-      //     _id: this.list[index]._id
-      //   }
-      // }).then(res => {
-      //   if (res.code === 200) {
-      //     this.$notice({
-      //       type: 'success',
-      //       title: 'Success',
-      //       message: `文章 “${this.list[index].title}” 删除成功`
-      //     })
-      //     this.list.splice(index, 1)
-      //   }
-      // })
-      deleteBlog({ id: this.list[index]._id }).then(res => {
-        console.log(res)
+    delArticle(row, index) {
+      this.$confirm({
+        message: `确定删除${row.title}吗?`
       })
+        .then(() => {
+          deleteBlog({
+            _id: row._id
+          }).then(res => {
+            this.getData()
+            this.$notice({
+              type: 'success',
+              title: '删除成功'
+            })
+          })
+        })
+        .catch(() => {
+          this.$notice({
+            type: 'info',
+            title: '取消删除'
+          })
+        })
     },
-    prev() {
-      if (this.currentPage !== 1) {
-        this.currentPage--
-      }
-    },
-    next() {
-      if (this.currentPage !== this.page) {
-        this.currentPage++
-      }
+    getData() {
+      getBlogList({
+        pageSize: this.pageSize,
+        currentPage: this.currentPage
+      }).then(res => {
+        if (res.ok) {
+          this.list = res.data
+          this.total = res.total
+        }
+      })
     }
   },
-  created() {
-    this.$request({
-      url: '/blog/management'
-    }).then(res => {
-      if (res.code === 200) {
-        this.list = res.articles
-        this.page = Math.ceil(res.length / this.size)
-      }
-    })
+  watch: {
+    currentPage: {
+      handler() {
+        this.getData()
+      },
+      immediate: true
+    }
   }
 }
 </script>
 
-<style>
+<style scoped>
+.article-list {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  background-color: #fff;
+}
+
 .page {
   position: absolute;
   left: 20px;
@@ -191,5 +221,13 @@ export default {
 
 .page div.pagecurrent {
   background-color: var(--colorOpc1);
+}
+
+.q-button {
+  margin: 0 5px;
+}
+
+.q-page {
+  margin: 10px;
 }
 </style>

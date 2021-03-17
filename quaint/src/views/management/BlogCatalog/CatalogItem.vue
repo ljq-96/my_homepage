@@ -109,6 +109,6 @@ export default {
 }
 
 .in-catalog-item-title i.isOpen {
-  transform: rotate(-30deg);
+  transform: rotate(90deg);
 }
 </style>

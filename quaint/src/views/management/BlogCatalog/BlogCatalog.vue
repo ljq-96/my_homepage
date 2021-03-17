@@ -21,10 +21,6 @@
       <div class="new-group-wrap">
         <div class="new-group-btn">
           <q-button-group>
-            <q-button type="primary" plain>全部展开</q-button>
-            <q-button type="primary" plain>全部闭合</q-button>
-          </q-button-group>
-          <q-button-group>
             <q-button
               @click="isShowNewGroup = false"
               v-if="isShowNewGroup"
@@ -126,7 +122,7 @@ export default {
       }
     },
     deleteGroup(item, index) {
-      deleteBlog({ id: item.blog._id }).then(res => {
+      deleteBlog({ _id: item.blog._id }).then(res => {
         if (res.ok) {
           this.unCatalog.splice(index, 1)
           this.$notice({

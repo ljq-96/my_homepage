@@ -101,7 +101,7 @@ export default {
   bottom: 10px;
   width: 300px;
   color: #4a4a4a;
-  background-color: rgba(240, 240, 240, 0.6);
+  background-color: rgba(240, 240, 240, 0.8);
   backdrop-filter: blur(10px);
   transition: 0.4s;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -145,7 +145,7 @@ export default {
 
 .no-leave-to {
   opacity: 0;
-  transform: translateX(260px);
+  transform: translateY(50%);
 }
 
 .icon-close-wrap {

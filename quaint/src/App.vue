@@ -7,10 +7,9 @@
 <script>
 export default {
   name: 'App',
-  components: {
-  },
+  components: {},
   created() {
-    const color = window.localStorage.getItem('color') || 'rgba(185, 64, 71)'
+    const color = window.localStorage.getItem('color') || 'tomato'
     this.$store.commit('setColor', color)
   }
 }
