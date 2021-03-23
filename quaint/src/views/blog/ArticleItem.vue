@@ -1,26 +1,34 @@
 <template>
-  <div class="item article-content">
-    <div class="aiticle-item-head">
-      <span>{{ time | formatDate('YYYY-MM-DD, HH:mm:ss') }}</span>
-    </div>
-    <router-link
-      class="title"
-      :to="{ path: '/quaint/article', query: { title: title } }"
-      >{{ title }}</router-link
-    >
-    <div class="desc" v-html="truncate"></div>
-    <div class="aiticle-item-head">
-      <span 
-        @click="send(item)" 
-        v-for="item in tags" 
-        :key="item"
-      >#{{ item }}</span>
-    </div>
-  </div>
+  <q-card class="article-item article-content">
+    <template #title>
+      <div class="aiticle-item-head">
+        <span>{{ time | formatDate('YYYY-MM-DD') }}</span>
+      </div>
+      <router-link
+        class="aiticle-item-title"
+        :to="{ path: '/quaint/article', query: { title: title } }"
+        >{{ title }}</router-link
+      >
+    </template>
+    <template #content>
+      <div class="desc" v-html="truncate"></div>
+      <div class="aiticle-item-head">
+        <q-tag @click.native="send(item)" v-for="item in tags" :key="item"
+          >#{{ item }}</q-tag
+        >
+      </div>
+    </template>
+  </q-card>
 </template>
 
 <script>
+import QCard from '../../components/other/QCard'
+import QTag from '../../components/other/QTag'
 export default {
+  components: {
+    QTag,
+    QCard
+  },
   props: {
     title: String,
     time: String,
@@ -29,7 +37,7 @@ export default {
   },
   methods: {
     send(data) {
-      this.$emit('send', data)
+      this.$router.push({ path: '/quaint/blog', query: { tag: data } })
     }
   }
 }
@@ -38,69 +46,27 @@ export default {
 <style scoped>
 @import '../../assets/css/code.css';
 @import '../../assets/css/blog.css';
-.item {
-  margin-bottom: 4px;
-  padding: 15px;
-  background-color: #fff;
+.article-item {
+  margin: 15px 0;
 }
 
 .aiticle-item-head {
   height: 20px;
   line-height: 20px;
   font-size: 12px;
-  color: #bdbdbd;
+  color: var(--disabled);
 }
 
-.aiticle-item-head > span:not(:first-child) {
-  margin-left: 10px;
-  cursor: pointer;
-}
-
-.aiticle-item-head > span:not(:first-child):hover {
-  color: var(--color);
-  text-decoration: underline;
-}
-
-.title {
+.aiticle-item-title {
   display: block;
   position: relative;
   height: 40px;
-  padding-left: 15px;
   line-height: 40px;
   font-size: 24px;
-  color: #4a4a4a;
+  color: var(--title);
 }
 
-.title:hover {
+.aiticle-item-title:hover {
   color: var(--color);
-}
-
-.title::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 26px;
-  background-color: var(--color);
-}
-
-.tags {
-  margin: 10px 0;
-}
-
-.tags div {
-  display: inline-block;
-  margin-right: 6px;
-  padding: 1px 8px;
-  font-size: 12px;
-  color: #7a7a7a;
-  background-color: #fafafa;
-}
-
-.tags div:hover {
-  color: #fff;
-  background-color: var(--color);
 }
 </style>

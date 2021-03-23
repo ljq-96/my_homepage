@@ -16,7 +16,7 @@
             <i v-if="type" class="iconfont" :class="typeIcon"></i>
             <div>
               <h3>{{ title }}</h3>
-              <p v-html="message"></p>
+              <p v-if="message" v-html="message"></p>
             </div>
           </div>
           <fluent-design-item :param="param" class="icon-close-wrap">

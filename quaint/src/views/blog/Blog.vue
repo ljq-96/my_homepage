@@ -161,7 +161,9 @@ export default {
   position: relative;
   margin-bottom: 4px;
   padding: 20px;
+  border: 1px solid var(--divider);
   border-top: 3px solid var(--color);
+  border-radius: 4px;
   background-color: #fff;
   overflow: hidden;
 }

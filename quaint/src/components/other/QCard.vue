@@ -1,0 +1,39 @@
+<template>
+  <div class="q-card">
+    <div class="q-card-title">
+      <div>
+        <slot name="title"></slot>
+      </div>
+      <div>
+        <slot name="extra"></slot>
+      </div>
+    </div>
+    <div class="q-card-content">
+      <slot name="content"></slot>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style scoped>
+.q-card {
+  padding: 0 15px;
+  background-color: #fff;
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+}
+
+.q-card-title {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.q-card-content {
+  padding: 15px 0;
+}
+</style>

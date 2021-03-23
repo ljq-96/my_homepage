@@ -1,8 +1,9 @@
 .article-content pre {
   display: block;
   padding: 0.5em 1em;
-  background-color: #fafafa;
-  border: 1px solid #eee;
+  background-color: var(--background);
+  border: 1px solid var(--divider);
+  border-radius: 4px;
   overflow: auto;
 }
 

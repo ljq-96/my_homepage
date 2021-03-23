@@ -30,7 +30,7 @@
       @click="top"
       :style="{ bottom: bottom + 'px' }"
       :class="{ onbottom: isBottom }"
-      class="totop iconfont icon-caret-top blur"
+      class="totop iconfont icon-caret-top"
     ></div>
   </div>
 </template>
@@ -162,7 +162,7 @@ export default {
   position: relative;
   margin-top: 20px;
   padding-bottom: 20px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+  border-top: 1px solid var(--divider);
   background-color: #fff;
 }
 
@@ -206,16 +206,18 @@ export default {
 
 .footer .totop {
   position: fixed;
-  right: 210px;
+  right: 230px;
   bottom: 8px;
   width: 64px;
+  border: 1px solid var(--divider);
   height: 40px;
   line-height: 40px;
   text-align: center;
   font-size: 24px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
   transition-duration: 0.4s;
   transition-property: width, border-radius, transform;
+  color: var(--sub);
+  background-color: #fff;
 }
 
 .footer .totop.onbottom {
@@ -224,5 +226,10 @@ export default {
   transform: translateX(-12px);
   width: 40px;
   border-radius: 20px;
+}
+
+.footer .totop.onbottom:hover {
+  color: var(--title);
+  background-color: var(--divider);
 }
 </style>

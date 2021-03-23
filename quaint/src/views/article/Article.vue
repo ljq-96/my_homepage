@@ -60,7 +60,7 @@ export default {
   components: {
     Calendar,
     CatalogItem,
-    ArticleCatalog,
+    ArticleCatalog
   },
   data() {
     return {
@@ -265,6 +265,7 @@ export default {
 .article-content {
   background-color: #fff;
   padding: 10px 20px;
+  border: 1px solid var(--divider);
 }
 
 .article-catalog {

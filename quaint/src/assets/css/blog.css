@@ -102,25 +102,29 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content h1 {
+  color: var(--title);
   font-size: 32px;
   padding: 16px 0;
   margin-bottom: 16px;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--divider);
 }
 
 .article-content h2 {
+  color: var(--title);
   font-size: 26px;
   padding: 16px 0;
   margin-bottom: 16px;
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--divider);
 }
 
 .article-content h3 {
+  color: var(--title);
   padding: 10px 0;
   font-size: 20px;
 }
 
 .article-content h4 {
+  color: var(--title);
   padding: 10px 0;
   font-size: 18px;
   font-style: italic;
@@ -128,6 +132,7 @@ input[type='checkbox']:checked::before {
 
 .article-content h5,
 .article-content h6 {
+  color: var(--title);
   padding: 10px 0;
   font-size: 14px;
   font-style: italic;
@@ -135,7 +140,7 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content p {
-  color: #7a7a7a;
+  color: var(--content);
   margin: 10px 0;
   line-height: 20px;
 }
@@ -152,14 +157,14 @@ input[type='checkbox']:checked::before {
 .article-content mark {
   padding: 2px 6px;
   margin: 0 2px;
-  color: #4a4a4a;
+  color: var(--content);
   background-color: #a8c97f;
 }
 
 .article-content ul,
 .article-content ol {
   margin: 10px 0;
-  color: #7a7a7a;
+  color: var(--content);
   padding-left: 20px;
 }
 
@@ -176,11 +181,11 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content blockquote {
-  padding:  10px;
+  padding: 10px;
   margin: 10px 0;
   font-family: 'Fira Code';
-  border-left: 4px solid #eee;
-  background-color: #fafafa;
+  border-left: 4px solid var(--divider);
+  background-color: var(--background);
 }
 
 .article-content blockquote::before {
@@ -189,7 +194,7 @@ input[type='checkbox']:checked::before {
   margin-bottom: -10px;
   font-size: 16px;
   font-family: iconfont;
-  color: #ddd;
+  color: var(--border);
 }
 
 .article-content pre::-webkit-scrollbar {
@@ -199,7 +204,7 @@ input[type='checkbox']:checked::before {
 
 .article-content pre::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #eee;
+  background-color: var(--divider);
 }
 
 .article-content pre::-webkit-scrollbar-thumb:hover {

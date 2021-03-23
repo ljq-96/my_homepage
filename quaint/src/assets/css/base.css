@@ -1,3 +1,22 @@
+:root {
+  --gray-1: #f8f9fa;
+  --gray-2: #e9ecef;
+  --gray-3: #dee2e6;
+  --gray-4: #ced4da;
+  --gray-5: #adb5bd;
+  --gray-6: #6c757d;
+  --gray-7: #495057;
+  --gray-8: #343a40;
+  --gray-9: #212529;
+  --title: #17233d;
+  --content: #515a6e;
+  --sub: #808695;
+  --disabled: #c5c8ce;
+  --border: #dcdee2;
+  --divider: #e8eaec;
+  --background: #f8f8f9;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -15,24 +34,6 @@
   font-family: 'Firacode';
   src: url('../font/FiraCode.ttf');
 }
-
-/* @media (min-width: 1920px) {
-  .layout {
-    width: 1572px;
-  }
-}
-
-@media (max-width: 1920px) {
-  .layout {
-    width: 1440px;
-  }
-}
-
-@media (max-width: 1440px) {
-  .layout {
-    width: 1308px;
-  }
-} */
 
 @media (min-width: 1280px) {
   .layout {
@@ -86,13 +87,12 @@ html {
 }
 
 body {
-  color: #4a4a4a;
+  color: var(--content);
   font-size: 14px;
   font-family: Ubuntu;
   line-height: 1.6em;
-  background-color: #f5f5f5;
-  /* background-color: var(--colorOpc1); */
-  /* background-color: rgba(255,255,255,0.6); */
+  background-color: var(--background);
+  /* background-color: #fff; */
 }
 
 body::-webkit-scrollbar {
