@@ -35,15 +35,18 @@
       @addFilters="addFilters"
     ></time-chart>
     <div class="chart-item chart-article-list">
-      <q-table height="calc(50vh - 80px)" :dataSource="articlesDisplay" :columns="columns">
+      <q-table
+        height="calc(50vh - 80px)"
+        :dataSource="articlesDisplay"
+        :columns="columns"
+      >
         <template #action="{row}">
           <q-button-group>
             <q-button
               plain
               @click="
                 $router.push({
-                  path: '/quaint/article',
-                  query: { title: row.title }
+                  path: '/quaint/article/' + row._id
                 })
               "
             >

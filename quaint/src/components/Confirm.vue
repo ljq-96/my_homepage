@@ -24,13 +24,7 @@
 </template>
 
 <script>
-import QButton from './button/QButton'
-import QButtonGroup from './button/QButtonGroup'
 export default {
-  components: {
-    QButton,
-    QButtonGroup
-  },
   props: {
     title: {
       type: String,
@@ -88,7 +82,6 @@ export default {
   top: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.4);
-  /* backdrop-filter: blur(5px); */
   z-index: 999;
   transition: 0.4s;
 }
@@ -99,7 +92,8 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -100%);
-  background-color: #fff;
+  background-color: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
   border-radius: 4px;
   transition: 0.4s;
   z-index: 1000;
@@ -108,7 +102,7 @@ export default {
 .confirm .confirm-title {
   font-weight: bold;
   padding: 10px;
-  border-bottom: 1px solid #e8eaec;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .confirm .confirm-content {

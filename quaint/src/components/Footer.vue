@@ -30,7 +30,7 @@
       @click="top"
       :style="{ bottom: bottom + 'px' }"
       :class="{ onbottom: isBottom }"
-      class="totop iconfont icon-caret-top"
+      class="totop card iconfont icon-caret-top"
     ></div>
   </div>
 </template>
@@ -206,10 +206,9 @@ export default {
 
 .footer .totop {
   position: fixed;
-  right: 230px;
   bottom: 8px;
+  left: 50%;
   width: 64px;
-  border: 1px solid var(--divider);
   height: 40px;
   line-height: 40px;
   text-align: center;
@@ -217,19 +216,14 @@ export default {
   transition-duration: 0.4s;
   transition-property: width, border-radius, transform;
   color: var(--sub);
-  background-color: #fff;
+  transform: translateX(336px);
 }
 
 .footer .totop.onbottom {
   position: absolute;
   bottom: 162px !important;
-  transform: translateX(-12px);
+  /* transform: translateX(-12px); */
   width: 40px;
   border-radius: 20px;
-}
-
-.footer .totop.onbottom:hover {
-  color: var(--title);
-  background-color: var(--divider);
 }
 </style>

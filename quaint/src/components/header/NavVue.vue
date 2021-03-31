@@ -1,21 +1,37 @@
 <template>
-  <div class="nav" :style="{ top: navPos }" :class="{ back: isBack || $store.state.onSetting }">
+  <div class="nav" :class="{ back: isBack || $store.state.onSetting }">
     <div class="layout">
-      <router-link to="/home" active-class="ww" class="logo">
+      <div class="logo">
         <span class="logofont logo-quaint"></span>
         <span>Quaint</span>
-      </router-link>
+      </div>
       <div>
         <div class="nav-items">
           <router-link to="/quaint/home">Home</router-link>
           <router-link to="/quaint/blog">Blog</router-link>
-          <router-link to="/login" v-if="!$store.state.token">Login</router-link>
-          <router-link to="/management/chart" v-if="$store.state.token">Admin</router-link>
+          <router-link to="/login" v-if="!$store.state.token"
+            >Login</router-link
+          >
+          <router-link to="/management/chart" v-if="$store.state.token"
+            >Admin</router-link
+          >
         </div>
-        <svg class="set" :class="{ open: $store.state.onSetting }" @click="switchSet" viewBox="0 0 100 100" width="80">
-          <path class="line" d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20" />
+        <svg
+          class="set"
+          :class="{ open: $store.state.onSetting }"
+          @click="switchSet"
+          viewBox="0 0 100 100"
+          width="80"
+        >
+          <path
+            class="line"
+            d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"
+          />
           <path class="line" d="m 70,50 h -40" />
-          <path class="line" d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20" />
+          <path
+            class="line"
+            d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"
+          />
         </svg>
       </div>
     </div>
@@ -23,12 +39,11 @@
 </template>
 
 <script>
-import request from '@/network/request'
 export default {
   data() {
     return {
-      isBack: false,
-      user: null
+      user: null,
+      isBack: false
     }
   },
   methods: {
@@ -36,21 +51,10 @@ export default {
       this.$store.commit('changeSetting')
     }
   },
-  computed: {
-    navPos() {
-      return this.$store.state.isPageDown ? '-60px' : '0'
-    }
-  },
   mounted() {
-    this.isBack = window.pageYOffset > 50 ? true : false
-    window.addEventListener('mousewheel', e => {
-      if (this.$store.state.onSetting) {
-        this.$store.commit('changePageDirection', false)
-        this.isBack = false
-      } else {
-        this.$store.commit('changePageDirection', e.wheelDelta > 0 ? false : true)
-        this.isBack = window.pageYOffset > 50 ? true : false
-      }
+    this.isBack = window.pageYOffset > 200 ? true : false
+    window.addEventListener('scroll', e => {
+      this.isBack = window.pageYOffset > 200 ? true : false
     })
   }
 }
@@ -75,9 +79,9 @@ export default {
   left: 0;
   right: 0;
   height: 0;
-  background-color: rgba(240, 240, 240, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-block: 1px solid var(--divider);
   transition: 0.5s;
   z-index: -1;
 }
@@ -86,7 +90,6 @@ export default {
   display: flex;
   align-items: center;
   height: 50px;
-  /* transform: translateX(-6px); */
 }
 
 .nav .logo svg {
@@ -119,7 +122,7 @@ export default {
 }
 
 .nav.back::before {
-  height: 50px;
+  height: 48px;
 }
 
 .nav .layout {

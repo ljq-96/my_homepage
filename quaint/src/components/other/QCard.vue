@@ -1,5 +1,11 @@
 <template>
-  <div class="q-card">
+  <div
+    :style="{
+      borderTopWidth: headLine ? '3px' : '1px',
+      borderTopColor: headLine ? headLine : '1'
+    }"
+    class="q-card"
+  >
     <div class="q-card-title">
       <div>
         <slot name="title"></slot>
@@ -15,7 +21,13 @@
 </template>
 
 <script>
-export default {}
+export default {
+  props: {
+    headLine: {
+      type: String
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -35,5 +47,6 @@ export default {}
 
 .q-card-content {
   padding: 15px 0;
+  scroll-behavior: smooth;
 }
 </style>

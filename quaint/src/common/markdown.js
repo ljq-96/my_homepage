@@ -8,7 +8,9 @@ export default md({
   highlight: function(str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        return `<pre><code data-code=${lang}>${hljs.highlight(lang, str, true).value}</code></pre>`
+        return `<pre class="hljs"><code data-code=${lang}>${
+          hljs.highlight(str, { language: lang, ignoreIllegals: true }).value
+        }</code></pre>`
       } catch (__) {}
     }
 

@@ -6,6 +6,22 @@ import echarts from 'echarts'
 import notice from './common/notice'
 import request from '@/network/request'
 import day from 'dayjs'
+import 'highlight.js/styles/atom-one-light.css'
+import QTag from './components/other/QTag.vue'
+import QCard from './components/other/QCard.vue'
+import QButton from './components/button/QButton.vue'
+import QButtonGroup from './components/button/QButtonGroup.vue'
+import QTable from './components/table/QTable.vue'
+import QPage from './components/other/QPage.vue'
+import QSwitch from './components/form/QSwitch.vue'
+
+Vue.component('q-card', QCard)
+Vue.component('q-tag', QTag)
+Vue.component('q-button', QButton)
+Vue.component('q-button-group', QButtonGroup)
+Vue.component('q-table', QTable)
+Vue.component('q-page', QPage)
+Vue.component('q-switch', QSwitch)
 
 Vue.use(notice)
 Vue.prototype.$echarts = echarts

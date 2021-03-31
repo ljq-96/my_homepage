@@ -13,8 +13,7 @@ export default new Vuex.Store({
     user: '',
     color: chroma('red'),
     wallpaper: window.localStorage.getItem('wallpaper') || 0,
-    onSetting: false,
-    isPageDown: false
+    onSetting: document.documentElement.scrollTop > 200 ? true : false
   },
   mutations: {
     setToken(state, token) {
@@ -25,14 +24,17 @@ export default new Vuex.Store({
       state.user = data
     },
     setColor(state, color) {
-      console.log(color);
+      console.log(color)
       state.color = chroma(color)
       state.color.c2 = chroma(color).alpha(0.2)
       state.color.c3 = chroma(color).alpha(0.06)
       document.body.style.setProperty('--color', color)
       document.body.style.setProperty('--colorOpc1', state.color.alpha(0.06))
       document.body.style.setProperty('--colorOpc2', state.color.alpha(0.2))
-      document.body.style.setProperty('--colorLum1', state.color.luminance(0.85))
+      document.body.style.setProperty(
+        '--colorLum1',
+        state.color.luminance(0.85)
+      )
       document.body.style.setProperty('--colorLum2', state.color.luminance(0.7))
       document.body.style.setProperty('--colorLum3', state.color.luminance(0.6))
       document.body.style.setProperty('--colorLum4', state.color.luminance(0.3))
@@ -45,9 +47,6 @@ export default new Vuex.Store({
     },
     changeSetting(state) {
       state.onSetting = !state.onSetting
-    },
-    changePageDirection(state, boolean) {
-      state.isPageDown = boolean
     }
   },
   actions: {

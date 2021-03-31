@@ -7,12 +7,12 @@
       group="catalog"
       @change="saveStatus"
     >
-      <div v-for="(item, index) in unCatalog" :key="item.blog._id">
+      <div v-for="(item, index) in unCatalog" :key="item.id">
         <div>
           <i class="iconfont icon-dian"></i>
-          <span>{{ item.blog.title }}</span>
+          <span>{{ item.title }}</span>
         </div>
-        <div v-if="item.blog.type === 'TITLE'">
+        <div v-if="item.type === 'TITLE'">
           <i @click="deleteGroup(item, index)" class="iconfont icon-delete"></i>
         </div>
       </div>
@@ -122,12 +122,12 @@ export default {
       }
     },
     deleteGroup(item, index) {
-      deleteBlog({ _id: item.blog._id }).then(res => {
+      deleteBlog({ _id: item.id }).then(res => {
         if (res.ok) {
           this.unCatalog.splice(index, 1)
           this.$notice({
             type: 'success',
-            title: `${item.blog.title}删除成功`
+            title: `${item.title}删除成功`
           })
         }
       })
@@ -135,7 +135,7 @@ export default {
     cutTree(arr) {
       return arr.map(item => {
         return {
-          blog: item.blog._id,
+          blog: item.id,
           children: item.children.length ? this.cutTree(item.children) : []
         }
       })
@@ -143,7 +143,7 @@ export default {
     saveStatus(e) {
       const action = Object.keys(e)[0]
       const element = e[action].element
-      const idArr = [element.blog._id]
+      const idArr = [element.id]
       let status
       if (action === 'added') {
         flat(element.children)
@@ -151,7 +151,7 @@ export default {
         this.saveCatalog(this)
         function flat(arr) {
           arr.forEach(item => {
-            idArr.push(item.blog._id)
+            idArr.push(item.id)
             if (item.children.length) flat(item.children)
           })
         }
@@ -165,8 +165,7 @@ export default {
         if (res.ok) {
           vm.$notice({
             type: 'success',
-            title: 'Success',
-            message: '更新成功'
+            title: '排序成功'
           })
         }
       })

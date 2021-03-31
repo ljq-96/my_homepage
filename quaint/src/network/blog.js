@@ -9,6 +9,14 @@ export function getBlogList(params) {
   })
 }
 
+// 获取具体
+export function getBlogOne(id) {
+  return request({
+    url: 'api/blog/one/' + id,
+    method: 'get'
+  })
+}
+
 // 新增文章
 export function createBlog(data) {
   return request({

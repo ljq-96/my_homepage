@@ -7,8 +7,7 @@
             type="success"
             @click="
               $router.push({
-                path: '/quaint/article',
-                query: { title: row.title }
+                path: '/quaint/article/' + row._id
               })
             "
             >查看</q-button
@@ -17,8 +16,7 @@
             type="warning"
             @click="
               $router.push({
-                path: '/edit',
-                query: { title: row.title }
+                path: '/edit/' + row._id
               })
             "
             >编辑</q-button
@@ -51,21 +49,11 @@
 
 <script>
 import day from 'dayjs'
-import QTable from '../../components/table/QTable'
-import QButton from '../../components/button/QButton'
-import QSwitch from '../../components/form/QSwitch'
-import QTag from '../../components/other/QTag'
-import QPage from '../../components/other/QPage'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
 import { deleteBlog, getBlogList, updateBlog } from '../../network/blog'
 export default {
   components: {
-    QPage,
-    QTag,
-    QButton,
-    QTable,
-    QSwitch,
     FluentDesign,
     FluentDesignItem
   },
@@ -127,8 +115,7 @@ export default {
         if (res.ok) {
           this.$notice({
             type: 'success',
-            title: 'Success',
-            message: `“${row.title}” ${bol ? '置顶' : '取消置顶'}`
+            title: `“${row.title}” ${bol ? '置顶' : '取消置顶'}`
           })
         }
       })
@@ -185,42 +172,6 @@ export default {
   justify-content: space-between;
   height: 100%;
   background-color: #fff;
-}
-
-.page {
-  position: absolute;
-  left: 20px;
-  bottom: 20px;
-  display: flex;
-}
-
-.page > div {
-  margin-right: 10px;
-}
-
-.page button {
-  width: 40px;
-  height: 40px;
-  color: #4a4a4a;
-  border: none;
-  outline: none;
-  background-color: transparent;
-}
-
-.page button.disabled {
-  color: #aaa;
-  cursor: not-allowed;
-}
-
-.page .page-item {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-  line-height: 40px;
-}
-
-.page div.pagecurrent {
-  background-color: var(--colorOpc1);
 }
 
 .q-button {

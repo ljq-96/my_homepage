@@ -30,7 +30,7 @@ const routes = [
         }
       },
       {
-        path: 'article',
+        path: 'article/:id',
         component: () => import('@/views/article/Article'),
         meta: {
           title: '文章详情',

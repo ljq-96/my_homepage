@@ -5,6 +5,21 @@
   margin: 10px 0;
 }
 
+.article-content .hljs {
+  border: 1px solid var(--divider);
+  border-radius: 4px;
+}
+
+.article-content .hljs code {
+  white-space: pre-wrap;
+}
+
+.article-content .hljs code::before {
+  content: attr(data-code);
+  float: right;
+  opacity: 0.4;
+}
+
 .article-content .green {
   margin: 10px 0;
   padding: 10px;
@@ -212,23 +227,26 @@ input[type='checkbox']:checked::before {
 }
 
 .article-content table {
-  border-collapse: collapse;
-  border: 1px solid #eee;
   width: 100%;
-  color: #7a7a7a;
+  border-collapse: collapse;
+  border: 1px solid var(--divider);
+}
+
+.article-content thead {
+  font-weight: bold;
+  background-color: var(--background);
 }
 
 .article-content td,
 .article-content th {
-  border: 1.5px solid #eee;
-  padding: 8px 16px;
+  vertical-align: middle;
+  padding: 10px 20px;
 }
 
-.article-content th {
-  font-size: 16px;
+.article-content tr {
+  border-bottom: 1px solid var(--divider);
 }
 
-.article-content thead tr,
-.article-content tbody tr:nth-child(2n) {
-  background-color: #fafafa;
+.article-content tbody tr:hover {
+  background-color: var(--background);
 }

@@ -1,6 +1,12 @@
 <template>
   <div :class="{ full: isFullScreen }" class="md-editor">
-    <fluent-design class="md-editor-head" v-slot="param" :borderSize="50" :width="1.5" :borderColor="'#666'">
+    <fluent-design
+      class="md-editor-head"
+      v-slot="param"
+      :borderSize="50"
+      :width="1.5"
+      :borderColor="'#666'"
+    >
       <div class="md-editor-head-group">
         <fluent-design-item :param="param">
           <div class="iconfont" @click="bold">&#xe7f7;</div>
@@ -14,11 +20,30 @@
         <fluent-design-item :param="param">
           <div class="iconfont" @click="lineThrough">&#xe7f9;</div>
         </fluent-design-item>
-        <fluent-design-item :param="param" :isRotate="false" class="iconfont submenu">
+        <fluent-design-item
+          :param="param"
+          :isRotate="false"
+          class="iconfont submenu"
+        >
           &#xe802;
-          <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
-            <fluent-design-item v-for="(item, index) in color" :key="index" :param="paramt">
-              <div :style="[{ background: item.value[0] }, { color: item.value[1] }]" @click="blockColor(item.name)">
+          <fluent-design
+            class="submenu-wrap blur"
+            v-slot="paramt"
+            :borderSize="50"
+            :width="1"
+          >
+            <fluent-design-item
+              v-for="(item, index) in color"
+              :key="index"
+              :param="paramt"
+            >
+              <div
+                :style="[
+                  { background: item.value[0] },
+                  { color: item.value[1] }
+                ]"
+                @click="blockColor(item.name)"
+              >
                 {{ item.name }}
               </div>
             </fluent-design-item>
@@ -31,9 +56,18 @@
           <div class="iconfont" @click="sub">&#xe73b;</div>
         </fluent-design-item>
         <div class="line"></div>
-        <fluent-design-item :param="param" :isRotate="false" class="iconfont submenu">
+        <fluent-design-item
+          :param="param"
+          :isRotate="false"
+          class="iconfont submenu"
+        >
           &#xe7f8;
-          <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
+          <fluent-design
+            class="submenu-wrap blur"
+            v-slot="paramt"
+            :borderSize="50"
+            :width="1"
+          >
             <fluent-design-item :param="paramt">
               <div @click="headLine1">一级标题</div>
             </fluent-design-item>
@@ -70,9 +104,18 @@
         <fluent-design-item :param="param">
           <div class="iconfont" @click="highlight">&#xe7e3;</div>
         </fluent-design-item>
-        <fluent-design-item :param="param" :isRotate="false" class="iconfont submenu">
+        <fluent-design-item
+          :param="param"
+          :isRotate="false"
+          class="iconfont submenu"
+        >
           &#xe7fc;
-          <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
+          <fluent-design
+            class="submenu-wrap blur"
+            v-slot="paramt"
+            :borderSize="50"
+            :width="1"
+          >
             <fluent-design-item :param="paramt">
               <div @click="inlineCode">行内代码</div>
             </fluent-design-item>
@@ -92,7 +135,9 @@
                 <fluent-design-item :param="param" v-for="j of 6" :key="j"
                   ><div
                     class="table-column"
-                    :class="{ tableInner: i <= newTable[0] && j <= newTable[1] }"
+                    :class="{
+                      tableInner: i <= newTable[0] && j <= newTable[1]
+                    }"
                     @mouseover="tableMouseover(i, j)"
                     @click.stop="setTable"
                   ></div
@@ -114,11 +159,22 @@
       </div>
       <div class="md-editor-head-group">
         <fluent-design-item :isRotate="false" class="file" :param="param">
-          <div class="iconfont">&#xe637;<input @change="selectFile" type="file" accept=".md" /></div>
+          <div class="iconfont">
+            &#xe637;<input @change="selectFile" type="file" accept=".md" />
+          </div>
         </fluent-design-item>
-        <fluent-design-item class="iconfont submenu"  :isRotate="false" :param="param">
+        <fluent-design-item
+          class="iconfont submenu"
+          :isRotate="false"
+          :param="param"
+        >
           &#xe7f1;
-          <fluent-design class="submenu-wrap blur" v-slot="paramt" :borderSize="50" :width="1">
+          <fluent-design
+            class="submenu-wrap blur"
+            v-slot="paramt"
+            :borderSize="50"
+            :width="1"
+          >
             <fluent-design-item :param="paramt">
               <div @click="downloadHTML">html</div>
             </fluent-design-item>
@@ -135,7 +191,11 @@
           ></div>
         </fluent-design-item>
         <fluent-design-item :param="param">
-          <div class="iconfont" :style="{ background: isPreview ? '#eee' : '' }" @click="isPreview = !isPreview">
+          <div
+            class="iconfont"
+            :style="{ background: isPreview ? '#eee' : '' }"
+            @click="isPreview = !isPreview"
+          >
             &#xe796;
           </div>
         </fluent-design-item>
@@ -154,14 +214,19 @@
           autofocus
         ></textarea>
       </div>
-      <div ref="html" v-show="isPreview" class="md-editor-html article-content" v-html="html"></div>
+      <div
+        ref="html"
+        v-show="isPreview"
+        class="md-editor-html article-content"
+        v-html="html"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
 import { debounce } from '@/common/utils'
-import request from '@/network/request'
+import { blogStyle } from '../network/blog'
 import markdown from '@/common/markdown'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
@@ -174,7 +239,11 @@ export default {
     value: {
       type: String,
       default: ''
-    }
+    },
+    title: {
+      type: String,
+      default: ''
+    },
   },
   data() {
     return {
@@ -227,7 +296,8 @@ export default {
     scroll(e) {
       const textarea = this.$refs.textarea
       const html = this.$refs.html
-      html.scrollTop = (textarea.scrollTop * html.scrollHeight) / textarea.scrollHeight
+      html.scrollTop =
+        (textarea.scrollTop * html.scrollHeight) / textarea.scrollHeight
     },
     insert(fn, pos) {
       const textarea = this.$refs.textarea
@@ -235,7 +305,10 @@ export default {
       const endPos = textarea.selectionEnd
       const text = this.value.substring(startPos, endPos)
       if (startPos === undefined || endPos === undefined) return
-      const result = this.value.substring(0, startPos) + fn(text) + this.value.substring(endPos)
+      const result =
+        this.value.substring(0, startPos) +
+        fn(text) +
+        this.value.substring(endPos)
       this.$emit('input', result)
       setTimeout(() => {
         textarea.select()
@@ -249,18 +322,49 @@ export default {
       })
     },
     downloadMD() {
-      this.$emit('downloadMD')
+      const a = document.createElement('a')
+      const blob = new Blob([this.markdown])
+      a.download = this.title + '.md'
+      a.href = URL.createObjectURL(blob)
+      a.click()
+      URL.revokeObjectURL(blob)
     },
     downloadHTML() {
-      this.$emit('downloadHTML')
+      blogStyle().then(res => {
+        if (res.ok) {
+          const a = document.createElement('a')
+          const blob = new Blob([
+            `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <title>${this.title}</title>
+                <style>${res.data}</style>
+              </head>
+              <body>
+                <div class="article-content">${this.html}</div>
+              </body>
+              </html>`
+          ])
+          a.download = this.title + '.html'
+          a.href = URL.createObjectURL(blob)
+          a.click()
+          URL.revokeObjectURL(blob)
+        }
+      })
     },
     selectFile(e) {
       const file = e.target.files[0]
       if (file === null) return
-      let data = new FormData()
-      data.append('file', file)
-      data.name = file.name.split('.')[0]
-      this.$emit('readFile', data)
+      const reader = new FileReader()
+      reader.readAsArrayBuffer(file)
+      reader.addEventListener('loadend', e => {
+        console.log(file)
+        const unit8Arr = new Uint8Array(e.currentTarget.result)
+        const encodedString = String.fromCharCode.apply(null, unit8Arr)
+        const decodedString = decodeURIComponent(escape(encodedString)) //没有这一步中文会乱码
+        this.$emit('input', decodedString)
+      })
     },
     tableMouseover(i, j) {
       this.newTable = [i, j]
@@ -299,7 +403,10 @@ export default {
       this.insert(text => `~~${text ? text : '删除线'}~~`, [2, 3, 2])
     },
     blockColor(color) {
-      this.insert(text => `\n<div class="${color}">\n${text ? text : 'color'}\n</div>\n`, [16 + color.length, 5, 0])
+      this.insert(
+        text => `\n<div class="${color}">\n${text ? text : 'color'}\n</div>\n`,
+        [16 + color.length, 5, 0]
+      )
     },
     quote() {
       this.insert(text => `\n> ${text ? text : '引用'}\n`, [3, 2, 0])
@@ -320,10 +427,18 @@ export default {
       this.insert(text => `\`${text ? text : '代码'}\``, [1, 2, 1])
     },
     blockCode() {
-      this.insert(text => `\n\`\`\`javascript\n${text ? text : '"hello world"'}\n\`\`\`\n`, [15, 13, 5])
+      this.insert(
+        text =>
+          `\n\`\`\`javascript\n${text ? text : '"hello world"'}\n\`\`\`\n`,
+        [15, 13, 5]
+      )
     },
     table() {
-      this.insert(text => `\n|${text ? text : ''}||\n|---|---|\n|||\n`, [2, 0, 1])
+      this.insert(text => `\n|${text ? text : ''}||\n|---|---|\n|||\n`, [
+        2,
+        0,
+        1
+      ])
     },
     link() {
       this.insert(text => `\n[${text ? text : '链接'}]()\n`, [2, 2, 2])

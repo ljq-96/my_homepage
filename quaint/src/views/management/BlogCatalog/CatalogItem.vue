@@ -1,38 +1,42 @@
 <template>
   <draggable
-    class="in-catalog"
     tag="ul"
+    class="in-catalog"
     animation="200"
     group="catalog"
     :list="list"
     :disabled="disabled"
     @change="change"
+    :class="{ isOpen: level === 0 }"
   >
-    <li
-      class="in-catalog-item"
-      v-for="(item, index) in list"
-      :key="item.blog._id"
-    >
-      <p class="in-catalog-item-title">
+    <li class="in-catalog-item" v-for="(item, index) in list" :key="item.id">
+      <p :class="{isCurrent: item.isCurrent}" class="in-catalog-item-title">
         <i
-          v-show="item.children.length"
+          v-if="/icon/.test(layout)"
           @click="changeOpen(index)"
-          :class="{ isOpen: item.isOpen }"
-          class="iconfont icon-zhengsanjiao"
+          :class="{
+            isOpen: item.isOpen && item.children.length,
+            'icon-zhengsanjiao': item.children.length,
+            'icon-dian': !item.children.length
+          }"
+          class="iconfont icon-zhengsanjiao catalog-item-icon"
         ></i>
-        <i v-show="!item.children.length" class="iconfont icon-dian"></i>
-        <router-link
-          v-if="disabled && item.blog.type === 'DOC'"
-          :to="{ path: '/quaint/article', query: { title: item.blog.title } }"
-          >{{ item.blog.title }}</router-link
+        <span
+          class="catalog-item-icon"
+          v-if="/index/.test(layout)"
+          @click="changeOpen(index)"
+          >{{ index + 1 }}.</span
         >
-        <span v-else>{{ item.blog.title }}</span>
+        <span style="flex-grow: 1" @click="onClick(item)">{{ item.title }}</span>
       </p>
       <catalog-item
         @change="change"
+        @click="onClick"
         :class="{ isOpen: item.isOpen }"
         :list.sync="item.children"
         :disabled="disabled"
+        :level="level + 1"
+        :layout="layout"
       />
     </li>
   </draggable>
@@ -55,16 +59,39 @@ export default {
       type: Boolean,
       default: false
     },
-    current: String
+    current: String,
+    level: {
+      type: Number,
+      default: 0
+    },
+    layout: {
+      type: String,
+      default: 'icon'
+    }
   },
   methods: {
     changeOpen(index) {
-      const temp = JSON.parse(JSON.stringify(this.list))
+      const temp = this.list
+
+      // 递归关闭所有子级
+      temp[index].isOpen && t(temp[index].children)
+      // 关闭当前层级
       temp[index].isOpen = !this.list[index].isOpen
+
+      function t(arr) {
+        arr.forEach(item => {
+          item.isOpen = false
+          item.children.length && t(item.children)
+        })
+      }
+
       this.$emit('update:list', temp)
     },
     change() {
       this.$emit('change')
+    },
+    onClick(item) {
+      this.$emit('click', item)
     }
   }
 }
@@ -77,35 +104,41 @@ export default {
 
 .in-catalog .in-catalog {
   padding-left: 20px;
-  overflow: hidden;
-  max-height: 0;
-  transition-duration: 0.4s;
-  transition-timing-function: ease-in-out;
-}
-
-.in-catalog .in-catalog.isOpen {
-  max-height: 400px;
 }
 
 .in-catalog-item-title {
   display: flex;
-  padding: 4px 0;
+  height: 0;
+  margin: 0;
+  line-height: 30px;
+  padding: 0 4px;
+  overflow: hidden;
   border-radius: 4px;
+  transition-duration: 0.4s;
+  transition-property: height, margin;
 }
 
-.in-catalog-item-title:hover {
+.in-catalog.isOpen > .in-catalog-item > .in-catalog-item-title {
+  height: 30px;
+  margin: 2px 0;
+}
+
+.in-catalog-item-title:hover,
+.in-catalog-item-title.isCurrent {
+  color: var(--color);
   background-color: var(--colorOpc1);
-} 
+}
 
 .in-catalog a:hover {
   color: var(--color);
   text-decoration: underline;
 }
 
-.in-catalog-item-title i {
+.catalog-item-icon {
   margin-right: 4px;
   cursor: pointer;
-  transition: 0.4s;
+  transition-duration: 0.4s;
+  transition-property: transform;
 }
 
 .in-catalog-item-title i.isOpen {

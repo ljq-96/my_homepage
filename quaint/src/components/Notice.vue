@@ -101,10 +101,11 @@ export default {
   bottom: 10px;
   width: 300px;
   color: #4a4a4a;
-  background-color: rgba(240, 240, 240, 0.8);
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--divider);
+  border-radius: 4px;
   backdrop-filter: blur(10px);
   transition: 0.4s;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 999;
 }
 

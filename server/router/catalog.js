@@ -14,7 +14,9 @@ router.get('/out', async (req, res) => {
     ok: 1,
     data: data.map(item => {
       return {
-        blog: item,
+        title: item.title,
+        id: item._id,
+        type: item.type,
         children: [],
         isOpen: true
       }
@@ -31,11 +33,14 @@ router.get('/in', async (req, res) => {
     const tempArr = []
     for (let item of arr) {
       const tempObj = {}
-      tempObj.blog = await blogModel.findById(item.blog, {
+      const blog = await blogModel.findById(item.blog, {
         title: 1,
         _id: 1,
         type: 1
       })
+      tempObj.title = blog.title
+      tempObj.id = blog._id
+      tempObj.type = blog.type
       tempObj.isOpen = isOpen
       tempObj.children = item.children.length
         ? await populate(item.children)

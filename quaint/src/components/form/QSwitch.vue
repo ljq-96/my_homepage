@@ -45,10 +45,10 @@ export default {
   width: 40px;
   height: 20px;
   border-radius: 10px;
-  background-color: #ccc;
+  background-color: var(--border);
   transition: 0.6s;
   cursor: pointer;
-  box-shadow: 0 0 0 0 #ccc;
+  box-shadow: 0 0 0 0 var(--border);
 }
 
 .switch::after {

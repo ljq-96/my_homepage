@@ -7,13 +7,13 @@
         </colgroup>
         <thead>
           <tr>
-            <td
+            <th
               v-for="col in columns"
               :key="col.title"
               :style="{ textAlign: col.align }"
             >
               {{ col.title }}
-            </td>
+            </th>
           </tr>
         </thead>
       </table>
@@ -94,7 +94,8 @@ export default {
 
 .q-table thead {
   font-weight: bold;
-  background-color: #fafafa;
+  text-align: left;
+  background-color: var(--background);
 }
 
 .q-table .tbody {
@@ -108,23 +109,24 @@ export default {
 
 .q-table .tbody::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background-color: #eee;
+  background-color: var(--divider);
 }
 
 .q-table .tbody::-webkit-scrollbar-thumb:hover {
   background-color: var(--color);
 }
 
-.q-table td {
+.q-table td,
+.q-table th {
   vertical-align: middle;
   padding: 10px 20px;
 }
 
 .q-table tr {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--divider);
 }
 
 .q-table tbody tr:hover {
-  background-color: #fafafa;
+  background-color: var(--background);
 }
 </style>

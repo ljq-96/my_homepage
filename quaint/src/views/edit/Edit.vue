@@ -22,11 +22,8 @@
     </div>
 
     <markdown-editor
-      ref="markdownEditor"
+      :title="articleInfo.title"
       v-model="markdown"
-      @downloadMD="downloadMD"
-      @downloadHTML="downloadHTML"
-      @readFile="readFile"
     ></markdown-editor>
   </div>
 </template>
@@ -40,9 +37,7 @@ import QButtonGroup from '../../components/button/QButtonGroup'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import {
   getBlogList,
-  readBlog,
   testBlog,
-  blogStyle,
   createBlog,
   updateBlog
 } from '../../network/blog'
@@ -156,47 +151,6 @@ export default {
     },
     cancel() {
       this.$router.go(-1)
-    },
-    downloadMD() {
-      const a = document.createElement('a')
-      const blob = new Blob([this.markdown])
-      a.download = this.articleInfo.title + '.md'
-      a.href = URL.createObjectURL(blob)
-      a.click()
-      URL.revokeObjectURL(blob)
-    },
-    downloadHTML() {
-      const contentHtml = this.$refs.markdownEditor.html
-      blogStyle().then(res => {
-        if (res.ok) {
-          const a = document.createElement('a')
-          const blob = new Blob([
-            `<!DOCTYPE html>
-              <html lang="en">
-              <head>
-                <meta charset="UTF-8">
-                <title>${this.articleInfo.title}</title>
-                <style>${res.data}</style>
-              </head>
-              <body>
-                <div class="article-content">${contentHtml}</div>
-              </body>
-              </html>`
-          ])
-          a.download = this.articleInfo.title + '.html'
-          a.href = URL.createObjectURL(blob)
-          a.click()
-          URL.revokeObjectURL(blob)
-        }
-      })
-    },
-    readFile(data) {
-      readBlog(data).then(res => {
-        if (res.ok) {
-          this.articleInfo.title = data.name
-          this.markdown = res.data
-        }
-      })
     }
   },
   created() {

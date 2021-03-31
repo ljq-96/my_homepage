@@ -34,17 +34,19 @@ export default {
   line-height: 22px;
   margin-right: 6px;
   padding: 0 8px;
-  border: 1px solid #e8eaec;
+  border: 1px solid var(--divider);
   border-radius: 2px;
-  background: #f7f7f7;
+  color: var(--content);
+  background: var(--background);
   font-size: 12px;
   vertical-align: middle;
   font-family: 'Fira Code';
+  user-select: none;
 }
 
 .q-tag-close {
   margin-left: 5px;
-  color: #aaa;
+  color: var(--disabled);
   cursor: pointer;
 }
 </style>

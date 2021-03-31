@@ -8,13 +8,13 @@ function createNotice(Component, props) {
   const comp = new Ctor({ propsData: props })
   comp.$mount()
   notices.push(comp.$el)
-  let bottom = 0
-  notices.forEach(item => (bottom += item.offsetHeight + 10))
+  let bottom = 5
+  notices.forEach(item => (bottom += item.offsetHeight + 5))
   comp.$el.style.bottom = bottom + 'px'
   document.body.appendChild(comp.$el)
   comp.posRemove = () => {
     notices.splice(notices.indexOf(comp.$el), 1)
-    const removeHeight = comp.$el.offsetHeight + 10
+    const removeHeight = comp.$el.offsetHeight + 5
     notices.forEach(item => {
       item.style.bottom = parseInt(item.style.bottom) - removeHeight + 'px'
     })

@@ -1,5 +1,5 @@
 <template>
-  <div ref="i" class="calendar">
+  <div ref="i" class="calendar card">
     <fluent-design v-slot="param" :width="2" :borderColor="'var(--color)'" :borderSize="50" :backSize="0">
       <div class="cal-title">
         <div>{{ year }}年{{ month + 1 }}月</div>
@@ -110,7 +110,7 @@ export default {
 <style scoped>
 .calendar {
   padding: 10px 12px;
-  margin-bottom: 8px;
+  margin-bottom: 15px;
 }
 
 .cal-title {

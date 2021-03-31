@@ -1,100 +1,115 @@
 <template>
   <div class="layout">
-    <div class="blog-catalog side" :class="{ close: !isBlogCatalog }">
-      <div
-        class="sticky"
-        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-      >
-        <div class="side-title">目录</div>
-        <div
-          class="blog-catalog-btn iconfont"
-          @click="isBlogCatalog = !isBlogCatalog"
-        >
-          &#xe7ec;
-        </div>
-        <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
-      </div>
+    <div class="blog-catalog side">
+      <q-card class="sticky">
+        <template #title>
+          <p>文章汇总</p>
+        </template>
+        <template #content>
+          <catalog-item
+            @click="catalogClick"
+            :disabled="true"
+            :list.sync="inCatalog"
+          ></catalog-item>
+        </template>
+        <template #extra>
+          <span>展开/关闭</span>
+        </template>
+      </q-card>
     </div>
-    <div ref="article" class="article">
-      <div class="article-title">
-        <div class="suptitle">
-          <h1>{{ $route.query.title }}</h1>
-          <router-link :to="{ path: '/edit', query: { title: title } }">
-            <span class="iconfont">&#xe792;</span>
-          </router-link>
+    <q-card headLine="var(--color)" class="article">
+      <template #title>
+        <div class="article-title">
+          <div class="suptitle">
+            <h1>{{ article.title }}</h1>
+          </div>
+          <div class="subtitle">
+            <q-tag
+              v-for="item in article.tags"
+              :key="item"
+              @click.native="
+                $router.push({ path: '/quaint/blog', query: { tag: item } })
+              "
+              >#{{ item }}</q-tag
+            >
+            <span>{{ article.create_time | formatDate('YYYY-MM-DD hh:mm:ss') }}</span>
+          </div>
         </div>
-        <div class="subtitle">
-          <span>{{ time | formatDate('YYYY-MM-DD') }}</span>
-          <router-link
-            v-for="(item, index) in tags"
-            :to="{ path: '/quaint/blog', query: { tag: item } }"
-            :key="index"
-          >
-            #{{ item }}
-          </router-link>
-        </div>
-      </div>
-      <div class="article-content" v-html="content"></div>
-    </div>
+      </template>
+      <template #content>
+        <div class="article-content" v-html="article.content"></div>
+      </template>
+      <template #extra>
+        <q-button @click="$router.push({ path: '/edit/' + article._id })" plain>
+          <i class="iconfont icon-edit"></i>
+        </q-button>
+      </template>
+    </q-card>
     <div class="side">
       <calendar></calendar>
-      <article-catalog
-        class="article-catalog sticky"
-        :catalog="articleCatalog"
-        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-      ></article-catalog>
+      <q-card class="sticky article-catalog">
+        <template #title>
+          <p>目录</p>
+        </template>
+        <template #content>
+          <catalog-item
+            @click="articleCatalogClick"
+            :disabled="true"
+            :list.sync="articleCatalog"
+            layout="icon"
+          ></catalog-item>
+        </template>
+      </q-card>
     </div>
   </div>
 </template>
 
 <script>
-import { debounce } from '@/common/utils'
+import { tree } from '../../common/utils'
 import Calendar from '@/components/Calendar'
-import ArticleCatalog from '@/views/article/ArticleCatalog'
 import CatalogItem from '../management/BlogCatalog/CatalogItem'
 import { getCatalogIn } from '../../network/catalog'
-import { getBlogList } from '../../network/blog'
+import { getBlogOne } from '../../network/blog'
 import markdown from '@/common/markdown'
-
+let timer = 0
 export default {
   components: {
     Calendar,
-    CatalogItem,
-    ArticleCatalog
+    CatalogItem
   },
   data() {
     return {
-      content: '',
-      tags: [],
-      title: this.$route.query.title,
+      article: '',
       inCatalog: [],
-      time: '',
-      articleCatalog: {},
+      articleCatalog: [],
       isBlogCatalog: true
     }
   },
   methods: {
     setCatalog() {
       const root = { children: [] }
-      const titleArr = this.content.match(/<h.>(.*?)<\/h.>/g)
+      const titleArr = this.article.content.match(/<h.>(.*?)<\/h.>/g)
       let current = root
       titleArr.forEach(item => {
         const level = item[2]
-        const id = Math.random()
-          .toString()
-          .replace('.', '')
-        const name = item.match(/>(.*?)</)[1]
-        this.content = this.content.replace(
+        const id = Number(
+          Math.random()
+            .toString()
+            .substr(3, 3) + Date.now()
+        ).toString(36)
+        const title = item.match(/>(.*?)</)[1]
+        this.article.content = this.article.content.replace(
           item,
-          `<h${level} data-id="${id}">${name}</h${level}>`
+          `<h${level} data-id="${id}">${title}</h${level}>`
         )
         const obj = {
-          name: name,
+          title: title,
           id: id,
           level: level,
           children: [],
           parent: null,
-          isInView: false
+          isCurrent: false,
+          isOpen: false
         }
         while (current !== root && current.level - obj.level !== -1) {
           current = current.parent
@@ -104,60 +119,87 @@ export default {
         current = obj
       })
       this.articleCatalog = root.children
-      this.$nextTick(this.onScroll)
+      this.$nextTick(() => {
+        this.els = Array.from(document.querySelectorAll('[data-id]'))
+        this.scrollFn()
+        window.addEventListener('scroll', this.scrollFn)
+      })
     },
-    onScroll() {
-      const els = Array.from(document.querySelectorAll('[data-id]'))
-      window.onscroll = debounce(e => {
-        t(
-          this.articleCatalog,
-          els
-            .reduce((a, b) =>
-              Math.abs(a.offsetTop - pageYOffset) <
-              Math.abs(b.offsetTop - pageYOffset)
-                ? a
-                : b
-            )
-            .getAttribute('data-id')
+    scrollFn() {
+      const id = this.els
+        .reduce((a, b) =>
+          Math.abs(a.offsetTop - pageYOffset) <
+          Math.abs(b.offsetTop - pageYOffset)
+            ? a
+            : b
         )
-        this.$nextTick(() => {
-          const el = document.querySelector('.inview')
-          if (el) {
-            const elParent = el.offsetParent
-            const height = elParent.clientHeight / 2
-            const elScroll = elParent.children[1]
-            if (el.offsetTop - elScroll.scrollTop !== height) {
-              elScroll.scrollTo(0, el.offsetTop - height)
-            }
+        .getAttribute('data-id')
+      tree(item => {
+        if (item.id === id) {
+          item.isCurrent = true
+          item.isOpen = true
+          let v = item
+          while (v) {
+            v.isOpen = true
+            v = v.parent
           }
+        } else {
+          item.isCurrent = false
+        }
+      }, this.articleCatalog)
+
+      this.$nextTick(() => {
+        const el = document.querySelector('.article-catalog .isCurrent')
+        if (el) {
+          const elParent = el.offsetParent
+          const height = elParent.clientHeight / 2
+          const elScroll = elParent.children[1]
+          if (el.offsetTop - elScroll.scrollTop !== height) {
+            elScroll.scrollTo(0, el.offsetTop - height)
+          }
+        }
+      })
+    },
+
+    catalogClick(item) {
+      const { type, id } = item
+      if (type === 'DOC') {
+        this.$router.push({
+          path: '/quaint/article/' + id
         })
-      }, 200)
-      const t = (arr, id) => {
-        arr.forEach(item => {
-          if (item.id === id) {
-            item.isInView = true
-          } else {
-            item.isInView = false
-          }
-          if (item.children.length) {
-            t(item.children, id)
-          }
-        })
+      } else {
+        item.isOpen && tree(item => (item.isOpen = false), item.children)
+        this.$set(item, 'isOpen', !item.isOpen)
       }
+    },
+    articleCatalogClick(item) {
+      clearTimeout(timer)
+      window.removeEventListener('scroll', this.scrollFn)
+      document.querySelector(`[data-id="${item.id}"]`).scrollIntoView()
+      timer = setTimeout(() => {
+        window.addEventListener('scroll', this.scrollFn)
+      }, 500)
     }
   },
   watch: {
     $route: {
       handler: function(to, from) {
-        getBlogList({
-          title: to.query.title
-        }).then(res => {
+        getBlogOne(to.params.id).then(res => {
           if (res.ok) {
-            const article = res.data[0]
-            this.content = markdown.render(article.content)
-            this.tags = article.tags
-            this.time = article.time
+            const { content, ...info } = res.data.blog
+            this.article = {
+              ...info,
+              content: markdown.render(content)
+            }
+
             this.setCatalog()
+            tree(item => {
+              if (item.title === to.query.title) {
+                this.$set(item, 'isCurrent', true)
+              } else {
+                this.$set(item, 'isCurrent', false)
+              }
+            }, this.inCatalog)
           }
         })
       },
@@ -168,6 +210,13 @@ export default {
     getCatalogIn().then(res => {
       if (res.ok) {
         this.inCatalog = res.data
+        tree(item => {
+          if (item.title === this.$route.query.title) {
+            this.$set(item, 'isCurrent', true)
+          } else {
+            this.$set(item, 'isCurrent', false)
+          }
+        }, res.data)
       }
     })
   }
@@ -177,7 +226,7 @@ export default {
 <style scoped>
 .article {
   flex-grow: 1;
-  margin: 0 8px;
+  margin: 0 15px;
   user-select: text;
 }
 
@@ -185,53 +234,8 @@ export default {
   position: relative;
 }
 
-.blog-catalog-btn {
-  display: none;
-  position: absolute;
-  right: -20px;
-  top: 20px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 30px;
-  background-color: #fff;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-}
-
-.blog-catalog-btn:hover {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
 .blog-catalog.close {
   width: 0;
-}
-
-.blog-catalog.close .catalog,
-.blog-catalog.close .side-title {
-  display: none;
-}
-
-.blog-catalog.close .blog-catalog-btn {
-  display: block;
-  transform: rotate(180deg);
-}
-
-.blog-catalog:hover .blog-catalog-btn {
-  display: block;
-}
-
-.article .side-title {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.article-title {
-  padding: 20px 16px;
-  margin-bottom: 4px;
-  background-color: #fff;
-  border-top: 3px solid var(--color);
 }
 
 .article-title .suptitle {
@@ -260,16 +264,5 @@ export default {
 .article-title .subtitle a:hover {
   color: var(--color);
   text-decoration: underline;
-}
-
-.article-content {
-  background-color: #fff;
-  padding: 10px 20px;
-  border: 1px solid var(--divider);
-}
-
-.article-catalog {
-  padding: 10px 12px;
-  font-family: Firacode;
 }
 </style>

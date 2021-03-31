@@ -96,36 +96,36 @@ export default {
   display: flex;
   width: 40px;
   height: 40px;
-  border-top: 1px solid #e8eaec;
-  border-bottom: 1px solid #e8eaec;
+  border-top: 1px solid var(--divider);
+  border-bottom: 1px solid var(--divider);
   align-items: center;
   justify-content: center;
 }
 
 .q-page-content span:first-child {
   border-radius: 3px 0 0 3px;
-  border-left: 1px solid #e8eaec;
+  border-left: 1px solid var(--divider);
 }
 
 .q-page-content span:last-child {
   border-radius: 0 3px 3px 0;
-  border-right: 1px solid #e8eaec;
+  border-right: 1px solid var(--divider);
 }
 
 .q-page-content .click:hover {
-  background-color: #f5f5f5;
+  background-color: var(--background);
 }
 
 .q-page-content .click.active {
   color: #fff;
   margin: -1px 0;
-  border-color: var(--colorLum5);
-  background-color: var(--colorLum5);
+  border-color: var(--color);
+  background-color: var(--color);
 }
 
 .q-page-content .click.disabled {
-  color: #aaa;
-  background-color: #f5f5f5;
+  color: var(--disabled);
+  background-color: var(--background);
   cursor: no-drop;
 }
 </style>

@@ -30,6 +30,34 @@ router.get('/', async (req, res) => {
   })
 })
 
+// 查询具体文章
+router.get('/one/:id', async (req, res) => {
+  const { id } = req.params
+  const blog = await blogModel.findById(id)
+  const prev = await blogModel
+    .find({
+      user_id: blog.user_id,
+      _id: { $gt: id }
+    })
+    .sort({ _id: 1 })
+    .limit(1)
+  const next = await blogModel
+    .find({
+      user_id: blog.user_id,
+      _id: { $lt: id }
+    })
+    .sort({ _id: -1 })
+    .limit(1)
+  res.status(200).json({
+    ok: 1,
+    data: {
+      blog,
+      next: next[0],
+      prev: prev[0]
+    }
+  })
+})
+
 // 获取所有标签
 router.get('/tags', async (req, res) => {
   const { token } = req

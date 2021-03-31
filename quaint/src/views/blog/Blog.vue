@@ -1,55 +1,97 @@
 <template>
-  <div class="layout">
-    <div class="side">
-      <list
-        class="sticky"
-        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-        :click="true"
-        @send="toSticky"
-        :title="'Sticky'"
-        :data="sticky"
-      ></list>
+  <div class="blog-container layout">
+    <div class="side left">
+      <q-card class="sticky">
+        <template #title>
+          <p class="tag-title">Sticky</p>
+        </template>
+        <template #content>
+          <div
+            @click="toSticky(item.name)"
+            class="tag-item"
+            v-for="(item, index) in sticky"
+            :key="index"
+          >
+            <span>{{ item.title }}</span>
+          </div>
+        </template>
+      </q-card>
     </div>
     <div class="articles">
-      <div class="catalog-container">
-        <p>Catalog</p>
-        <catalog-item :disabled="true" :list.sync="inCatalog"></catalog-item>
-        <catalog-image
-          class="catalog-image"
-          :color="$store.state.color.css()"
-        ></catalog-image>
-      </div>
-      <article-item
+      <q-card headLine="var(--color)" class="catalog-container">
+        <template #title>
+          <p class="catalog-title">文章汇总</p>
+        </template>
+        <template #content>
+          <catalog-item
+            @click="catalogClick"
+            :disabled="true"
+            :list.sync="inCatalog"
+          ></catalog-item>
+          <catalog-image
+            class="catalog-image"
+            :color="$store.state.color.css()"
+          ></catalog-image>
+        </template>
+      </q-card>
+      <q-card
         v-for="item in articles"
         :key="item._id"
-        :tags="item.tags"
-        :title="item.title"
-        :time="item.time"
-        :truncate="item.truncate"
-        @send="setTag"
-      ></article-item>
+        class="article-item article-content"
+      >
+        <template #title>
+          <div class="aiticle-item-head">
+            <span>{{ item.create_time | formatDate('YYYY-MM-DD hh:mm:ss') }}</span>
+          </div>
+          <router-link
+            class="aiticle-item-title"
+            :to="'/quaint/article/' + item._id"
+            >{{ item.title }}</router-link
+          >
+        </template>
+        <template #content>
+          <div class="desc" v-html="item.truncate"></div>
+          <div class="aiticle-item-head">
+            <q-tag
+              v-for="j in item.tags"
+              :key="j"
+              @click.native="
+                $router.push({ path: '/quaint/blog', query: { tag: j } })
+              "
+              >#{{ j }}</q-tag
+            >
+          </div>
+        </template>
+      </q-card>
       <fluent-design v-slot="param" :backSize="100" class="load-more-container">
         <fluent-design-item class="load-more" :param="param">
           <div @click="loadMore">加载更多</div>
         </fluent-design-item>
       </fluent-design>
     </div>
-    <div class="side">
+    <div class="side right">
       <calendar></calendar>
-      <list
-        class="sticky"
-        :title="'Tags'"
-        :click="true"
-        @send="setTag"
-        :data="tags"
-        :style="{ top: $store.state.isPageDown ? '0' : '50px' }"
-      ></list>
+      <q-card class="sticky">
+        <template #title>
+          <p class="tag-title">Tags</p>
+        </template>
+        <template #content>
+          <div
+            @click="toTag(item.name)"
+            class="tag-item"
+            v-for="(item, index) in tags"
+            :key="index"
+          >
+            <span>{{ item.name }}</span>
+            <span class="tag-item-count">{{ item.value }}</span>
+          </div>
+        </template>
+      </q-card>
     </div>
   </div>
 </template>
 
 <script>
-import ArticleItem from './ArticleItem'
 import List from '@/components/List'
 import Calendar from '@/components/Calendar'
 import FluentDesign from '@/components/FluentDesign'
@@ -59,9 +101,9 @@ import CatalogImage from '@/components/svgimage/1'
 import CatalogItem from '../management/BlogCatalog/CatalogItem'
 import { getCatalogIn } from '../../network/catalog'
 import { getBlogList, getBlogTags } from '../../network/blog'
+import { tree } from '../../common/utils'
 export default {
   components: {
-    ArticleItem,
     Calendar,
     List,
     FluentDesign,
@@ -85,7 +127,7 @@ export default {
       this.currentPage++
       this.getArticles()
     },
-    setTag(tag) {
+    toTag(tag) {
       this.$router.push({ path: '/quaint/blog', query: { tag: tag } })
     },
     getArticles() {
@@ -104,7 +146,18 @@ export default {
       })
     },
     toSticky(title) {
-      this.$router.push({ path: '/quaint/article', query: { title: title } })
+      this.$router.push({ path: '/quaint/article/', query: { title: title } })
+    },
+    catalogClick(item) {
+      const { type, id } = item
+      if (type === 'DOC') {
+        this.$router.push({
+          path: '/quaint/article/' + id
+        })
+      } else {
+        item.isOpen && tree(item => (item.isOpen = false), item.children)
+        this.$set(item, 'isOpen', !item.isOpen)
+      }
     }
   },
   created() {
@@ -116,12 +169,7 @@ export default {
     })
     getBlogTags().then(res => {
       if (res.ok) {
-        this.tags = res.data.map(item => {
-          return {
-            title: item.name,
-            info: item.value
-          }
-        })
+        this.tags = res.data
       }
     })
     getCatalogIn().then(res => {
@@ -140,12 +188,12 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .articles {
   flex-grow: 1;
   flex-shrink: 1;
   width: 100%;
-  margin: 0 4px;
+  margin: 0 15px;
 }
 
 .text {
@@ -159,12 +207,6 @@ export default {
 
 .catalog-container {
   position: relative;
-  margin-bottom: 4px;
-  padding: 20px;
-  border: 1px solid var(--divider);
-  border-top: 3px solid var(--color);
-  border-radius: 4px;
-  background-color: #fff;
   overflow: hidden;
 }
 
@@ -177,9 +219,28 @@ export default {
   transform: rotateY(180deg);
 }
 
-.catalog-container > p {
-  margin-bottom: 5px;
-  font-size: 16px;
+.article-item {
+  margin: 15px 0;
+}
+
+.aiticle-item-head {
+  height: 20px;
+  line-height: 20px;
+  font-size: 12px;
+  color: var(--disabled);
+}
+
+.aiticle-item-title {
+  display: block;
+  position: relative;
+  height: 40px;
+  line-height: 40px;
+  font-size: 24px;
+  color: var(--title);
+}
+
+.aiticle-item-title:hover {
+  color: var(--color);
 }
 
 .load-more-container {
@@ -192,5 +253,31 @@ export default {
   margin: 0 auto;
   text-align: center;
   line-height: 40px;
+}
+
+.tag-title,
+.catalog-title {
+  font-size: 16px;
+}
+
+.tag-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px;
+  margin: 2px 0;
+  border-radius: 4px;
+}
+
+.tag-item:hover {
+  background-color: var(--colorOpc1);
+}
+
+.tag-item-count {
+  padding: 2px 6px;
+  color: var(--sub);
+  font-size: 12px;
+  border-radius: 4px;
+  background-color: var(--background);
 }
 </style>
