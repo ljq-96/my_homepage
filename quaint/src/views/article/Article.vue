@@ -17,34 +17,64 @@
         </template>
       </q-card>
     </div>
-    <q-card headLine="var(--color)" class="article">
-      <template #title>
-        <div class="article-title">
-          <div class="suptitle">
-            <h1>{{ article.title }}</h1>
+    <div class="article">
+      <q-card headLine="var(--color)">
+        <template #title>
+          <div class="article-title">
+            <div class="suptitle">
+              <h1>{{ article.title }}</h1>
+            </div>
+            <div class="subtitle">
+              <q-tag
+                v-for="item in article.tags"
+                :key="item"
+                @click.native="
+                  $router.push({ path: '/quaint/blog', query: { tag: item } })
+                "
+                >#{{ item }}</q-tag
+              >
+              <span>{{
+                article.create_time | formatDate('YYYY-MM-DD hh:mm:ss')
+              }}</span>
+            </div>
           </div>
-          <div class="subtitle">
-            <q-tag
-              v-for="item in article.tags"
-              :key="item"
-              @click.native="
-                $router.push({ path: '/quaint/blog', query: { tag: item } })
-              "
-              >#{{ item }}</q-tag
-            >
-            <span>{{ article.create_time | formatDate('YYYY-MM-DD hh:mm:ss') }}</span>
-          </div>
-        </div>
-      </template>
-      <template #content>
-        <div class="article-content" v-html="article.content"></div>
-      </template>
-      <template #extra>
-        <q-button @click="$router.push({ path: '/edit/' + article._id })" plain>
-          <i class="iconfont icon-edit"></i>
-        </q-button>
-      </template>
-    </q-card>
+        </template>
+        <template #content>
+          <div class="article-content" v-html="article.content"></div>
+        </template>
+        <template #extra>
+          <q-button
+            @click="$router.push({ path: '/edit/' + article._id })"
+            plain
+          >
+            <i class="iconfont icon-edit"></i>
+          </q-button>
+        </template>
+      </q-card>
+      <div class="article-bottom">
+        <q-card>
+          <template #title>
+            <span>上一篇</span>
+          </template>
+          <template #content>
+            <router-link :to="`/quaint/article/${prev._id}`">{{
+              prev.title
+            }}</router-link>
+          </template>
+        </q-card>
+        <q-card>
+          <template #extra>
+            <span>下一篇</span>
+          </template>
+          <template #content>
+            <router-link :to="`/quaint/article/${next._id}`">{{
+              next.title
+            }}</router-link>
+          </template>
+        </q-card>
+      </div>
+    </div>
+
     <div class="side">
       <calendar></calendar>
       <q-card class="sticky article-catalog">
@@ -79,7 +109,9 @@ export default {
   },
   data() {
     return {
-      article: '',
+      article: {},
+      next: {},
+      prev: {},
       inCatalog: [],
       articleCatalog: [],
       isBlogCatalog: true
@@ -191,6 +223,8 @@ export default {
               ...info,
               content: markdown.render(content)
             }
+            this.next = res.data.next
+            this.prev = res.data.prev
 
             this.setCatalog()
             tree(item => {
@@ -264,5 +298,28 @@ export default {
 .article-title .subtitle a:hover {
   color: var(--color);
   text-decoration: underline;
+}
+
+.article-bottom {
+  display: flex;
+  margin-top: 15px;
+}
+
+.article-bottom > div {
+  flex: 1;
+}
+
+.article-bottom > div:nth-child(1) {
+  margin-right: 7.5px;
+}
+
+.article-bottom > div:nth-child(2) {
+  margin-left: 7.5px;
+  text-align: right;
+}
+
+.article-bottom span {
+  font-size: 12px;
+  color: var(--disabled);
 }
 </style>

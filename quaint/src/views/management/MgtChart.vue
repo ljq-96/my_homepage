@@ -63,20 +63,12 @@
 </template>
 
 <script>
-import QButton from '../../components/button/QButton'
-import QButtonGroup from '../../components/button/QButtonGroup'
-import QTable from '../../components/table/QTable'
-import QTag from '../../components/other/QTag'
 import TagChart from '@/views/management/charts/TagChart'
 import TimeChart from '@/views/management/charts/TimeChart'
 import WordsChart from '@/views/management/charts/WordsChart'
 import { getBlogTags, getBlogList, deleteBlog } from '../../network/blog'
 export default {
   components: {
-    QButtonGroup,
-    QButton,
-    QTable,
-    QTag,
     TagChart,
     TimeChart,
     WordsChart

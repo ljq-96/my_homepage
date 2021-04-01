@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     filters.tags = { $elemMatch: { $eq: tag } }
   }
   const blogs = await blogModel
-    .find(filters, { in_catalog: 0 })
+    .find(filters, { in_catalog: 0})
     .sort({ create_time: -1 })
     .skip((currentPage - 1) * pageSize)
     .limit(Number(pageSize))
@@ -35,17 +35,29 @@ router.get('/one/:id', async (req, res) => {
   const { id } = req.params
   const blog = await blogModel.findById(id)
   const prev = await blogModel
-    .find({
-      user_id: blog.user_id,
-      _id: { $gt: id }
-    })
+    .find(
+      {
+        user_id: blog.user_id,
+        _id: { $gt: id }
+      },
+      {
+        _id: 1,
+        title: 1
+      }
+    )
     .sort({ _id: 1 })
     .limit(1)
   const next = await blogModel
-    .find({
-      user_id: blog.user_id,
-      _id: { $lt: id }
-    })
+    .find(
+      {
+        user_id: blog.user_id,
+        _id: { $lt: id }
+      },
+      {
+        _id: 1,
+        title: 1
+      }
+    )
     .sort({ _id: -1 })
     .limit(1)
   res.status(200).json({
