@@ -10,6 +10,7 @@
 
 <script>
 export default {
+  name: 'QButton',
   props: {
     type: {
       type: String,

@@ -13,6 +13,7 @@
 <script>
 import Schema from 'async-validator'
 export default {
+  name: 'QFormItem',
   inject: ['form'],
   props: {
     prop: {

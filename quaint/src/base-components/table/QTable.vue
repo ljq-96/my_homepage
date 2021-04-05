@@ -50,6 +50,7 @@
 
 <script>
 export default {
+  name: 'QTable',
   props: {
     dataSource: {
       type: Array,

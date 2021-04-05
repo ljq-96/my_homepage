@@ -8,6 +8,7 @@
 
 <script>
 export default {
+  name: 'QSwitch',
   props: {
     value: {
       type: Boolean,

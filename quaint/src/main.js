@@ -7,27 +7,11 @@ import notice from './common/notice'
 import request from '@/network/request'
 import day from 'dayjs'
 import 'highlight.js/styles/atom-one-light.css'
-import QTag from './components/other/QTag.vue'
-import QCard from './components/other/QCard.vue'
-import QButton from './components/button/QButton.vue'
-import QButtonGroup from './components/button/QButtonGroup.vue'
-import QTable from './components/table/QTable.vue'
-import QPage from './components/other/QPage.vue'
-import QSwitch from './components/form/QSwitch.vue'
-import QIcon from './components/other/QIcon.vue'
-import QTip from './components/other/QTip.vue'
 
-Vue.component('q-card', QCard)
-Vue.component('q-tag', QTag)
-Vue.component('q-button', QButton)
-Vue.component('q-button-group', QButtonGroup)
-Vue.component('q-table', QTable)
-Vue.component('q-page', QPage)
-Vue.component('q-switch', QSwitch)
-Vue.component('q-icon', QIcon)
-Vue.component('q-tip', QTip)
+import BaseComponents from './base-components'
 
 Vue.use(notice)
+Vue.use(BaseComponents)
 Vue.prototype.$echarts = echarts
 Vue.prototype.$request = request
 Vue.prototype.$bus = new Vue()

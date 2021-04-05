@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name: 'QIcon',
   props: {
     icon: {
       type: String

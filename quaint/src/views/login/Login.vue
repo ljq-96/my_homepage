@@ -30,22 +30,14 @@
 </template>
 
 <script>
-import QForm from '@/components/form/QForm'
-import QFormItem from '@/components/form/QFormItem'
-import QInput from '@/components/form/QInput'
 import CanvasWallpaper from '@/components/CanvasWallpaper'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
-import QButton from '../../components/button/QButton'
 export default {
   components: {
     FluentDesign,
     FluentDesignItem,
-    CanvasWallpaper,
-    QForm,
-    QFormItem,
-    QInput,
-    QButton
+    CanvasWallpaper
   },
   data() {
     return {

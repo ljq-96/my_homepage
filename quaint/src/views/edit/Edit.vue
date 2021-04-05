@@ -29,11 +29,6 @@
 </template>
 
 <script>
-import QForm from '@/components/form/QForm'
-import QFormItem from '@/components/form/QFormItem'
-import QInput from '@/components/form/QInput'
-import QButton from '../../components/button/QButton'
-import QButtonGroup from '../../components/button/QButtonGroup'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import {
   getBlogOne,
@@ -43,12 +38,7 @@ import {
 } from '../../network/blog'
 export default {
   components: {
-    MarkdownEditor,
-    QForm,
-    QFormItem,
-    QInput,
-    QButton,
-    QButtonGroup
+    MarkdownEditor
   },
   data() {
     var tagsReg = (rule, value, callback) => {

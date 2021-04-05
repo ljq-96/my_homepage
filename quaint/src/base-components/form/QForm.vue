@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'QForm',
   props: {
     model: {
       type: Object

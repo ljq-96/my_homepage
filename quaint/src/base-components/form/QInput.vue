@@ -15,8 +15,8 @@
 
 <script>
 export default {
+  name: 'QInput',
   inheritAttrs: false,
-  // inject: ['form'],
   props: {
     value: {
       type: String,

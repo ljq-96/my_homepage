@@ -81,9 +81,6 @@
 import { debounce } from '../../../common/utils'
 import draggable from 'vuedraggable'
 import CatalogItem from './CatalogItem'
-import QButton from '../../../components/button/QButton'
-import QButtonGroup from '../../../components/button/QButtonGroup'
-import QInput from '../../../components/form/QInput'
 import { createBlog, deleteBlog } from '../../../network/blog'
 import {
   getCatalogOut,
@@ -93,11 +90,8 @@ import {
 } from '../../../network/catalog'
 export default {
   components: {
-    QButton,
-    QButtonGroup,
     CatalogItem,
-    draggable,
-    QInput
+    draggable
   },
   data() {
     return {

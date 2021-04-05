@@ -27,6 +27,7 @@
 
 <script>
 export default {
+  name: 'QTip',
   props: {
     tip: {
       type: String,

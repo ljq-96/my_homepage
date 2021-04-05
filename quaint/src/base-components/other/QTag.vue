@@ -12,6 +12,7 @@
 
 <script>
 export default {
+  name: 'QTag',
   props: {
     color: String,
     closable: {

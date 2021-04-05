@@ -25,6 +25,7 @@
 
 <script>
 export default {
+  name: 'QCard',
   props: {
     headLine: {
       type: String

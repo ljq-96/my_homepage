@@ -26,6 +26,7 @@
 
 <script>
 export default {
+  name: 'QPage',
   props: {
     pageSize: {
       type: Number,
