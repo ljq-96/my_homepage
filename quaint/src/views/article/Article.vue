@@ -43,12 +43,14 @@
           <div class="article-content" v-html="article.content"></div>
         </template>
         <template #extra>
-          <q-button
-            @click="$router.push({ path: '/edit/' + article._id })"
-            plain
-          >
-            <i class="iconfont icon-edit"></i>
-          </q-button>
+          <q-tip placement="bottom" tip="编辑">
+            <q-button
+              @click="$router.push({ path: '/edit/' + article._id })"
+              plain
+            >
+              <i class="iconfont icon-edit"></i>
+            </q-button>
+          </q-tip>
         </template>
       </q-card>
       <div class="article-bottom">
@@ -57,9 +59,12 @@
             <span>上一篇</span>
           </template>
           <template #content>
-            <router-link :to="`/quaint/article/${prev._id}`">{{
-              prev.title
-            }}</router-link>
+            <router-link
+              v-if="prev"
+              :to="`/quaint/article/${prev._id}`"
+              >{{ prev.title }}</router-link
+            >
+            <span v-else>没有上一篇了</span>
           </template>
         </q-card>
         <q-card>
@@ -67,10 +72,13 @@
             <span>下一篇</span>
           </template>
           <template #content>
-            <router-link :to="`/quaint/article/${next._id}`">{{
-              next.title
-            }}</router-link>
+            <router-link
+              v-if="next.title"
+              :to="`/quaint/article/${next._id}`"
+              >{{ next.title }}</router-link
+            >
           </template>
+          <span v-if>没有下一篇了</span>
         </q-card>
       </div>
     </div>
@@ -303,6 +311,7 @@ export default {
 .article-bottom {
   display: flex;
   margin-top: 15px;
+  user-select: none;
 }
 
 .article-bottom > div {
@@ -319,7 +328,11 @@ export default {
 }
 
 .article-bottom span {
-  font-size: 12px;
   color: var(--disabled);
+}
+
+.article-bottom a:hover {
+  color: var(--color);
+  text-decoration: underline;
 }
 </style>

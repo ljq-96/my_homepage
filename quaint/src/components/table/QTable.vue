@@ -18,7 +18,10 @@
         </thead>
       </table>
     </div>
-    <div class="tbody" :style="{ height: height }">
+    <div
+      class="tbody"
+      :style="{ height: height, overflow: height ? 'auto' : '' }"
+    >
       <table cellspacing="0" cellpadding="0">
         <tbody ref="tbody">
           <tr v-for="(row, index) in dataSource" :key="row._id">
@@ -83,7 +86,7 @@ export default {
 <style scoped>
 .q-table {
   width: 100%;
-  padding: 10px;
+  /* padding: 10px; */
   background-color: #fff;
 }
 
@@ -96,10 +99,6 @@ export default {
   font-weight: bold;
   text-align: left;
   background-color: var(--background);
-}
-
-.q-table .tbody {
-  overflow: auto;
 }
 
 .q-table .tbody::-webkit-scrollbar {

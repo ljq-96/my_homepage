@@ -14,6 +14,8 @@ import QButtonGroup from './components/button/QButtonGroup.vue'
 import QTable from './components/table/QTable.vue'
 import QPage from './components/other/QPage.vue'
 import QSwitch from './components/form/QSwitch.vue'
+import QIcon from './components/other/QIcon.vue'
+import QTip from './components/other/QTip.vue'
 
 Vue.component('q-card', QCard)
 Vue.component('q-tag', QTag)
@@ -22,6 +24,8 @@ Vue.component('q-button-group', QButtonGroup)
 Vue.component('q-table', QTable)
 Vue.component('q-page', QPage)
 Vue.component('q-switch', QSwitch)
+Vue.component('q-icon', QIcon)
+Vue.component('q-tip', QTip)
 
 Vue.use(notice)
 Vue.prototype.$echarts = echarts

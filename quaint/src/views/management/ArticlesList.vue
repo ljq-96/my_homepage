@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="article-list">
+    <div class="card article-list">
       <q-table :dataSource="list" :columns="columns">
         <template #action="{row, index}">
           <q-button
@@ -26,10 +26,12 @@
           >
         </template>
         <template #sticky="{row, index}">
-          <q-switch
-            @change="changeSticky($event, row)"
-            v-model="row.sticky"
-          ></q-switch>
+          <q-tip placement="top" :tip="row.sticky ? '已置顶' : '未置顶'">
+            <q-switch
+              @change="changeSticky($event, row)"
+              v-model="row.sticky"
+            ></q-switch>
+          </q-tip>
         </template>
         <template #tags="{row, index}">
           <q-tag v-for="item in row.tags" :key="item">
@@ -61,7 +63,7 @@ export default {
     return {
       list: [],
       size: 13,
-      pageSize: 9,
+      pageSize: 8,
       currentPage: 1,
       total: 0,
       columns: [

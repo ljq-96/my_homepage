@@ -90,17 +90,19 @@ body {
   color: var(--content);
   font-size: 14px;
   font-family: Ubuntu;
-  line-height: 1.6em;
   background-color: var(--background);
-  /* background-color: #fff; */
 }
 
 body::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 body::-webkit-scrollbar-thumb {
+  background-color: var(--disabled);
+}
+
+body::-webkit-scrollbar-thumb:hover {
   background-color: var(--color);
 }
 
@@ -186,7 +188,6 @@ iframe {
 }
 
 .scroll-bar::-webkit-scrollbar-thumb {
-  border-radius: 4px;
   background-color: #eee;
 }
 

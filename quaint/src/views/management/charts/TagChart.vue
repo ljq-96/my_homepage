@@ -1,5 +1,5 @@
 <template>
-  <div ref="chart" class="tag-chart"></div>
+  <div :style="{ height: height + 'px' }" ref="chart" class="tag-chart"></div>
 </template>
 
 <script>
@@ -9,20 +9,13 @@ export default {
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      height: ''
     }
   },
   computed: {
     option() {
       return {
-        title: {
-          text: 'Tags',
-          left: 'left',
-          textStyle: {
-            fontFamily: 'Ubuntu',
-            fontWeight: 'normal'
-          }
-        },
         tooltip: {
           trigger: 'item',
           formatter: '{b} : {c} 篇'
@@ -70,6 +63,7 @@ export default {
   },
   mounted() {
     this.chart = this.$echarts.init(this.$refs.chart)
+
     this.chart.on('click', params => {
       this.$emit('addFilters', {
         key: 'tags',

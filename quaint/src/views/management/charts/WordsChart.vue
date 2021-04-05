@@ -21,11 +21,6 @@ export default {
     option() {
       return {
         color: [this.$store.state.color.css()],
-        title: {
-          text: 'Words',
-          left: 'left',
-          textStyle: this.textStyle
-        },
         tooltip: {
           trigger: 'axis',
           formatter: '{b}千字: {c}篇',
@@ -36,7 +31,7 @@ export default {
         grid: {
           left: '10px',
           right: '40px',
-          top: '40px',
+          top: '10px',
           bottom: '10px',
           containLabel: true
         },

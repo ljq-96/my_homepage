@@ -138,7 +138,7 @@ export default {
       }).then(res => {
         if (res.ok) {
           const blogs = res.data.map(item => {
-            item.truncate = markdown.render(item.truncate)
+            item.truncate = markdown.render(item.truncate || '')
             return item
           })
           this.articles.push(...blogs)

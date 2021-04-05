@@ -32,7 +32,7 @@
       </div>
     </div>
     <div class="title">正则表达式测试</div>
-    <div class="iconfont" @click="changeCol" v-html="isCollect ? '&#xe7fe;' : '&#xe7fc;'"></div>
+    <q-icon @click="changeCol" :icon="isCollect ? 'close' : 'code'"></q-icon>
   </div>
 </template>
 

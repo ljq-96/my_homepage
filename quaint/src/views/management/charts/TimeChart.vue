@@ -19,14 +19,8 @@ export default {
   },
   computed: {
     option() {
-      console.log(this.list)
       return {
         color: [this.$store.state.color.css()],
-        title: {
-          text: 'Time',
-          left: 'left',
-          textStyle: this.textStyle
-        },
         tooltip: {
           trigger: 'axis',
           formatter: '{b}: {c}篇',
@@ -36,8 +30,8 @@ export default {
         },
         grid: {
           left: '10px',
-          right: '40px',
-          top: '60px',
+          right: '25px',
+          top: '10px',
           bottom: '10px',
           containLabel: true
         },

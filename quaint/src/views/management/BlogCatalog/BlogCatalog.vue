@@ -1,36 +1,60 @@
 <template>
   <div class="article-catalog">
-    <draggable
-      class="un-catalog-wrap scroll-bar"
-      :list="unCatalog"
-      animation="200"
-      group="catalog"
-      @change="saveStatus"
-    >
-      <div v-for="(item, index) in unCatalog" :key="item.id">
-        <div>
-          <i class="iconfont icon-dian"></i>
-          <span>{{ item.title }}</span>
+    <q-card height="calc(100vh - 155px)">
+      <template #title>
+        <span>未在目录中</span>
+      </template>
+      <template #extra>
+        <q-tip placement="bottom">
+          <q-icon icon="more"></q-icon>
+          <template #tip>
+            <div class="catalog-options-item">新增分组</div>
+            <div class="catalog-options-item">重制</div>
+          </template>
+        </q-tip>
+      </template>
+      <template #content>
+        <div class="catalog-content">
+          <draggable
+            :list="unCatalog"
+            animation="200"
+            group="catalog"
+            @change="saveStatus"
+          >
+            <div v-for="(item, index) in unCatalog" :key="item.id">
+              <div>
+                <i class="iconfont icon-dian"></i>
+                <span>{{ item.title }}</span>
+              </div>
+              <div v-if="item.type === 'TITLE'">
+                <i
+                  @click="deleteGroup(item, index)"
+                  class="iconfont icon-delete"
+                ></i>
+              </div>
+            </div>
+          </draggable>
         </div>
-        <div v-if="item.type === 'TITLE'">
-          <i @click="deleteGroup(item, index)" class="iconfont icon-delete"></i>
-        </div>
-      </div>
-    </draggable>
-    <div class="in-catalog-wrap scroll-bar">
-      <div class="new-group-wrap">
-        <div class="new-group-btn">
+      </template>
+    </q-card>
+
+    <q-card height="calc(100vh - 155px)">
+      <template #title>
+        <span>目录</span>
+      </template>
+      <template #extra>
+        <!-- <div class="new-group-btn">
           <q-button-group>
             <q-button
+              plain
               @click="isShowNewGroup = false"
               v-if="isShowNewGroup"
-              type="warning"
               >取消新增</q-button
             >
-            <q-button @click="isShowNewGroup = true" v-else type="info"
+            <q-button plain @click="isShowNewGroup = true" v-else
               >新增分组</q-button
             >
-            <q-button type="danger">重制</q-button>
+            <q-button plain>重制</q-button>
           </q-button-group>
         </div>
 
@@ -38,13 +62,18 @@
           <q-input v-model.trim="newGroup">
             <q-button @click="addGroup" slot="right">确定</q-button>
           </q-input>
+        </div> -->
+      </template>
+
+      <template #content>
+        <div class="catalog-content">
+          <catalog-item
+            @change="saveCatalog(vm)"
+            :list.sync="inCatalog"
+          ></catalog-item>
         </div>
-      </div>
-      <catalog-item
-        @change="saveCatalog(vm)"
-        :list.sync="inCatalog"
-      ></catalog-item>
-    </div>
+      </template>
+    </q-card>
   </div>
 </template>
 
@@ -192,65 +221,13 @@ export default {
   justify-content: space-between;
 }
 
-.un-catalog-wrap,
-.in-catalog-wrap {
-  height: 100%;
-  padding: 10px;
-  background-color: #fff;
-  overflow-y: auto;
-  overflow-x: hidden;
+.article-catalog > div:nth-child(1) {
+  flex: 1;
 }
 
-.in-catalog-wrap {
-  width: calc(70% - 5px);
-}
-
-.un-catalog-wrap {
-  width: calc(30% - 5px);
-}
-
-.un-catalog-wrap > div {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 10px;
-}
-
-.catalog .btn-group {
-  margin-bottom: 10px;
-}
-
-.catalog .btn-group button {
-  width: 80px;
-  height: 26px;
-  margin-right: 10px;
-  color: #4a4a4a;
-  background-color: #f5f5f5;
-  border: 1px solid #eee;
-  outline: none;
-  border-radius: 0;
-}
-
-.catalog .btn-group button:hover {
-  background-color: #eee;
-  border: 1px solid #bbb;
-}
-
-.catalog .btn-group div {
-  display: flex;
-  margin: 10px 0;
-}
-
-.catalog .btn-group input {
-  height: 26px;
-  padding: 0 10px;
-  border: 1px solid #eee;
-  border-radius: 0;
-  outline: none;
-}
-
-.new-group-input,
-.new-group-btn {
-  margin: 10px 0;
+.article-catalog > div:nth-child(2) {
+  flex: 2;
+  margin-left: 15px;
 }
 
 .new-group-btn {
@@ -259,5 +236,13 @@ export default {
 
 .new-group-btn .q-button-group {
   margin-right: 10px;
+}
+
+.catalog-options-item {
+  padding: 4px 20px;
+}
+
+.catalog-options-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 </style>

@@ -26,12 +26,13 @@
         fears lie
       </div>
     </div>
-    <div
+    <q-icon
       @click="top"
       :style="{ bottom: bottom + 'px' }"
       :class="{ onbottom: isBottom }"
-      class="totop card iconfont icon-caret-top"
-    ></div>
+      icon="up"
+      class="totop card"
+    ></q-icon>
   </div>
 </template>
 
@@ -210,8 +211,8 @@ export default {
   left: 50%;
   width: 64px;
   height: 40px;
-  line-height: 40px;
-  text-align: center;
+  align-items: center;
+  justify-content: center;
   font-size: 24px;
   transition-duration: 0.4s;
   transition-property: width, border-radius, transform;

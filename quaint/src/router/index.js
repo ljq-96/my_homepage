@@ -103,7 +103,7 @@ const routes = [
     ]
   },
   {
-    path: '/edit',
+    path: '/edit/:id',
     component: () => import('@/views/edit/Edit'),
     meta: {
       title: '编辑',
@@ -123,7 +123,7 @@ const router = new VueRouter({
       if (to.meta.title === '文章详情') {
         return {
           x: 0,
-          y: window.innerHeight
+          y: window.innerHeight - 50
         }
       } else {
         return {

@@ -398,16 +398,16 @@ router.post('/user/login', (req, res) => {
 //   })
 // })
 
-// function pReadFile(filePath) {
-//   return new Promise((resolve, reject) => {
-//     fs.readFile(filePath, (err, data) => {
-//       if (err) {
-//         reject(err)
-//       } else {
-//         resolve(data)
-//       }
-//     })
-//   })
-// }
+function pReadFile(filePath) {
+  return new Promise((resolve, reject) => {
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
+}
 
 module.exports = router

@@ -100,7 +100,7 @@ export default {
   right: 10px;
   bottom: 10px;
   width: 300px;
-  color: #4a4a4a;
+  color: var(--content);
   background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--divider);
   border-radius: 4px;

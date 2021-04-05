@@ -18,7 +18,7 @@ router.get('/', async (req, res) => {
     filters.tags = { $elemMatch: { $eq: tag } }
   }
   const blogs = await blogModel
-    .find(filters, { in_catalog: 0})
+    .find(filters, { in_catalog: 0 })
     .sort({ create_time: -1 })
     .skip((currentPage - 1) * pageSize)
     .limit(Number(pageSize))
@@ -143,7 +143,11 @@ router.post('/delete', async (req, res) => {
 // 更新
 router.post('/update', async (req, res) => {
   const { _id, info } = req.body
-  const data = await blogModel.updateOne({ _id }, info, { new: true })
+  const data = await blogModel.updateOne(
+    { _id },
+    { ...info, update_time: new Date() },
+    { new: true }
+  )
   res.status(200).json({
     ok: 1,
     msg: '更新成功',

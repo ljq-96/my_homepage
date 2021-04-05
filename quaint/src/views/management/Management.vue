@@ -12,56 +12,57 @@
       <div>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/quaint/home">
-            <span><span class="iconfont icon-home"></span> Home</span
-            ><span class="iconfont icon-rollback"></span>
+            <span><q-icon icon="home"></q-icon> Home</span
+            ><q-icon icon="rollback"></q-icon>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/quaint/blog">
-            <span><span class="iconfont icon-book1"></span> Blog</span
-            ><span class="iconfont icon-rollback"></span>
+            <span><q-icon icon="read"></q-icon> Blog</span
+            ><q-icon icon="rollback"></q-icon>
           </router-link>
         </fluent-design-item>
         <div class="line-w"></div>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/user">
-            <span><span class="iconfont icon-user"></span> 用户信息</span>
+            <span><q-icon icon="user"></q-icon> 用户信息</span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/chart">
-            <span><span class="iconfont icon-linechart"></span> 数据分析</span>
+            <span><q-icon icon="linechart"></q-icon> 数据分析</span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/articles">
-            <span><span class="iconfont icon-control"></span> 文章汇总</span>
+            <span><q-icon icon="control"></q-icon> 文章汇总</span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/catalog">
-            <span><span class="iconfont icon-detail"></span> 编排目录</span>
+            <span><q-icon icon="detail"></q-icon> 编排目录</span>
           </router-link>
         </fluent-design-item>
         <fluent-design-item :param="param">
           <router-link class="mgt-side-item" to="/management/write">
-            <span
-              ><span class="iconfont icon-edit-square"></span> 新增文章</span
-            >
+            <span><q-icon icon="edit-square"></q-icon> 新增文章</span>
           </router-link>
         </fluent-design-item>
       </div>
       <div>
         <fluent-design-item :param="param">
           <div class="mgt-side-item" @click="logout">
-            <span><span class="iconfont icon-logout"></span> 退出登录</span>
+            <span><q-icon icon="logout"></q-icon> 退出登录</span>
           </div>
         </fluent-design-item>
       </div>
     </fluent-design>
-    <transition :name="switchName" :duration="500">
-      <router-view class="mgt-content"></router-view>
-    </transition>
+    <div class="mgt-content">
+      <div class="mgt-content-head">后台管理系统</div>
+      <transition :name="switchName" :duration="500">
+        <router-view class="mgt-content-body"></router-view>
+      </transition>
+    </div>
   </div>
 </template>
 
@@ -105,9 +106,8 @@ export default {
 <style>
 .mgt {
   position: relative;
-  /* display: flex; */
-  height: 100vh;
   overflow: hidden;
+  padding-left: 160px;
 }
 
 .mgt .line-w {
@@ -117,11 +117,14 @@ export default {
 }
 
 .mgt-side-bar {
-  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 200px;
+  width: 160px;
   padding: 15px 0;
   background-color: var(--color);
 }
@@ -161,18 +164,30 @@ export default {
   height: 28px;
 }
 
-.mgt-content {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100vh;
-  width: calc(100% - 200px);
-  padding: 10px;
-  overflow: hidden;
-}
-
 .mgt [class*='route'] {
   transition: 0.5s;
+}
+
+.mgt-content {
+  padding-top: 60px;
+}
+
+.mgt-content-body {
+  padding: 15px;
+}
+
+.mgt-content-head {
+  position: fixed;
+  right: 0;
+  top: 0;
+  left: 160px;
+  height: 60px;
+  line-height: 60px;
+  padding: 0 15px;
+  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--divider);
+  z-index: 99;
 }
 
 /* 向上 */

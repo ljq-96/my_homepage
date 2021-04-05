@@ -1,63 +1,136 @@
 <template>
   <div class="chart">
-    <tag-chart
-      class="chart-item"
-      :list="tags"
-      @addFilters="addFilters"
-    ></tag-chart>
-    <div class="chart-group">
-      <words-chart
-        class="chart-item chart-words"
-        :list="words"
-        @addFilters="addFilters"
-      ></words-chart>
-      <div class="chart-item chart-filters">
-        <div class="chart-title">Filters</div>
-        <div class="chart-filters-container scroll-bar">
-          <q-tag
-            closable
-            @close="removeFilter(index)"
-            v-for="(item, index) in articleFilters"
-            :key="index"
-          >
-            {{ item.label }}: {{ item.name }}
-          </q-tag>
-          <q-tag v-show="articleFilters.length === 0">
-            filter: None
-          </q-tag>
-        </div>
-        <span>{{ articlesDisplay.length }}</span>
-      </div>
-    </div>
-    <time-chart
-      class="chart-item"
-      :list="time"
-      @addFilters="addFilters"
-    ></time-chart>
-    <div class="chart-item chart-article-list">
-      <q-table
-        height="calc(50vh - 80px)"
-        :dataSource="articlesDisplay"
-        :columns="columns"
-      >
-        <template #action="{row}">
-          <q-button-group>
-            <q-button
-              plain
-              @click="
-                $router.push({
-                  path: '/quaint/article/' + row._id
-                })
-              "
-            >
-              <i class="iconfont icon-eye"></i>
-            </q-button>
-            <q-button plain @click="delArticle(row)">
-              <i class="iconfont icon-delete"></i>
-            </q-button>
-          </q-button-group>
+    <div class="chart-wrap">
+      <q-card align="center">
+        <template #title>
+          <q-icon class="card-icon" icon="tags"></q-icon>
+          <span>标签</span>
         </template>
-      </q-table>
+        <template #extra>
+          <span>{{ tags.length }}个</span>
+        </template>
+        <template #content>
+          <tag-chart
+            class="chart-item"
+            :list="tags"
+            @addFilters="addFilters"
+          ></tag-chart>
+        </template>
+      </q-card>
+      <q-card>
+        <template #title>
+          <q-icon class="card-icon" icon="number"></q-icon>
+          <span>字数</span>
+        </template>
+        <template #content>
+          <words-chart
+            class="chart-item chart-words"
+            :list="words"
+            @addFilters="addFilters"
+          ></words-chart>
+        </template>
+      </q-card>
+      <q-card>
+        <template #title>
+          <q-icon class="card-icon" icon="time-circle"></q-icon>
+          <span>创建时间</span>
+        </template>
+        <template #content>
+          <time-chart
+            class="chart-item"
+            :list="time"
+            @addFilters="addFilters"
+          ></time-chart>
+        </template>
+      </q-card>
+    </div>
+    <div class="article-wrap">
+      <q-card align="center">
+        <template #title>
+          <q-icon class="card-icon" icon="table"></q-icon>
+          <span>汇总</span>
+        </template>
+        <template #extra>
+          <span>{{ articlesDisplay.length }}篇</span>
+        </template>
+        <template #content>
+          <q-table
+            :height="tableHeight + 'px'"
+            :dataSource="articlesDisplay"
+            :columns="columns"
+          >
+            <template #tags="{row, index}">
+              <q-tag v-for="item in row.tags" :key="item">
+                {{ item }}
+              </q-tag>
+            </template>
+            <template #action="{row}">
+              <q-button-group>
+                <q-button
+                  plain
+                  @click="
+                    $router.push({
+                      path: '/edit/' + row._id
+                    })
+                  "
+                >
+                  <q-icon icon="edit"></q-icon>
+                </q-button>
+
+                <q-button plain @click="delArticle(row)">
+                  <q-icon icon="delete"></q-icon>
+                </q-button>
+              </q-button-group>
+            </template>
+          </q-table>
+        </template>
+      </q-card>
+      <div ref="height">
+        <q-card align="center" class="article-filter">
+          <template #title>
+            <q-icon class="card-icon" icon="filter"></q-icon>
+            <span>过滤器</span>
+          </template>
+          <template #extra>
+            <q-button
+              v-show="articleFilters.length"
+              @click="articleFilters = []"
+              plain
+              >清空</q-button
+            >
+          </template>
+          <template #content>
+            <div>
+              <q-tag
+                closable
+                @close="removeFilter(index)"
+                v-for="(item, index) in articleFilters"
+                :key="index"
+              >
+                {{ item.label }}: {{ item.name }}
+              </q-tag>
+              <q-tag v-show="articleFilters.length === 0">
+                none
+              </q-tag>
+            </div>
+          </template>
+        </q-card>
+        <q-card class="article-last-update">
+          <template #title>
+            <q-icon class="card-icon" icon="linechart"></q-icon>
+            <span>最近更新</span>
+          </template>
+          <template #content>
+            <div
+              class="article-last-update-item"
+              v-for="item in articlesLastUpdate"
+            >
+              <span>{{ item.title }}</span>
+              <span>{{ item.update_time | formatDate('YYYY-MM-DD') }}</span>
+            </div>
+          </template>
+        </q-card>
+      </div>
     </div>
   </div>
 </template>
@@ -79,6 +152,7 @@ export default {
       articles: [],
       articlesDisplay: [],
       articleFilters: [],
+      tableHeight: '',
       columns: [
         {
           title: '#',
@@ -91,6 +165,10 @@ export default {
           key: 'title'
         },
         {
+          title: '标签',
+          key: 'tags'
+        },
+        {
           title: '操作',
           key: 'action'
         }
@@ -101,27 +179,19 @@ export default {
     words() {
       const arr = [
         {
-          name: '0~2',
+          name: '0~3',
           value: 0
         },
         {
-          name: '2~4',
+          name: '3~6',
           value: 0
         },
         {
-          name: '4~6',
+          name: '6~9',
           value: 0
         },
         {
-          name: '6~8',
-          value: 0
-        },
-        {
-          name: '8~10',
-          value: 0
-        },
-        {
-          name: '10~12',
+          name: '9-12',
           value: 0
         },
         {
@@ -130,8 +200,8 @@ export default {
         }
       ]
       this.articles.forEach(item => {
-        const i = Math.floor(item.content.length / 2000)
-        arr[i > 6 ? 6 : i].value++
+        const i = Math.floor(item.content.length / 3000)
+        arr[i > 4 ? 4 : i].value++
       })
       return arr
     },
@@ -161,21 +231,31 @@ export default {
             month++
           }
         }
-
         this.articles.forEach(item => {
           const time = new Date(item.create_time)
           const month = [time.getFullYear(), time.getMonth() + 1].join('-')
           const current = arr.find(i => i.name === month)
-
           current.value++
         })
       }
       return arr
+    },
+    articlesLastUpdate() {
+      const temp = this.articles.slice(0)
+      this.$nextTick(() => {
+        this.setTableHeight()
+      })
+      return temp
+        .sort((a, b) => new Date(b.update_time) - new Date(a.update_time))
+        .slice(0, 10)
     }
   },
   methods: {
+    setTableHeight() {
+      const height = this.$refs.height.offsetHeight
+      this.tableHeight = height - 145
+    },
     addFilters(data) {
-      console.log(data)
       if (data.key !== 'tags') {
         const i = this.articleFilters.findIndex(item => item.key === data.key)
         if (i !== -1) {
@@ -186,6 +266,7 @@ export default {
       } else {
         this.articleFilters.push(data)
       }
+      this.setTableHeight()
     },
     removeFilter(index) {
       this.articleFilters.splice(index, 1)
@@ -287,84 +368,73 @@ export default {
 }
 </script>
 
-<style>
-.chart,
-.chart-group {
+<style scoped>
+.chart-wrap,
+.article-wrap {
   display: flex;
-  flex-wrap: wrap;
-  align-content: space-between;
-  justify-content: space-between;
+  margin-bottom: 15px;
 }
 
-.chart-item {
-  padding: 10px;
-  /* border: 1px solid var(--colorOpc2); */
-  background-color: #fff;
+.chart-wrap > div {
+  flex: 1;
 }
 
-.chart > div {
-  width: calc(50% - 5px);
-  height: calc(50% - 5px);
+.chart-wrap > div:nth-child(2) {
+  margin: 0 15px;
 }
 
-.chart-group .chart-count {
-  position: relative;
-  width: calc(40% - 5px);
-  height: calc(70% - 5px);
+.chart-wrap .chart-item {
+  height: 180px;
 }
 
-.chart-group .chart-count p {
-  margin-top: 20px;
-}
-
-.chart-group .chart-count p span {
-  font-size: 24px;
+.card-icon {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--colorLum1);
+  justify-content: center;
+  align-items: center;
+  margin-right: 6px;
+  border-radius: 50%;
   color: var(--color);
-  margin: 0 4px;
+  background-color: var(--colorLum1);
 }
 
-.chart-group .chart-words {
-  width: 100%;
-  height: calc(100% - 85px);
+.card-icon:hover {
+  border-color: var(--color);
 }
 
-.chart-group .chart-filters {
-  position: relative;
-  width: 100%;
-  height: calc(75px);
+.article-wrap > div:nth-child(2) {
+  width: calc((100% - 33px) / 3);
+  flex-shrink: 0;
+  margin-left: 15px;
+  flex-shrink: 0;
 }
 
-.chart-filters-container {
-  margin-top: 8px;
-  width: 100%;
-  height: calc(100% - 20px);
-  white-space: nowrap;
-  overflow: auto;
+.article-wrap > div:nth-child(1) {
+  flex-grow: 1;
 }
 
-.chart-group .chart-filters > span {
-  position: absolute;
-  right: 10px;
-  bottom: 16px;
-  color: var(--color);
-  font-size: 24px;
-  height: 24px;
-  padding: 0 6px;
-  line-height: 24px;
-  background-color: #fff;
+.article-filter {
+  margin-bottom: 15px;
 }
 
-.chart-title {
-  font-size: 18px;
+.article-filter .q-tag {
+  margin: 4px;
 }
 
-.chart .echarts {
+.article-last-update-item {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  padding: 4px 8px;
+  margin: 2px 0;
+  border-radius: 4px;
 }
 
-.chart-article-list {
-  padding: 0;
+.article-last-update-item span:last-child {
+  color: var(--border);
+}
+
+.article-last-update-item:hover {
+  background-color: var(--background);
 }
 </style>

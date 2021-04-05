@@ -6,7 +6,7 @@
     }"
     class="q-card"
   >
-    <div class="q-card-title">
+    <div :style="{ alignItems: align }" class="q-card-title">
       <div>
         <slot name="title"></slot>
       </div>
@@ -14,7 +14,10 @@
         <slot name="extra"></slot>
       </div>
     </div>
-    <div class="q-card-content">
+    <div
+      :style="{ height: height, overflow: height ? 'auto' : '' }"
+      class="q-card-content scroll-bar"
+    >
       <slot name="content"></slot>
     </div>
   </div>
@@ -24,6 +27,12 @@
 export default {
   props: {
     headLine: {
+      type: String
+    },
+    align: {
+      type: String
+    },
+    height: {
       type: String
     }
   }
@@ -42,7 +51,12 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 15px 0;
+  color: var(--content);
   border-bottom: 1px solid var(--divider);
+}
+
+.q-card-title > div:last-child {
+  color: var(--disabled);
 }
 
 .q-card-content {

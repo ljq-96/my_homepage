@@ -1,6 +1,6 @@
 <template>
   <div @click="addItem" class=" item">
-    <div class="iconfont icon-jia"></div>
+    <q-icon icon="plus"></q-icon>
   </div>
 </template>
 

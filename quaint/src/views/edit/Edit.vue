@@ -36,7 +36,7 @@ import QButton from '../../components/button/QButton'
 import QButtonGroup from '../../components/button/QButtonGroup'
 import MarkdownEditor from '@/components/MarkdownEditor'
 import {
-  getBlogList,
+  getBlogOne,
   testBlog,
   createBlog,
   updateBlog
@@ -154,16 +154,15 @@ export default {
     }
   },
   created() {
-    this.articleInfo.title = this.$route.query.title
-    if (this.articleInfo.title) {
-      getBlogList({
-        title: this.$route.query.title
-      }).then(res => {
+    const { id } = this.$route.params
+    if (id) {
+      this.id = id
+      getBlogOne(id).then(res => {
         console.log(res)
         if (res.ok) {
-          this.markdown = res.data[0].content
-          this.id = res.data[0]._id
-          this.articleInfo.tags = res.data[0].tags.join(',')
+          this.markdown = res.data.blog.content
+          this.articleInfo.tags = res.data.blog.tags.join(',')
+          this.articleInfo.title = res.data.blog.title
         }
       })
     } else {
@@ -193,15 +192,14 @@ export default {
   height: 30px;
   padding: 0 10px;
   border: 1px solid #eee;
-  color: #7a7a7a;
+  color: var(--disabled);
   outline: none;
   font-family: FiraCode;
-  border-radius: 0;
   background-color: #fff;
 }
 
 .markdown-edit input[type='text']:focus {
-  color: #4a4a4a;
+  color: var(--content);
 }
 
 .edit-form {

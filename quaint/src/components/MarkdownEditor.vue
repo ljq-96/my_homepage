@@ -1,206 +1,144 @@
 <template>
-  <div :class="{ full: isFullScreen }" class="md-editor">
-    <fluent-design
-      class="md-editor-head"
-      v-slot="param"
-      :borderSize="50"
-      :width="1.5"
-      :borderColor="'#666'"
-    >
+  <div :class="{ full: isFullScreen }" class="md-editor card">
+    <div class="md-editor-head">
       <div class="md-editor-head-group">
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="bold">&#xe7f7;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="italic">&#xe7fb;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="underLine">&#xe7fa;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="lineThrough">&#xe7f9;</div>
-        </fluent-design-item>
-        <fluent-design-item
-          :param="param"
-          :isRotate="false"
-          class="iconfont submenu"
-        >
-          &#xe802;
-          <fluent-design
-            class="submenu-wrap blur"
-            v-slot="paramt"
-            :borderSize="50"
-            :width="1"
-          >
-            <fluent-design-item
+        <q-tip placement="bottom" tip="加粗">
+          <q-icon icon="bold" @click="bold"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="倾斜">
+          <q-icon icon="italic" @click="italic"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="下划线">
+          <q-icon icon="underline" @click="underLine"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="删除线">
+          <q-icon icon="strikethrough" @click="lineThrough"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" theme="light" trigger="click">
+          <q-tip placement="bottom" tip="背景色">
+            <q-icon icon="bg-colors"></q-icon>
+          </q-tip>
+          <div slot="tip">
+            <div
+              :style="[{ background: item.value[0] }, { color: item.value[1] }]"
+              @click="blockColor(item.name)"
               v-for="(item, index) in color"
               :key="index"
-              :param="paramt"
+              class="dropdown-item"
             >
-              <div
-                :style="[
-                  { background: item.value[0] },
-                  { color: item.value[1] }
-                ]"
-                @click="blockColor(item.name)"
-              >
-                {{ item.name }}
-              </div>
-            </fluent-design-item>
-          </fluent-design>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="sup">&#xe73c;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="sub">&#xe73b;</div>
-        </fluent-design-item>
-        <div class="line"></div>
-        <fluent-design-item
-          :param="param"
-          :isRotate="false"
-          class="iconfont submenu"
-        >
-          &#xe7f8;
-          <fluent-design
-            class="submenu-wrap blur"
-            v-slot="paramt"
-            :borderSize="50"
-            :width="1"
-          >
-            <fluent-design-item :param="paramt">
-              <div @click="headLine1">一级标题</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="headLine2">二级标题</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="headLine3">三级标题</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="headLine4">四级标题</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="headLine5">五级标题</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="headLine6">六级标题</div>
-            </fluent-design-item>
-          </fluent-design>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="unorderList">&#xe7f4;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="orderList">&#xe7f5;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="taskFalse">&#xe7aa;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="taskTrue">&#xe7a8;</div>
-        </fluent-design-item>
-        <div class="line"></div>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="highlight">&#xe7e3;</div>
-        </fluent-design-item>
-        <fluent-design-item
-          :param="param"
-          :isRotate="false"
-          class="iconfont submenu"
-        >
-          &#xe7fc;
-          <fluent-design
-            class="submenu-wrap blur"
-            v-slot="paramt"
-            :borderSize="50"
-            :width="1"
-          >
-            <fluent-design-item :param="paramt">
-              <div @click="inlineCode">行内代码</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="blockCode">代码块</div>
-            </fluent-design-item>
-          </fluent-design>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="quote">&#xe71a;</div>
-        </fluent-design-item>
-        <fluent-design-item class="submenu" :param="param" :isRotate="false">
-          <div class="iconfont" @click="table">
-            &#xe7df;
-            <div class="submenu-wrap blur" @mouseleave="newTable = [0, 0]">
-              <div class="table-row" v-for="i of 10" :key="i">
-                <fluent-design-item :param="param" v-for="j of 6" :key="j"
-                  ><div
-                    class="table-column"
-                    :class="{
-                      tableInner: i <= newTable[0] && j <= newTable[1]
-                    }"
-                    @mouseover="tableMouseover(i, j)"
-                    @click.stop="setTable"
-                  ></div
-                ></fluent-design-item>
-              </div>
-              <div class="table-size">{{ tableSize }}</div>
+              {{ item.name }}
             </div>
           </div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="link">&#xe7e2;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="img">&#xe7de;</div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div class="iconfont" @click="hr">&#xe800;</div>
-        </fluent-design-item>
+        </q-tip>
+        <q-tip placement="bottom" tip="上角标">
+          <q-icon icon="shangbiao" @click="sup"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="下角标">
+          <q-icon icon="xiabiao" @click="sub"></q-icon>
+        </q-tip>
+        <div class="line"></div>
+        <q-tip placement="bottom" theme="light" trigger="click">
+          <q-tip placement="bottom" tip="标题">
+            <q-icon icon="number"></q-icon>
+          </q-tip>
+          <div slot="tip">
+            <div class="dropdown-item" @click="headLine1">一级标题</div>
+            <div class="dropdown-item" @click="headLine2">二级标题</div>
+            <div class="dropdown-item" @click="headLine3">三级标题</div>
+            <div class="dropdown-item" @click="headLine4">四级标题</div>
+            <div class="dropdown-item" @click="headLine5">五级标题</div>
+            <div class="dropdown-item" @click="headLine6">六级标题</div>
+          </div>
+        </q-tip>
+        <q-tip placement="bottom" tip="无序列表">
+          <q-icon icon="unorderedlist" @click="unorderList"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="有序列表">
+          <q-icon icon="orderedlist" @click="orderList"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="代办列表(完成)">
+          <q-icon icon="check-square" @click="taskTrue"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="代办列表(未完成)">
+          <q-icon icon="border" @click="taskFalse"></q-icon>
+        </q-tip>
+        <div class="line"></div>
+        <q-tip placement="bottom" tip="高亮">
+          <q-icon icon="formatpainter" @click="highlight"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" theme="light" trigger="click">
+          <q-tip placement="bottom" tip="代码块">
+            <q-icon icon="code"></q-icon>
+          </q-tip>
+          <div slot="tip">
+            <div class="dropdown-item" @click="inlineCode">行内代码</div>
+            <div class="dropdown-item" @click="blockCode">代码块</div>
+          </div>
+        </q-tip>
+        <q-tip placement="bottom" tip="引用">
+          <q-icon icon="yinyong" @click="quote"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" theme="light" trigger="click">
+          <q-tip placement="bottom" tip="表格">
+            <q-icon icon="table"></q-icon>
+          </q-tip>
+          <div slot="tip">
+            <div class="table-row" v-for="i of 10" :key="i">
+              <div v-for="j of 6" :key="j">
+                <div
+                  class="table-column"
+                  :class="{
+                    tableInner: i <= newTable[0] && j <= newTable[1]
+                  }"
+                  @mouseover="tableMouseover(i, j)"
+                  @click="setTable"
+                ></div>
+              </div>
+            </div>
+            <div class="table-size">{{ tableSize }}</div>
+          </div>
+        </q-tip>
+        <q-tip placement="bottom" tip="链接">
+          <q-icon icon="link" @click="link"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="图片">
+          <q-icon icon="image" @click="img"></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" tip="分割线">
+          <q-icon icon="line" @click="hr"></q-icon>
+        </q-tip>
       </div>
       <div class="md-editor-head-group">
-        <fluent-design-item :isRotate="false" class="file" :param="param">
+        <q-tip placement="bottom" class="file" tip="选择文件(markdown)">
           <div class="iconfont">
-            &#xe637;<input @change="selectFile" type="file" accept=".md" />
+            <q-icon icon="file-markdown"></q-icon>
+            <input @change="selectFile" type="file" accept=".md" />
           </div>
-        </fluent-design-item>
-        <fluent-design-item
-          class="iconfont submenu"
-          :isRotate="false"
-          :param="param"
-        >
-          &#xe7f1;
-          <fluent-design
-            class="submenu-wrap blur"
-            v-slot="paramt"
-            :borderSize="50"
-            :width="1"
-          >
-            <fluent-design-item :param="paramt">
-              <div @click="downloadHTML">html</div>
-            </fluent-design-item>
-            <fluent-design-item :param="paramt">
-              <div @click="downloadMD">markdown</div>
-            </fluent-design-item>
-          </fluent-design>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div
-            class="iconfont"
+        </q-tip>
+        <q-tip placement="bottom" theme="light" trigger="click">
+          <q-tip placement="bottom" tip="下载">
+            <q-icon icon="download"></q-icon>
+          </q-tip>
+          <div slot="tip">
+            <div class="dropdown-item" @click="downloadHTML">html</div>
+            <div class="dropdown-item" @click="downloadMD">markdown</div>
+          </div>
+        </q-tip>
+        <q-tip placement="bottom" :tip="isFullScreen ? '取消全屏' : '全屏'">
+          <q-icon
+            :icon="isFullScreen ? 'fullscreen-exit' : 'fullscreen'"
             @click="isFullScreen = !isFullScreen"
-            v-html="isFullScreen ? '&#xe7f0;' : '&#xe7ef;'"
-          ></div>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <div
-            class="iconfont"
-            :style="{ background: isPreview ? '#eee' : '' }"
+          ></q-icon>
+        </q-tip>
+        <q-tip placement="bottom" :tip="isPreview ? '取消预览' : '预览'">
+          <q-icon
+            :class="{ active: isPreview }"
+            icon="layout"
             @click="isPreview = !isPreview"
-          >
-            &#xe796;
-          </div>
-        </fluent-design-item>
+          ></q-icon>
+        </q-tip>
       </div>
-    </fluent-design>
+    </div>
     <div class="md-editor-body">
       <div class="md-editor-md-wrap">
         <textarea
@@ -210,7 +148,7 @@
           @scroll="scroll"
           @input="onInput(vm, $event)"
           spellcheck="false"
-          placeholder="请输入..."
+          placeholder="第一个分割线前面的会被预览..."
           autofocus
         ></textarea>
       </div>
@@ -228,13 +166,7 @@
 import { debounce } from '@/common/utils'
 import { blogStyle } from '../network/blog'
 import markdown from '@/common/markdown'
-import FluentDesign from '@/components/FluentDesign'
-import FluentDesignItem from '@/components/FluentDesignItem'
 export default {
-  components: {
-    FluentDesign,
-    FluentDesignItem
-  },
   props: {
     value: {
       type: String,
@@ -243,7 +175,7 @@ export default {
     title: {
       type: String,
       default: ''
-    },
+    }
   },
   data() {
     return {
@@ -477,7 +409,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 @import '../assets/css/markdown.css';
 .md-editor {
   width: 100%;
@@ -489,7 +421,9 @@ export default {
   position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
+  bottom: 0;
+  right: 0;
+  z-index: 999;
 }
 
 .md-editor.full .md-editor-md,
@@ -502,13 +436,13 @@ export default {
   justify-content: space-between;
   padding-bottom: 8px;
   margin-bottom: 8px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--divider);
 }
 
 .md-editor-head .line {
   width: 1px;
   height: 34px;
-  background-color: #eee;
+  background-color: var(--divider);
 }
 
 .md-editor-head-group {
@@ -523,63 +457,23 @@ export default {
   margin-left: 4px;
 }
 
-.md-editor-head .iconfont {
+.md-editor-head .q-icon {
   width: 34px;
   height: 34px;
   border-radius: 4px;
-  text-align: center;
-  line-height: 34px;
+  justify-content: center;
+  align-items: center;
   font-size: 16px;
 }
 
-.md-editor-head .iconfont:hover {
-  background-color: #eee;
+.md-editor-head .q-icon:hover,
+.md-editor-head .q-icon.active {
+  background-color: var(--background);
 }
 
 .md-editor .submenu {
   position: relative;
   z-index: 99;
-}
-
-.md-editor .submenu-wrap {
-  display: none;
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 10px 0;
-  font-size: 14px;
-  color: #4a4a4a;
-  background-color: rgba(255, 255, 255, 0.8);
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.2));
-  border-radius: 4px;
-  z-index: 99;
-}
-
-.md-editor .submenu-wrap::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 10px solid transparent;
-  border-bottom: 10px solid rgba(255, 255, 255, 0.8);
-  left: 50%;
-  top: -20px;
-  transform: translateX(-50%);
-}
-
-.md-editor .submenu-wrap > .fd-item {
-  width: 90px;
-  height: 30px;
-  line-height: 30px;
-}
-
-.md-editor .submenu-wrap > .fd-item:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.md-editor .submenu:hover .submenu-wrap {
-  display: block;
 }
 
 .md-editor .table-row {
@@ -596,12 +490,12 @@ export default {
 .md-editor .table-column {
   width: 16px;
   height: 16px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: var(--divider);
   transition: 0.2s;
 }
 
 .md-editor .table-column.tableInner {
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--disabled);
 }
 
 .md-editor .table-size {
@@ -625,15 +519,15 @@ export default {
 
 .md-editor-body .md-editor-md-wrap {
   position: relative;
-  height: calc(100vh - 164px);
+  height: calc(100vh - 225px);
   flex-grow: 1;
 }
 
 .md-editor-body .md-editor-md,
 .md-editor-body .md-editor-html {
-  height: calc(100vh - 164px);
+  height: calc(100vh - 225px);
   padding: 20px 20px 150px;
-  overflow: auto;
+  overflow-y: scroll;
 }
 
 .md-editor-body .md-editor-html {
@@ -650,13 +544,10 @@ export default {
   font-size: 14px;
   font-family: 'FiraCode';
   outline: none;
-  /* border: 1px solid #eee; */
   border: none;
-  border-radius: 4px;
 }
 
 textarea.md-editor-md {
-  /* color: transparent; */
   background-color: transparent;
   caret-color: #455a64;
   resize: none;
@@ -675,18 +566,28 @@ textarea.md-editor-md {
 }
 
 .md-editor-body .md-editor-md::-webkit-scrollbar {
-  background-color: #eee;
+  background-color: var(--background);
 }
 
 .md-editor-body .md-editor-md::-webkit-scrollbar-thumb,
 .md-editor-body .md-editor-html::-webkit-scrollbar-thumb {
-  background-color: #b0bec5;
+  background-color: var(--disabled);
   border-radius: 4px;
   cursor: default;
 }
 
 .md-editor-body .md-editor-md::-webkit-scrollbar-thumb:hover,
 .md-editor-body .md-editor-html::-webkit-scrollbar-thumb:hover {
-  background-color: #455a64;
+  background-color: var(--content);
+}
+
+.dropdown-item {
+  padding: 2px 20px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: var(--background);
 }
 </style>

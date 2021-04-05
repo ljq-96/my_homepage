@@ -10,24 +10,23 @@
     :class="{ isOpen: level === 0 }"
   >
     <li class="in-catalog-item" v-for="(item, index) in list" :key="item.id">
-      <p :class="{isCurrent: item.isCurrent}" class="in-catalog-item-title">
-        <i
+      <p :class="{ isCurrent: item.isCurrent }" class="in-catalog-item-title">
+        <q-icon
           v-if="/icon/.test(layout)"
           @click="changeOpen(index)"
-          :class="{
-            isOpen: item.isOpen && item.children.length,
-            'icon-zhengsanjiao': item.children.length,
-            'icon-dian': !item.children.length
-          }"
-          class="iconfont icon-zhengsanjiao catalog-item-icon"
-        ></i>
+          :class="{ isOpen: item.isOpen && item.children.length }"
+          :icon="item.children.length ? 'caret-right' : 'quan'"
+          class="catalog-item-icon"
+        />
         <span
           class="catalog-item-icon"
           v-if="/index/.test(layout)"
           @click="changeOpen(index)"
           >{{ index + 1 }}.</span
         >
-        <span style="flex-grow: 1" @click="onClick(item)">{{ item.title }}</span>
+        <span style="flex-grow: 1" @click="onClick(item)">{{
+          item.title
+        }}</span>
       </p>
       <catalog-item
         @change="change"

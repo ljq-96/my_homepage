@@ -87,7 +87,7 @@ export default {
 }
 
 .confirm {
-  position: absolute;
+  position: fixed;
   width: 300px;
   left: 50%;
   top: 50%;
