@@ -2,16 +2,16 @@
   <div :class="{ full: isFullScreen }" class="md-editor card">
     <div class="md-editor-head">
       <div class="md-editor-head-group">
-        <q-tip placement="bottom" tip="加粗">
+        <q-tip placement="bottom" tip="加粗 ctrl+B">
           <q-icon icon="bold" @click="bold"></q-icon>
         </q-tip>
-        <q-tip placement="bottom" tip="倾斜">
+        <q-tip placement="bottom" tip="倾斜 ctrl+I">
           <q-icon icon="italic" @click="italic"></q-icon>
         </q-tip>
-        <q-tip placement="bottom" tip="下划线">
+        <q-tip placement="bottom" tip="下划线 ctrl+U">
           <q-icon icon="underline" @click="underLine"></q-icon>
         </q-tip>
-        <q-tip placement="bottom" tip="删除线">
+        <q-tip placement="bottom" tip="删除线 ctrl+S">
           <q-icon icon="strikethrough" @click="lineThrough"></q-icon>
         </q-tip>
         <q-tip placement="bottom" theme="light" trigger="click">
@@ -50,10 +50,10 @@
             <div class="dropdown-item" @click="headLine6">六级标题</div>
           </div>
         </q-tip>
-        <q-tip placement="bottom" tip="无序列表">
+        <q-tip placement="bottom" tip="无序列表 ctrl+L">
           <q-icon icon="unorderedlist" @click="unorderList"></q-icon>
         </q-tip>
-        <q-tip placement="bottom" tip="有序列表">
+        <q-tip placement="bottom" tip="有序列表 ctrl+O">
           <q-icon icon="orderedlist" @click="orderList"></q-icon>
         </q-tip>
         <q-tip placement="bottom" tip="代办列表(完成)">
@@ -404,7 +404,40 @@ export default {
     },
     headLine6() {
       this.insert(text => `\n###### ${text ? text : '六级标题'}\n`, [8, 4, 0])
-    }
+    },
+    keyFn(e) {
+      const { ctrlKey, key } = e
+      if (ctrlKey && key !== 'a') {
+        e.preventDefault()
+        switch (key) {
+          case 'b':
+            this.bold()
+            break
+          case 'i':
+            this.italic()
+            break
+          case 'u':
+            this.underLine()
+            break
+          case 's':
+            this.lineThrough()
+            break
+          case 'l':
+            this.unorderList()
+            break
+          case 'o':
+            this.orderList()
+            break
+        }
+      }
+    },
+    keyPreventDefault(e) {}
+  },
+  mounted() {
+    window.addEventListener('keydown', this.keyFn)
+  },
+  destroyed() {
+    window.removeEventListener('keydown', this.keyFn)
   }
 }
 </script>
@@ -547,16 +580,9 @@ export default {
   border: none;
 }
 
-textarea.md-editor-md {
-  background-color: transparent;
-  caret-color: #455a64;
-  resize: none;
-}
-
-.md-editor-md.md-highlight {
-  color: #455a64;
-  padding-bottom: 170px;
-  /* background-color: #fafafa; */
+textarea.md-editor-md::selection {
+  color: #fff;
+  background-color: var(--content);
 }
 
 .md-editor-body .md-editor-md::-webkit-scrollbar,

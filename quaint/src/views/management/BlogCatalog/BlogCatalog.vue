@@ -1,6 +1,6 @@
 <template>
   <div class="article-catalog">
-    <q-card height="calc(100vh - 155px)">
+    <q-card height="calc(100vh - 145px)">
       <template #title>
         <span>未在目录中</span>
       </template>
@@ -8,7 +8,9 @@
         <q-tip placement="bottom">
           <q-icon icon="more"></q-icon>
           <template #tip>
-            <div class="catalog-options-item">新增分组</div>
+            <div @click="showNewGroup = true" class="catalog-options-item">
+              新增分组
+            </div>
             <div class="catalog-options-item">重制</div>
           </template>
         </q-tip>
@@ -38,7 +40,7 @@
       </template>
     </q-card>
 
-    <q-card height="calc(100vh - 155px)">
+    <q-card height="calc(100vh - 145px)">
       <template #title>
         <span>目录</span>
       </template>
@@ -74,6 +76,17 @@
         </div>
       </template>
     </q-card>
+
+    <!-- 添加分组弹出框 -->
+    <modal v-model="showNewGroup" title="添加分组">
+      <q-input v-model="newGroup" class="new-group-input"></q-input>
+      <template #footer>
+        <div class="new-group-footer">
+          <q-button @click="showNewGroup = false" plain>取消</q-button>
+          <q-button @click="addGroup">确定</q-button>
+        </div>
+      </template>
+    </modal>
   </div>
 </template>
 
@@ -81,6 +94,7 @@
 import { debounce } from '../../../common/utils'
 import draggable from 'vuedraggable'
 import CatalogItem from './CatalogItem'
+import Modal from '../../../components/Modal'
 import { createBlog, deleteBlog } from '../../../network/blog'
 import {
   getCatalogOut,
@@ -91,21 +105,19 @@ import {
 export default {
   components: {
     CatalogItem,
-    draggable
+    draggable,
+    Modal
   },
   data() {
     return {
       unCatalog: [],
       inCatalog: [],
       vm: this,
-      newGroup: '新分组',
-      isShowNewGroup: false
+      newGroup: '',
+      showNewGroup: false
     }
   },
   methods: {
-    openInput() {
-      this.isShowNewGroup = !this.isShowNewGroup
-    },
     remake() {
       this.$request({
         url: '/blog/catalog/remake'
@@ -125,15 +137,14 @@ export default {
         }).then(res => {
           if (res.ok) {
             this.inCatalog.unshift({
-              blog: {
-                _id: res.data._id,
-                title: res.data.title
-              },
+              id: res.data._id,
+              title: res.data.title,
               children: [],
               isOpen: true
             })
             this.saveCatalog(this)
             this.newGroup = ''
+            this.showNewGroup = false
           }
         })
       } else {
@@ -238,5 +249,17 @@ export default {
 
 .catalog-options-item:hover {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.new-group-input {
+  width: 100%;
+}
+
+.new-group-footer {
+  text-align: right;
+}
+
+.new-group-footer .q-button {
+  margin-left: 10px;
 }
 </style>

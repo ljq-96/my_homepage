@@ -1,30 +1,19 @@
 <template>
   <transition name="no" :duration="1000">
-    <fluent-design
-      v-slot="param"
-      :borderSize="200"
-      :backSize="160"
-      :backColor="'rgba(0, 0, 0, 0.05)'"
-      :borderColor="'rgba(0, 0, 0, 0.2)'"
-      :width="2"
-      v-show="visible"
-      class="notice"
-    >
-      <fluent-design-item :param="param" :isRotate="false">
-        <div class="notice-content" @mouseenter="pause" @mouseleave="start">
-          <div class="notice-content-mesg">
-            <i v-if="type" class="iconfont" :class="typeIcon"></i>
-            <div>
-              <h3>{{ title }}</h3>
-              <p v-if="message" v-html="message"></p>
-            </div>
+    <div v-show="visible" class="notice">
+      <div class="notice-content" @mouseenter="pause" @mouseleave="start">
+        <div class="notice-content-mesg">
+          <q-icon v-if="type" :icon="typeIcon"></q-icon>
+          <div>
+            <h3>{{ title }}</h3>
+            <p v-if="message" v-html="message"></p>
           </div>
-          <fluent-design-item :param="param" class="icon-close-wrap">
-            <i @click.once="remove" class="iconfont icon-close"></i>
-          </fluent-design-item>
         </div>
-      </fluent-design-item>
-    </fluent-design>
+        <div class="icon-close-wrap">
+          <q-icon @click.once="remove" icon="close"></q-icon>
+        </div>
+      </div>
+    </div>
   </transition>
 </template>
 
@@ -61,11 +50,11 @@ export default {
   computed: {
     typeIcon() {
       const obj = {
-        info: 'icon-info-circle',
-        success: 'icon-check-circle',
-        warning: 'icon-warning-circle',
-        error: 'icon-close-circle',
-        question: 'icon-question-circle'
+        info: 'info-circle',
+        success: 'check-circle',
+        warning: 'warning-circle',
+        error: 'close-circle',
+        question: 'question-circle'
       }
       return obj[this.type]
     }
@@ -100,11 +89,10 @@ export default {
   right: 10px;
   bottom: 10px;
   width: 300px;
-  color: var(--content);
-  background-color: rgba(255, 255, 255, 0.8);
-  border: 1px solid var(--divider);
+  color: #fff;
+  background-color: rgba(0, 0, 0, 0.6);
   border-radius: 4px;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(5px);
   transition: 0.4s;
   z-index: 999;
 }
@@ -128,7 +116,7 @@ export default {
 
 .notice-content p {
   margin-top: 10px;
-  color: #7a7a7a;
+  color: var(--disabled);
   word-break: break-all;
 }
 
@@ -160,6 +148,6 @@ export default {
 }
 
 .icon-close-wrap:hover {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 </style>

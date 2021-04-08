@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Notice from '@/components/Notice'
-import Confirm from '@/components/Confirm'
+import Modal from '@/components/Modal'
 
 const notices = []
 function createNotice(Component, props) {
@@ -37,6 +37,6 @@ export default function install(Vue) {
     return createNotice(Notice, options)
   }
   Vue.prototype.$confirm = function(options) {
-    return createConfirm(Confirm, options)
+    return createConfirm(Modal, options)
   }
 }

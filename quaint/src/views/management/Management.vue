@@ -9,64 +9,71 @@
       :backColor="'rgba(255,255,255,0.1)'"
       :backSize="200"
     >
-      <div>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/quaint/home">
-            <span><q-icon icon="home"></q-icon> Home</span
-            ><q-icon icon="rollback"></q-icon>
-          </router-link>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/quaint/blog">
-            <span><q-icon icon="read"></q-icon> Blog</span
-            ><q-icon icon="rollback"></q-icon>
-          </router-link>
-        </fluent-design-item>
-        <div class="line-w"></div>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/management/user">
-            <span><q-icon icon="user"></q-icon> 用户信息</span>
-          </router-link>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/management/chart">
-            <span><q-icon icon="linechart"></q-icon> 数据分析</span>
-          </router-link>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/management/articles">
-            <span><q-icon icon="control"></q-icon> 文章汇总</span>
-          </router-link>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/management/catalog">
-            <span><q-icon icon="detail"></q-icon> 编排目录</span>
-          </router-link>
-        </fluent-design-item>
-        <fluent-design-item :param="param">
-          <router-link class="mgt-side-item" to="/management/write">
-            <span><q-icon icon="edit-square"></q-icon> 新增文章</span>
-          </router-link>
-        </fluent-design-item>
-      </div>
-      <div>
-        <fluent-design-item :param="param">
-          <div class="mgt-side-item" @click="logout">
-            <span><q-icon icon="logout"></q-icon> 退出登录</span>
-          </div>
-        </fluent-design-item>
-      </div>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/quaint/home">
+          <span><q-icon icon="home"></q-icon> Home</span
+          ><q-icon icon="rollback"></q-icon>
+        </router-link>
+      </fluent-design-item>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/quaint/blog">
+          <span><q-icon icon="read"></q-icon> Blog</span
+          ><q-icon icon="rollback"></q-icon>
+        </router-link>
+      </fluent-design-item>
+      <div class="line-w"></div>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/user">
+          <span><q-icon icon="user"></q-icon> 用户信息</span>
+        </router-link>
+      </fluent-design-item>
+       <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/bookmark">
+          <span><q-icon icon="star"></q-icon> 书签管理</span>
+        </router-link>
+      </fluent-design-item>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/chart">
+          <span><q-icon icon="linechart"></q-icon> 数据分析</span>
+        </router-link>
+      </fluent-design-item>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/articles">
+          <span><q-icon icon="control"></q-icon> 文章汇总</span>
+        </router-link>
+      </fluent-design-item>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/catalog">
+          <span><q-icon icon="detail"></q-icon> 编排目录</span>
+        </router-link>
+      </fluent-design-item>
+      <fluent-design-item :param="param">
+        <router-link class="mgt-side-item" to="/management/write">
+          <span><q-icon icon="edit-square"></q-icon> 新增文章</span>
+        </router-link>
+      </fluent-design-item>
     </fluent-design>
     <div class="mgt-content">
-      <div class="mgt-content-head">后台管理系统</div>
-      <transition :name="switchName" :duration="500">
+      <div class="mgt-content-head">
+        <div class="mgt-content-head-item">
+          后台管理
+        </div>
+        <q-tip class="mgt-content-head-item" placement="bottom">
+          {{ userInfo.userName }}
+          <template #tip>
+            <div @click="logout" class="user-options">退出登录</div>
+          </template>
+        </q-tip>
+      </div>
+      <!-- <transition :name="switchName" :duration="500"> -->
         <router-view class="mgt-content-body"></router-view>
-      </transition>
+      <!-- </transition> -->
     </div>
   </div>
 </template>
 
 <script>
+import { getUserInfo } from '../../network/user'
 import FluentDesign from '@/components/FluentDesign'
 import FluentDesignItem from '@/components/FluentDesignItem'
 
@@ -77,7 +84,8 @@ export default {
   },
   data() {
     return {
-      switchName: ''
+      switchName: '',
+      userInfo: {}
     }
   },
   methods: {
@@ -86,8 +94,7 @@ export default {
       this.$router.push({ path: '/login' })
       this.$notice({
         type: 'success',
-        title: '退出登录成功',
-        message: '期待下次相见'
+        title: '退出登录'
       })
     }
   },
@@ -99,11 +106,18 @@ export default {
         this.switchName = 'route-bottom'
       }
     }
+  },
+  created() {
+    getUserInfo().then(res => {
+      if (res.ok) {
+        this.userInfo = res.data
+      }
+    })
   }
 }
 </script>
 
-<style>
+<style scoped>
 .mgt {
   position: relative;
   overflow: hidden;
@@ -123,7 +137,6 @@ export default {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   width: 160px;
   padding: 15px 0;
   background-color: var(--color);
@@ -169,7 +182,7 @@ export default {
 }
 
 .mgt-content {
-  padding-top: 60px;
+  padding-top: 50px;
 }
 
 .mgt-content-body {
@@ -177,17 +190,42 @@ export default {
 }
 
 .mgt-content-head {
+  display: flex;
+  justify-content: space-between;
   position: fixed;
   right: 0;
   top: 0;
   left: 160px;
-  height: 60px;
-  line-height: 60px;
+  height: 50px;
+  line-height: 50px;
   padding: 0 15px;
   backdrop-filter: blur(5px);
   background-color: rgba(255, 255, 255, 0.8);
   border: 1px solid var(--divider);
   z-index: 99;
+}
+
+.mgt-content-head-item {
+  padding: 0 15px;
+}
+
+.mgt-content-head-item:hover {
+  background-color: var(--divider);
+}
+
+.user-icon {
+  margin-right: 5px;
+}
+
+.user-options {
+  height: 30px;
+  line-height: 30px;
+  padding: 0 12px;
+  cursor: pointer;
+}
+
+.user-options:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* 向上 */

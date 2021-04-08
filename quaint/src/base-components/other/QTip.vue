@@ -4,6 +4,7 @@
     @click="click"
     @mouseenter="mouseenter"
     @mouseleave="mouseleave"
+    :style="{ width: width }"
   >
     <slot></slot>
     <div
@@ -44,6 +45,9 @@ export default {
     trigger: {
       type: String,
       default: 'hover'
+    },
+    width: {
+      type: String
     }
   },
   data() {

@@ -40,6 +40,22 @@
         </template>
       </q-table>
 
+      <!-- <q-table-e :data="list">
+        <q-table-column prop="title" label="标题"></q-table-column>
+        <q-table-column
+          prop="create_time"
+          label="时间"
+          :formatter="dateFormate"
+        ></q-table-column>
+        <q-table-column prop="tags" label="标签">
+          <template #default="{row, index}">
+            <q-tag>
+              123
+            </q-tag>
+          </template>
+        </q-table-column>
+      </q-table-e> -->
+
       <q-page
         :pageSize="pageSize"
         :currentPage.sync="currentPage"
@@ -107,6 +123,9 @@ export default {
     }
   },
   methods: {
+    dateFormate({ value }) {
+      return day(value).format('YYYY-MM-DD')
+    },
     changeSticky(bol, row) {
       updateBlog({
         _id: row._id,
@@ -173,6 +192,7 @@ export default {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  padding: 15px;
   background-color: #fff;
 }
 
@@ -181,6 +201,6 @@ export default {
 }
 
 .q-page {
-  margin: 10px;
+  margin-top: 15px;
 }
 </style>

@@ -60,7 +60,7 @@ export default {
 }
 
 .q-button-primary.is-plain {
-  color: #4a4a4a;
+  color: var(--content);
   border-color: #e8eaec;
   background-color: #fff;
 }

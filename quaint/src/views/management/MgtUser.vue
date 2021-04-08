@@ -1,15 +1,18 @@
 <template>
   <div>
-    <h1>施工现场😴</h1>
+    <q-tab>
+      <q-tab-pane label="1">111111111111111</q-tab-pane>
+      <q-tab-pane label="2">222222222222222</q-tab-pane>
+      <q-tab-pane label="3">333333333333333</q-tab-pane>
+      <q-tab-pane label="4">444444444444444</q-tab-pane>
+    </q-tab>
   </div>
 </template>
 
 <script>
-export default {
-
-}
+export default {}
 </script>
 
-<style>
-
+<style scoped>
+  
 </style>

@@ -2,21 +2,29 @@
   <div>
     <transition name="confirm-wrap">
       <div
-        v-show="visible"
+        v-show="value && visible"
         @click.stop="cancel"
         @mousewheel.prevent
         class="confirm-wrap"
       ></div>
     </transition>
     <transition name="confirm">
-      <div v-show="visible" class="confirm">
+      <div v-show="value && visible" class="confirm">
         <div class="confirm-title">{{ title }}</div>
-        <div class="confirm-content" v-show="message">{{ message }}</div>
-        <div class="btn-group">
-          <q-button plain @click="cancel">取消</q-button>
-          <q-button class="confirm-btn" @click="confirm">
-            确定
-          </q-button>
+        <div class="confirm-content">
+          <slot v-show="message">
+            <span>{{ message }}</span>
+          </slot>
+        </div>
+        <div class="confirm-footer">
+          <slot name="footer">
+            <div class="btn-group">
+              <q-button plain @click="cancel">取消</q-button>
+              <q-button class="confirm-btn" @click="confirm">
+                确定
+              </q-button>
+            </div>
+          </slot>
         </div>
       </div>
     </transition>
@@ -32,27 +40,37 @@ export default {
     },
     message: {
       type: String
+    },
+    value: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
       visible: false,
       tFn: null,
-      fFn: null
+      fFn: null,
+      isRemoveEl: this.value
     }
   },
   methods: {
     confirm() {
       this.tFn && this.tFn()
+      this.$emit('confirm')
       this.remove()
     },
     cancel() {
       this.fFn && this.fFn()
+      this.$emit('cancel')
       this.remove()
     },
     remove() {
       this.visible = false
-      this.$el.addEventListener('transitionend', this.removeEl)
+      this.$emit('input', false)
+      if (this.isRemoveEl) {
+        this.$el.addEventListener('transitionend', this.removeEl)
+      }
     },
     removeEl() {
       this.$el.parentNode.removeChild(this.$el)
@@ -70,7 +88,14 @@ export default {
   },
   mounted() {
     this.visible = true
-  }
+  },
+  watch: {
+    value(newValue) {
+      if (newValue) {
+        this.visible = true
+      }
+    }
+  },
 }
 </script>
 
@@ -92,8 +117,7 @@ export default {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -100%);
-  background-color: rgba(255,255,255,0.8);
-  backdrop-filter: blur(10px);
+  background-color: #fff;
   border-radius: 4px;
   transition: 0.4s;
   z-index: 1000;
@@ -101,12 +125,12 @@ export default {
 
 .confirm .confirm-title {
   font-weight: bold;
-  padding: 10px;
+  padding: 15px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .confirm .confirm-content {
-  padding: 10px;
+  padding: 15px;
 }
 
 .confirm .q-button {
@@ -114,8 +138,11 @@ export default {
 }
 
 .confirm .btn-group {
-  padding: 10px;
   text-align: right;
+}
+
+.confirm-footer {
+  padding: 0 15px 15px;
 }
 
 .confirm-enter {

@@ -64,12 +64,21 @@ const routes = [
         }
       },
       {
+        path: 'bookmark',
+        component: () => import('@/views/management/MgtBookmark'),
+        meta: {
+          title: '书签管理',
+          needLogin: true,
+          idx: 2
+        }
+      },
+      {
         path: 'chart',
         component: () => import('@/views/management/MgtChart'),
         meta: {
           title: '数据分析',
           needLogin: true,
-          idx: 2
+          idx: 3
         }
       },
       {
@@ -78,7 +87,7 @@ const routes = [
         meta: {
           title: '文章管理',
           needLogin: true,
-          idx: 3
+          idx: 4
         }
       },
       {
@@ -87,7 +96,7 @@ const routes = [
         meta: {
           title: '编排目录',
           needLogin: true,
-          idx: 4
+          idx: 5
         }
       },
 
@@ -97,7 +106,7 @@ const routes = [
         meta: {
           title: '新增文章',
           needLogin: true,
-          idx: 5
+          idx: 6
         }
       }
     ]

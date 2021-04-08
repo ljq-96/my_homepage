@@ -8,6 +8,7 @@
       @input="onInput"
       @blur="onBlur"
       v-bind="$attrs"
+      spellcheck="false"
     />
     <slot name="right"></slot>
   </div>
@@ -45,11 +46,12 @@ export default {
 }
 
 .q-input input {
+  width: 100%;
   height: 36px;
   padding: 0 10px;
   font-family: FiraCode;
   border: 1px solid var(--colorLum3);
-  border-radius: 4px;
+  border-radius: 2px;
   background: transparent;
   outline: none;
   transition: 0.4s;
