@@ -12,7 +12,7 @@
           <router-link to="/login" v-if="!$store.state.token"
             >Login</router-link
           >
-          <router-link to="/management/chart" v-if="$store.state.token"
+          <router-link to="/management/article/chart" v-if="$store.state.token"
             >Admin</router-link
           >
         </div>

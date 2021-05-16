@@ -22,7 +22,8 @@
     </div>
 
     <markdown-editor
-      :title="articleInfo.title"
+      :title.sync="articleInfo.title"
+      height="calc(100vh - 225px)"
       v-model="markdown"
     ></markdown-editor>
   </div>
@@ -96,10 +97,14 @@ export default {
     save() {
       this.$refs.form.validate(flag => {
         if (flag) {
+          const truncate = this.markdown.match(
+            /([\s\S]*?)[\r,\n,\r\n]---[\r,\n,\r\n]/
+          )
           if (this.id) {
             updateBlog({
               _id: this.id,
               info: {
+                truncate: truncate ? truncate[0] : '',
                 content: this.markdown,
                 tags: this.articleInfo.tags.split(','),
                 title: this.articleInfo.title
@@ -116,6 +121,7 @@ export default {
             })
           } else {
             createBlog({
+              truncate: truncate ? truncate[0] : '',
               content: this.markdown,
               tags: this.articleInfo.tags.split(','),
               title: this.articleInfo.title

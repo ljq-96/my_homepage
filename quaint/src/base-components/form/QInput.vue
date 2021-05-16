@@ -62,6 +62,11 @@ export default {
   box-shadow: 0 0 0 3px var(--colorLum2);
 }
 
+.q-input input::selection {
+  color: #fff;
+  background-color: var(--content);
+}
+
 .q-input :last-child:not(input) {
   height: 36px;
   border-top-left-radius: 0;

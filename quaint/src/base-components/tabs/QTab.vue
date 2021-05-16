@@ -32,6 +32,10 @@ export default {
 </script>
 
 <style scoped>
+.q-tab {
+  padding: 0 15px;
+}
+
 .q-tab-nav-wrap {
   display: flex;
   height: 36px;

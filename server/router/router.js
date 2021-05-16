@@ -45,7 +45,8 @@ router.post('/user/register', (req, res) => {
             {
               id: doc._id,
               userName: doc.userName,
-              password: doc.password
+              password: doc.password,
+              status: doc.status
             },
             'quaint'
           )
@@ -67,7 +68,8 @@ router.post('/user/login', (req, res) => {
             {
               id: value._id,
               userName: value.userName,
-              password: value.password
+              password: value.password,
+              status: value.status
             },
             'quaint'
           )

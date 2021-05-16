@@ -1,6 +1,6 @@
 <template>
   <div class="article-catalog">
-    <q-card height="calc(100vh - 145px)">
+    <q-card height="calc(100vh - 135px)">
       <template #title>
         <span>未在目录中</span>
       </template>
@@ -16,57 +16,34 @@
         </q-tip>
       </template>
       <template #content>
-        <div class="catalog-content">
-          <draggable
-            :list="unCatalog"
-            animation="200"
-            group="catalog"
-            @change="saveStatus"
+        <draggable
+          class="un-catalog-wrap"
+          :list="unCatalog"
+          animation="200"
+          group="catalog"
+          @change="saveStatus"
+        >
+          <div
+            class="un-catalog-item"
+            v-for="(item, index) in unCatalog"
+            :key="item.id"
           >
-            <div v-for="(item, index) in unCatalog" :key="item.id">
-              <div>
-                <i class="iconfont icon-dian"></i>
-                <span>{{ item.title }}</span>
-              </div>
-              <div v-if="item.type === 'TITLE'">
-                <i
-                  @click="deleteGroup(item, index)"
-                  class="iconfont icon-delete"
-                ></i>
-              </div>
+            <div>
+              <q-icon icon="quan"></q-icon>
+              <span>{{ item.title }}</span>
             </div>
-          </draggable>
-        </div>
+            <div v-if="item.type === 'TITLE'">
+              <q-icon @click="deleteGroup(item, index)" icon="delete"></q-icon>
+            </div>
+          </div>
+        </draggable>
       </template>
     </q-card>
 
-    <q-card height="calc(100vh - 145px)">
+    <q-card height="calc(100vh - 135px)">
       <template #title>
         <span>目录</span>
       </template>
-      <template #extra>
-        <!-- <div class="new-group-btn">
-          <q-button-group>
-            <q-button
-              plain
-              @click="isShowNewGroup = false"
-              v-if="isShowNewGroup"
-              >取消新增</q-button
-            >
-            <q-button plain @click="isShowNewGroup = true" v-else
-              >新增分组</q-button
-            >
-            <q-button plain>重制</q-button>
-          </q-button-group>
-        </div>
-
-        <div class="new-group-input" v-if="isShowNewGroup">
-          <q-input v-model.trim="newGroup">
-            <q-button @click="addGroup" slot="right">确定</q-button>
-          </q-input>
-        </div> -->
-      </template>
-
       <template #content>
         <div class="catalog-content">
           <catalog-item
@@ -140,7 +117,8 @@ export default {
               id: res.data._id,
               title: res.data.title,
               children: [],
-              isOpen: true
+              isOpen: true,
+              type: res.data.type
             })
             this.saveCatalog(this)
             this.newGroup = ''
@@ -156,14 +134,18 @@ export default {
       }
     },
     deleteGroup(item, index) {
-      deleteBlog({ _id: item.id }).then(res => {
-        if (res.ok) {
-          this.unCatalog.splice(index, 1)
-          this.$notice({
-            type: 'success',
-            title: `${item.title}删除成功`
-          })
-        }
+      this.$confirm({
+        title: '警告',
+        message: '您确定删除分组' + item.title + '吗?'
+      }).then(() => {
+        deleteBlog({ _id: item.id }).then(res => {
+          if (res.ok) {
+            this.unCatalog.splice(index, 1)
+            this.$notice({
+              title: `${item.title}删除成功`
+            })
+          }
+        })
       })
     },
     cutTree(arr) {
@@ -198,7 +180,6 @@ export default {
       sortCatalog({ catalog: vm.cutTree(vm.inCatalog) }).then(res => {
         if (res.ok) {
           vm.$notice({
-            type: 'success',
             title: '排序成功'
           })
         }
@@ -262,4 +243,21 @@ export default {
 .new-group-footer .q-button {
   margin-left: 10px;
 }
+
+.un-catalog-item {
+  width: 100%;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 2px;
+  margin: 2px 0;
+}
+
+.un-catalog-item {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* .un-catalog-wrap > div:hover {
+  background-color: var(--colorLum1);
+} */
 </style>

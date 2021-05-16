@@ -139,19 +139,17 @@
         </q-tip>
       </div>
     </div>
-    <div class="md-editor-body">
-      <div class="md-editor-md-wrap">
-        <textarea
-          ref="textarea"
-          class="md-editor-md"
-          :value="value"
-          @scroll="scroll"
-          @input="onInput(vm, $event)"
-          spellcheck="false"
-          placeholder="第一个分割线前面的会被预览..."
-          autofocus
-        ></textarea>
-      </div>
+    <div :style="{ height: height }" class="md-editor-body">
+      <textarea
+        ref="textarea"
+        class="md-editor-md"
+        :value="value"
+        @scroll="scroll"
+        @input="onInput(vm, $event)"
+        spellcheck="false"
+        placeholder="第一个分割线前面的会被预览..."
+        autofocus
+      ></textarea>
       <div
         ref="html"
         v-show="isPreview"
@@ -175,6 +173,10 @@ export default {
     title: {
       type: String,
       default: ''
+    },
+    height: {
+      type: String,
+      default: '200px'
     }
   },
   data() {
@@ -255,7 +257,7 @@ export default {
     },
     downloadMD() {
       const a = document.createElement('a')
-      const blob = new Blob([this.markdown])
+      const blob = new Blob([this.value])
       a.download = this.title + '.md'
       a.href = URL.createObjectURL(blob)
       a.click()
@@ -291,7 +293,7 @@ export default {
       const reader = new FileReader()
       reader.readAsArrayBuffer(file)
       reader.addEventListener('loadend', e => {
-        console.log(file)
+        this.$emit('update:title', file.name.split('.md')[0])
         const unit8Arr = new Uint8Array(e.currentTarget.result)
         const encodedString = String.fromCharCode.apply(null, unit8Arr)
         const decodedString = decodeURIComponent(escape(encodedString)) //没有这一步中文会乱码
@@ -550,15 +552,9 @@ export default {
   display: flex;
 }
 
-.md-editor-body .md-editor-md-wrap {
-  position: relative;
-  height: calc(100vh - 225px);
-  flex-grow: 1;
-}
-
 .md-editor-body .md-editor-md,
 .md-editor-body .md-editor-html {
-  height: calc(100vh - 225px);
+  height: 100%;
   padding: 20px 20px 150px;
   overflow-y: scroll;
 }
@@ -568,9 +564,6 @@ export default {
 }
 
 .md-editor-body .md-editor-md {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   line-height: normal;
   word-break: break-all;
   white-space: pre-wrap;
@@ -578,6 +571,7 @@ export default {
   font-family: 'FiraCode';
   outline: none;
   border: none;
+  flex: 1;
 }
 
 textarea.md-editor-md::selection {

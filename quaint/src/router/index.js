@@ -48,6 +48,7 @@ const routes = [
   },
   {
     path: '/management',
+    name: '管理系统',
     component: () => import('@/views/management/Management'),
     meta: {
       title: '管理系统',
@@ -56,57 +57,70 @@ const routes = [
     children: [
       {
         path: 'user',
+        name: '用户信息',
         component: () => import('@/views/management/MgtUser'),
         meta: {
           title: '用户信息',
           needLogin: true,
-          idx: 1
+          icon: 'user'
         }
       },
       {
+        path: 'article',
+        name: '文章管理',
+        component: () => import('../views/management/space.vue'),
+        meta: {
+          needLogin: true,
+          icon: 'control'
+        },
+        children: [
+          {
+            path: 'chart',
+            name: '数据分析',
+            component: () => import('@/views/management/MgtChart'),
+            meta: {
+              title: '数据分析',
+              needLogin: true
+            }
+          },
+          {
+            path: 'list',
+            name: '文章管理',
+            component: () => import('@/views/management/ArticlesList'),
+            meta: {
+              title: '文章管理',
+              needLogin: true
+            }
+          },
+          {
+            path: 'catalog',
+            name: '编排目录',
+            component: () =>
+              import('@/views/management/BlogCatalog/BlogCatalog'),
+            meta: {
+              title: '编排目录',
+              needLogin: true
+            }
+          },
+          {
+            path: 'write',
+            name: '新增文章',
+            component: () => import('@/views/edit/Edit'),
+            meta: {
+              title: '新增文章',
+              needLogin: true
+            }
+          }
+        ]
+      },
+      {
         path: 'bookmark',
+        name: '书签管理',
         component: () => import('@/views/management/MgtBookmark'),
         meta: {
           title: '书签管理',
           needLogin: true,
-          idx: 2
-        }
-      },
-      {
-        path: 'chart',
-        component: () => import('@/views/management/MgtChart'),
-        meta: {
-          title: '数据分析',
-          needLogin: true,
-          idx: 3
-        }
-      },
-      {
-        path: 'articles',
-        component: () => import('@/views/management/ArticlesList'),
-        meta: {
-          title: '文章管理',
-          needLogin: true,
-          idx: 4
-        }
-      },
-      {
-        path: 'catalog',
-        component: () => import('@/views/management/BlogCatalog/BlogCatalog'),
-        meta: {
-          title: '编排目录',
-          needLogin: true,
-          idx: 5
-        }
-      },
-
-      {
-        path: 'write',
-        component: () => import('@/views/edit/Edit'),
-        meta: {
-          title: '新增文章',
-          needLogin: true,
-          idx: 6
+          icon: 'star'
         }
       }
     ]

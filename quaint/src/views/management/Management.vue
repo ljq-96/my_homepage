@@ -1,58 +1,52 @@
 <template>
   <div class="mgt">
-    <fluent-design
-      class="mgt-side-bar"
-      v-slot="param"
-      :borderColor="'rgba(255,255,255,0.6)'"
-      :borderSize="70"
-      :width="1"
-      :backColor="'rgba(255,255,255,0.1)'"
-      :backSize="200"
-    >
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/quaint/home">
-          <span><q-icon icon="home"></q-icon> Home</span
-          ><q-icon icon="rollback"></q-icon>
-        </router-link>
-      </fluent-design-item>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/quaint/blog">
-          <span><q-icon icon="read"></q-icon> Blog</span
-          ><q-icon icon="rollback"></q-icon>
-        </router-link>
-      </fluent-design-item>
+    <q-menu :defaultActive="defaultActive">
+      <q-menu-item name="/quaint/home">
+        <q-icon icon="home"></q-icon> Home
+      </q-menu-item>
+      <q-menu-item name="/quaint/blog">
+        <q-icon icon="read"></q-icon> Blog
+      </q-menu-item>
       <div class="line-w"></div>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/user">
-          <span><q-icon icon="user"></q-icon> 用户信息</span>
-        </router-link>
-      </fluent-design-item>
-       <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/bookmark">
-          <span><q-icon icon="star"></q-icon> 书签管理</span>
-        </router-link>
-      </fluent-design-item>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/chart">
-          <span><q-icon icon="linechart"></q-icon> 数据分析</span>
-        </router-link>
-      </fluent-design-item>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/articles">
-          <span><q-icon icon="control"></q-icon> 文章汇总</span>
-        </router-link>
-      </fluent-design-item>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/catalog">
-          <span><q-icon icon="detail"></q-icon> 编排目录</span>
-        </router-link>
-      </fluent-design-item>
-      <fluent-design-item :param="param">
-        <router-link class="mgt-side-item" to="/management/write">
-          <span><q-icon icon="edit-square"></q-icon> 新增文章</span>
-        </router-link>
-      </fluent-design-item>
-    </fluent-design>
+      <div v-for="item in routes" :key="item.path">
+        <q-sub-menu v-if="item.children" :defaultOpen="true">
+          <template #title>
+            <q-icon :icon="item.meta.icon"></q-icon> {{ item.name }}
+          </template>
+          <q-menu-item
+            :name="`/management/${item.path}/${j.path}`"
+            v-for="j in item.children"
+            :key="j.path"
+          >
+            <q-icon :icon="j.meta.icon"></q-icon> {{ j.name }}
+          </q-menu-item>
+        </q-sub-menu>
+        <q-menu-item v-else :name="`/management/${item.path}`">
+          <q-icon :icon="item.meta.icon"></q-icon> {{ item.name }}
+        </q-menu-item>
+      </div>
+
+      <!-- <q-menu-item name="/quaint/home">
+        <q-icon icon="home"></q-icon> Home
+      </q-menu-item>
+      <q-menu-item name="/quaint/blog">
+        <q-icon icon="read"></q-icon> Blog
+      </q-menu-item>
+      <div class="line-w"></div>
+      <q-menu-item name="/management/user">
+        <q-icon icon="user"></q-icon> 用户信息
+      </q-menu-item>
+      <q-sub-menu :defaultOpen="true">
+        <template #title> <q-icon icon="control"></q-icon> 文章管理 </template>
+        <q-menu-item name="/management/chart">数据分析</q-menu-item>
+        <q-menu-item name="/management/articles">文章汇总</q-menu-item>
+        <q-menu-item name="/management/catalog">编排目录</q-menu-item>
+        <q-menu-item name="/management/write">新增文章</q-menu-item>
+      </q-sub-menu>
+      <q-menu-item name="/management/bookmark">
+        <q-icon icon="star"></q-icon> 书签管理
+      </q-menu-item> -->
+    </q-menu>
     <div class="mgt-content">
       <div class="mgt-content-head">
         <div class="mgt-content-head-item">
@@ -66,7 +60,7 @@
         </q-tip>
       </div>
       <!-- <transition :name="switchName" :duration="500"> -->
-        <router-view class="mgt-content-body"></router-view>
+      <router-view class="mgt-content-body"></router-view>
       <!-- </transition> -->
     </div>
   </div>
@@ -85,13 +79,16 @@ export default {
   data() {
     return {
       switchName: '',
-      userInfo: {}
+      userInfo: {},
+      routes: [],
+      defaultActive: this.$route.path
     }
   },
   methods: {
     logout() {
       this.$store.commit('setToken', '')
       this.$router.push({ path: '/login' })
+      this.routes = []
       this.$notice({
         type: 'success',
         title: '退出登录'
@@ -108,9 +105,30 @@ export default {
     }
   },
   created() {
+    this.routes = this.$router.options.routes.find(
+      item => item.path === '/management'
+    ).children
     getUserInfo().then(res => {
       if (res.ok) {
         this.userInfo = res.data
+        // if (res.data.status === 1) {
+        //   const routes = {
+        //     path: 'admin',
+        //     name: '管理员',
+        //     component: () => import('./space'),
+        //     meta: {
+        //       icon: 'cluster'
+        //     },
+        //     children: [
+        //       {
+        //         path: 'user',
+        //         name: '用户管理',
+        //         component: () => import('./admin/AdminUser.vue'),
+        //         meta: {}
+        //       }
+        //     ]
+        //   }
+        // }
       }
     })
   }
@@ -130,16 +148,11 @@ export default {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.mgt-side-bar {
+.q-menu {
   position: fixed;
   left: 0;
   top: 0;
   bottom: 0;
-  display: flex;
-  flex-direction: column;
-  width: 160px;
-  padding: 15px 0;
-  background-color: var(--color);
 }
 
 .mgt-side-item {
