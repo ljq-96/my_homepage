@@ -12,6 +12,6 @@ module.exports = {
   devServer: {
     port: 8000,
   },
-  outputDir: '../server/quaint',
+  outputDir: '../dist/quaint',
   publicPath: '/'
 }
